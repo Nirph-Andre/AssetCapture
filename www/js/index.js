@@ -29,7 +29,8 @@ var app = {
     onDeviceReady: function() {
       console.log('app.onDeviceReady()');
       app.receivedEvent('deviceready');
-      data.initialize();
+      app.setState();
+      //data.initialize();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -51,7 +52,7 @@ var app = {
     }
 };
 
-var entities = {
+/* var entities = {
     profile: {},
     company: {children: {'company_branch'}}
 };
@@ -76,7 +77,6 @@ var data = {
     initialize: function() {
       console.log('data.initialize()');
       app.setState('DbInit', 'Local database initializing.');
-      this.bindEvents();
     },
     openDatabase: function() {
       this.db = window.openDatabase(config.dbName, config.dbVersion, config.dbDisplayName, config.dbSize);
@@ -125,7 +125,7 @@ var data = {
       alert(err);
     }
 };
-
+*/
 
 
 
