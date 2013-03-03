@@ -53,22 +53,29 @@ var app = {
 };
 
 var entities = {
-    profile: {},
-    company: {children: {'company_branch'}}
+    content: {'synch': 'readonly'},
+    profile: {'synch': 'readwrite'},
+    company: {'children': {'company_branch'}}
 };
 
 var tables = {
-    profile: {
-      name: {type: 'varchar(100)'},
-      surname: {type: 'varchar(100)'},
-      mobile: {type: 'varchar(20)'}
+    'content': {
+      'type': {'type': 'VARCHAR(100)'},
+      'name': {'type': 'VARCHAR(100)'},
+      'html': {'type': 'TEXT'},
+      'js': {'type': 'TEXT'}
     },
-    company: {
-      name: {type: 'varchar(100)'}
+    'profile': {
+      'name': {'type': 'VARCHAR(100)'},
+      'surname': {'type': 'VARCHAR(100)'},
+      'mobile': {'type': 'VARCHAR(20)'}
     },
-    company_branch: {
-      company_id: {type: 'int'},
-      name: {type: 'varchar(100)'}
+    'company': {
+      'name': {'type': 'VARCHAR(100)'}
+    },
+    'company_branch': {
+      'company_id': {'type': 'INTEGER'},
+      'name': {'type': 'VARCHAR(100)'}
     }
 };
 
@@ -77,6 +84,7 @@ var data = {
     initialize: function() {
       console.log('data.initialize()');
       app.setState('DbInit', 'Local database initializing.');
+      //data.openDatabase();
     },
     openDatabase: function() {
       this.db = window.openDatabase(config.dbName, config.dbVersion, config.dbDisplayName, config.dbSize);
@@ -92,7 +100,7 @@ var data = {
       for (entity in entities) {
         table = entity;
         var field = '';
-        var stmnt = 'CREATE TABLE IF NOT EXISTS ' + table + ' (id unique';
+        var stmnt = 'CREATE TABLE IF NOT EXISTS ' + table + ' (id INTEGER PRIMARY KEY AUTOINCREMENT';
         for (field in tables[entity]) {
           stmnt += ', ' + field + ' ' + tables[entity][field]['type'];
         }
