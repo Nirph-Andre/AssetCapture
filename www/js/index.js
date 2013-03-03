@@ -84,7 +84,7 @@ var data = {
     initialize: function() {
       console.log('data.initialize()');
       app.setState('DbInit', 'Local database initializing.');
-      //data.openDatabase();
+      data.openDatabase();
     },
     openDatabase: function() {
       this.db = window.openDatabase(config.dbName, config.dbVersion, config.dbDisplayName, config.dbSize);
@@ -124,12 +124,11 @@ var data = {
       }
     },
     transactSuccess: function() {
-      console.log('data.transactSuccess()');
+      alert('data.transactSuccess()');
       app.setState();
     },
     transactError: function(err) {
-      console.log('data.transactError: ' + err);
+      alert('data.transactError: ' + err);
       app.setState('DbError', 'Local database error');
-      alert(err);
     }
 };
