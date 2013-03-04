@@ -6,6 +6,33 @@ var config = {
     dbSize: 1000000
 };
 
+var entities = {
+    content: {'synch': 'readonly'},
+    profile: {'synch': 'readwrite'},
+    company: {'children': ['company_branch']}
+};
+
+var tables = {
+    'content': {
+      'type': {'type': 'VARCHAR(100)'},
+      'name': {'type': 'VARCHAR(100)'},
+      'html': {'type': 'TEXT'},
+      'js': {'type': 'TEXT'}
+    },
+    'profile': {
+      'name': {'type': 'VARCHAR(100)'},
+      'surname': {'type': 'VARCHAR(100)'},
+      'mobile': {'type': 'VARCHAR(20)'}
+    },
+    'company': {
+      'name': {'type': 'VARCHAR(100)'}
+    },
+    'company_branch': {
+      'company_id': {'type': 'INTEGER'},
+      'name': {'type': 'VARCHAR(100)'}
+    }
+};
+
 var app = {
     state: 'Initializing',
     stateDescription: 'Initializing',
@@ -40,7 +67,7 @@ var app = {
       listeningElement.setAttribute('style', 'display:none;');
       receivedElement.setAttribute('style', 'display:block;');
 
-      alert('Received Event: ' + id);
+      notify.alert('Received Event', id);
       app.setState();
       data.initialize();
     },
@@ -48,7 +75,7 @@ var app = {
       app.state = state ? state : 'Ready';
       app.stateDescription = description ? description : 'Ready';
       $('#appStatus').html(app.state);
-      alert(app.stateDescription);
+      notify.alert('State Change', app.stateDescription);
     },
     loadLayout: function(name) {
       $('#contentLayout').html(data.view('content', {
@@ -56,44 +83,29 @@ var app = {
         'name': name
         }));
     },
-    loadPage: function() {
-      $('#contentLayout').html(data.view('content', {
+    loadPage: function(name) {
+      $('#contentPage').html(data.view('content', {
         'type': 'page',
         'name': name
         }));
     },
-    loadContent: function() {
-      $('#contentLayout').html(data.view('content', {
+    loadContent: function(container, name) {
+      $('#' + container).html(data.view('content', {
         'type': 'content',
         'name': name
         }));
-    }
-};
-
-var entities = {
-    content: {'synch': 'readonly'},
-    profile: {'synch': 'readwrite'},
-    company: {'children': ['company_branch']}
-};
-
-var tables = {
-    'content': {
-      'type': {'type': 'VARCHAR(100)'},
-      'name': {'type': 'VARCHAR(100)'},
-      'html': {'type': 'TEXT'},
-      'js': {'type': 'TEXT'}
     },
-    'profile': {
-      'name': {'type': 'VARCHAR(100)'},
-      'surname': {'type': 'VARCHAR(100)'},
-      'mobile': {'type': 'VARCHAR(20)'}
-    },
-    'company': {
-      'name': {'type': 'VARCHAR(100)'}
-    },
-    'company_branch': {
-      'company_id': {'type': 'INTEGER'},
-      'name': {'type': 'VARCHAR(100)'}
+    retrieveServerContent: function(page) {
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: 'http://dev.nirphrdp.com/' + page,
+        data: {},
+        success: function(jsonp) {
+          alert('Content loaded from http://dev.nirphrdp.com/' + page);
+          $('#contentLayout').html(jsonp);
+        }
+      });
     }
 };
 
@@ -155,7 +167,7 @@ var data = {
           stmnt += ', ' + field + ' ' + tables[entity][field]['type'];
         }
         stmnt += ')';
-        alert(stmnt);
+        notify.alert('QUERY', stmnt);
         tx.executeSql('DROP TABLE IF EXISTS ' + table);
         tx.executeSql(stmnt);
         if (entities[entity]['children']) {
@@ -167,7 +179,7 @@ var data = {
               stmnt += ', ' + field + ' ' + tables[entity][field]['type'];
             }
             stmnt += ')';
-            alert(stmnt);
+            notify.alert('QUERY', stmnt);
             tx.executeSql('DROP TABLE IF EXISTS ' + table);
             tx.executeSql(stmnt);
           }
@@ -177,20 +189,20 @@ var data = {
     
     // Success and error handling
     transactSuccess: function() {
-      alert('data.transactSuccess()');
+      notify.alert('YAY', 'data.transactSuccess()');
       app.setState();
     },
     transactError: function(err) {
-      alert('data.transactError: ' + err.message);
+      notify.alert('Oops', 'data.transactError: ' + err.message);
       app.setState('DbError', 'Local database error');
     },
     querySuccess: function(tx, result) {
-      alert('data.querySuccess()');
+      notify.alert('YAY', 'data.querySuccess()');
       data.store = result.rows;
       app.setState();
     },
     queryError: function(err) {
-      alert('data.queryError: ' + err.message);
+      notify.alert('Oops', 'data.queryError: ' + err.message);
       app.setState('DbError', 'Local database error');
     },
     
@@ -203,6 +215,75 @@ var data = {
       data.db.transaction(function(tx) {
         tx.executeSql(statement);
       }, errorCallback, successCallback);
+    },
+    
+    // Create a new data entity.
+    save: function(entity, id, data, success, fail) {
+      // Arrange the data we need to insert/update
+      data.cleanStore();
+      var index = 0;
+      var table = '';
+      var field = '';
+      var fields = [];
+      var dataSet = {};
+      /*if (entities[entity]['children']) {
+        for (index in entities[entity]['children']) {
+          table = entities[entity]['children'][index];
+          if (data[table]) {
+            dataSet[table] = data[table];
+            delete data[table];
+          }
+        }
+      }*/
+      dataSet[entity] = data;
+      // Do the inserts/updates
+      for (table in dataSet) {
+        fields = [];
+        for (field in dataSet[table]) {
+          fields.push(field + ' = "' + dataSet[table][field] + '"');
+        }
+        if (id) {
+          // Build update statement
+          stmnt = 'UPDATE ' + table + ' SET ' + fields.join(', ') + ' WHERE id = ' + id;
+        } else {
+          // Build insert statement
+          stmnt = 'INSERT INTO ' + table + ' SET ' + fields.join(', ');
+        }
+        
+        data.query(stmnt, function(tx, result) {
+          if (result.rowsAffected) {
+            // All good
+            if (!id) {
+              id = result.insertId;
+            }
+          } else {
+            // No change
+          }
+          data['id'] = id;
+          data.store[entity] = data;
+          if (success) {
+            success(data);
+          }
+        }, function(err) {
+          // Oops, something went wrong
+          notify.alert('Oops', 'data.queryError: ' + err.message);
+          if (fail) {
+            fail(err);
+          }
+        });
+        
+        
+        
+        
+        if (table != entity && id) {
+          
+        }
+      }
+    },
+    
+    // Create a new data entity.
+    remove: function(entity, id, success, fail) {
+      
     },
     
     // View a single record with relevant dependants
@@ -223,7 +304,7 @@ var data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       // Execute query
-      alert(stmnt);
+      notify.alert('QUERY', stmnt);
       data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result.rows.length) {
@@ -241,12 +322,12 @@ var data = {
             var index = 0;
             for (index in entities[entity]['children']) {
               depTable = entities[entity]['children'][index];
-              stmnt.push('SELECT "' + depTable + '" AS table_ident, ' + depTable + '.* FROM ' + depTable + ' WHERE id = ' + tmpStore[entity][depTable + '_id']);
+              stmnt.push('SELECT "' + depTable + '" AS table_ident, ' + depTable + '.* FROM ' + depTable + ' WHERE ' + entity + '_id = ');
             }
             data.qCdata[myQc] = {'counter': stmnt.length, 'handled': 0};
             // Collect all dependant data
             for (index in stmnt) {
-              alert(stmnt[index]);
+              notify.alert('QUERY', stmnt[index]);
               data.query(stmnt[index], function(tx, result) {
                 if (result.rows.length) {
                   var row = result.rows.shift();
@@ -267,7 +348,7 @@ var data = {
                 }
               }, function(err) {
                 // Oops, something went wrong
-                alert('data.queryError: ' + err.message);
+                notify.alert('Oops', 'data.queryError: ' + err.message);
                 if (fail) {
                   fail(err);
                 }
@@ -284,11 +365,18 @@ var data = {
         }
       }, function(err) {
         // Oops, something went wrong
-        alert('data.queryError: ' + err.message);
+        notify.alert('Oops', 'data.queryError: ' + err.message);
         if (fail) {
           fail(err);
         }
       });
       
+    }
+};
+
+var notify = {
+    alert: function(title, message, button, callback) {
+      navigator.notification.alert(message, callback, title, button ? button : 'OK');
+
     }
 };

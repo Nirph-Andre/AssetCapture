@@ -11,7 +11,7 @@
         <script type="text/javascript" src="js/index.js"></script>
     </head>
     <body>
-        <div class="app">
+        <div id="contentLayout" class="app">
             <h1>Quick Asset Capture v0.1</h1>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
@@ -19,6 +19,9 @@
             </div>
             <div id="appStatus">
                 <p class="event">...</p>
+            </div>
+            <div id="appStatus">
+                <p onClick="app.retrieveServerContent('test.php');">Load me</p>
             </div>
         </div>
     </body>
