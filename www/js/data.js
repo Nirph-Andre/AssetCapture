@@ -267,6 +267,25 @@ var Data = {
       });
     },
     
+    getLastChangeTime: function(table, callback) {
+      // Prepare statement
+      var stmnt = 'SELECT MAX(changed) as changed FROM ' + table.name;
+      
+      // Execute query
+      Data.query(stmnt, function(tx, result) {
+        // Do we have data?
+        if (result.rows.length) {
+          var item = result.rows.shift();
+          if (callback) {
+            callback(item.changed);
+          }
+        }
+      }, function(err) {
+        // Oops, something went wrong
+        Notify.alert('Oops', 'getLastChangeTime.queryError: ' + err.message);
+      });
+    },
+    
     model: function (name, meta) {
       this.name = name;
       this.fields = meta;

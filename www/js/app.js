@@ -49,21 +49,5 @@ var App = {
         'type': 'content',
         'name': name
         }));
-    },
-    retrieveServerContent: function(page) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: Config.serviveNode + page,
-        data: {},
-        success: function(jsonp) {
-          if (jsonp.html) {
-            $('#contentLayout').html(jsonp.html);
-          }
-          if (jsonp.js) {
-            eval(jsonp.js);
-          }
-        }
-      });
     }
 };
