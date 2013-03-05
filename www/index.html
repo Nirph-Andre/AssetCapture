@@ -8,29 +8,43 @@
         <title>Asset Capture</title>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/notify.js"></script>
+        <script type="text/javascript" src="js/data.js"></script>
+        <script type="text/javascript" src="js/models.js"></script>
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
     </head>
     <body>
         <div id="contentLayout" class="app">
-            <h1>Quick Asset Capture v0.1</h1>
+            <h1>Quick Asset<br/>Capture <small>v0.1</small></h1>
             <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+                <p id="initEvent" class="event processing">Initializing</p>
             </div>
-            <div id="appStatus">
-                <p class="event">...</p>
+            <div>
+                <p id="appStatus">...</p>
             </div>
-            <div id="appStatus">
-                <p onClick="app.retrieveServerContent('test.php');">Load me</p>
+            <div>
+                <p onClick="App.retrieveServerContent('test.php');">Load me</p>
             </div>
         </div>
     </body>
+    
+		<script type="text/javascript">
+			$(document).ready(function(){
+			  $.getScript("phonegap.js")
+			  .done(function () {
+			      App.location = 'Device';
+			      document.addEventListener("deviceready", function () {
+			        App.initialize();
+			      }, false);
+			  })
+			  .fail(function () {
+			      App.location = 'Browser';
+			      isPhoneGapReady = true;
+			      App.initialize();
+			  });
+			});
+		</script>
 </html>
 
-<script type="text/javascript">
-$(document).ready(function(){
-  $(document).bind('deviceready', function() {
-    app.initialize();
-  });
-});
-</script>

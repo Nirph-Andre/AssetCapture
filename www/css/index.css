@@ -70,14 +70,19 @@ h1 {
     padding:2px 0px;
 }
 
-.event.listening {
+.event.processing {
     background-color:#333333;
     display:block;
 }
 
-.event.received {
+.event.ready {
     background-color:#4B946A;
-    display:none;
+    display:block;
+}
+
+.event.problem {
+    background-color:#FF4B4B;
+    display:block;
 }
 
 @keyframes fade {
