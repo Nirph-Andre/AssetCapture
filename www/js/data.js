@@ -1,7 +1,11 @@
 
+// Collections
 var Table = {};
 var Entity = {};
+var Synch = {};
 
+
+// DB field type definitions
 var EM = {
     belongsTo: function(table, validation) {
       return {
@@ -87,17 +91,14 @@ var EM = {
     }
 };
 
+
+
 var Data = {
+    
     // Database object
     db: null,
-    // Query counter
-    qC: 0,
-    // Query handling data
-    qCdata: {},
-    // Clean store template
-    storeClean: {},
-    // Data store
-    store: {},
+    // Map tables to object names
+    tableMap: {},
     
     
     // Initialize db handling
@@ -106,49 +107,44 @@ var Data = {
       Data.openDatabase();
     },
     
+    
     // Open db connection
     openDatabase: function() {
       Data.db = window.openDatabase(Config.dbName, Config.dbVersion, Config.dbDisplayName, Config.dbSize);
-      Data.initStore();
       if (true) {
         Data.db.transaction(Data.resetDb, Data.transactError, Data.transactSuccess);
       } else {
         App.setState();
       }
     },
-    
-    // Initialize data store
-    initStore: function() {
-      var table = '';
-      for (table in Table) {
-        Data.storeClean[Table[table]] = {};
-      }
-      Data.store = Data.storeClean;
-    },
-    
-    // Reset data store from template
-    cleanStore: function() {
-      Data.store = Data.storeClean;
-    },
 
+    
     // ReCreate tables
     resetDb: function(tx) {
+      // Create tables
       var table = '';
       var dType = '';
       for (table in Table) {
         var field = '';
-        var stmnt = 'CREATE TABLE IF NOT EXISTS ' + table + ' (id INTEGER PRIMARY KEY AUTOINCREMENT';
+        var stmnt = 'CREATE TABLE IF NOT EXISTS `' + table + '` (id INTEGER PRIMARY KEY AUTOINCREMENT';
         for (field in Table[table]['fields']) {
           if ('hasMany' != Table[table]['fields'][field]['type']) {
-            stmnt += ', ' + field + ' ' + Table[table]['fields'][field]['datatype'];
+            stmnt += ', `' + field + '` ' + Table[table]['fields'][field]['datatype'];
           }
         }
+        stmnt += ', `created` DATETIME';
+        stmnt += ', `changed` DATETIME';
         stmnt += ')';
         tx.executeSql('DROP TABLE IF EXISTS ' + table);
-        alert(stmnt);
         tx.executeSql(stmnt);
       }
+      
+      // Add intial synch records
+      tx.executeSql('INSERT INTO x_synch SET `table`="x_content", `mode`=0');
+      alert('moo');
+      Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
     },
+    
     
     // Success and error handling
     transactSuccess: function() {
@@ -158,25 +154,20 @@ var Data = {
       Notify.alert('Oops', 'Data.transactError: ' + err.message);
       App.setState('DbError', 'Local database error');
     },
-    querySuccess: function(tx, result) {
-      Data.store = result.rows;
-      App.setState();
-    },
     queryError: function(err) {
       Notify.alert('Oops', 'Data.queryError: ' + err.message);
       App.setState('DbError', 'Local database error');
     },
     
+    
     // Generic query execution
-    query: function(statement, success, fail) {
-      if (!success) {
-        return;
-      }
-      var errorCallback = fail ? fail : Data.queryError;
+    query: function(statement, callback, errorCallback) {
+      var errorCallback = errorCallback ? errorCallback : Data.queryError;
       Data.db.transaction(function(tx) {
-        tx.executeSql(statement);
-      }, errorCallback, successCallback);
+        tx.executeSql(statement, [], callback);
+      }, errorCallback);
     },
+    
     
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
@@ -186,15 +177,27 @@ var Data = {
       var fieldSet = [];
       for (field in table.fields) {
         if (data[field]) {
-          fieldSet.push(field + ' = "' + data[field] + '"');
+          fieldSet.push('`' + field + '` = "' + data[field] + '"');
           dataSet[field] = data[field];
         }
       }
+      var dTime = Util.getCurrentDateTime();
+      fieldSet.push('`changed` = "' + dTime + '"');
       if (id) {
         // Build update statement
-        stmnt = 'UPDATE ' + table.name + ' SET ' + fieldSet.join(', ') + ' WHERE id = ' + id;
+        var filter = [];
+        if ('object' == typeof(id)) {
+          var field = '';
+          for (field in id) {
+            filter.push('`' + field + '` = "' + id[field] + '"');
+          }
+        } else {
+          filter.push('`id` = ' + id);
+        }
+        stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
+        fieldSet.push('`created` = "' + dTime + '"');
         stmnt = 'INSERT INTO ' + table.name + ' SET ' + fieldSet.join(', ');
       }
       
@@ -221,22 +224,24 @@ var Data = {
       });
     },
     
+    
     // Create a new data entity.
     remove: function(table, id, callback, errorCallback) {
       
     },
     
+    
     // View a single record with relevant dependants
     view: function(table, id, where, callback, errorCallback) {
       // Prepare statement
-      var stmnt = 'SELECT * FROM ' + table.name;
+      var stmnt = 'SELECT * FROM `' + table.name + '`';
       var filter = [];
       if (id) {
-        filter.push('id = ' + id);
+        filter.push('`id` = ' + id);
       }
       if (where) {
         for (field in where) {
-          filter.push(field + ' = "' + where[field] + '"');
+          filter.push('`' + field + '` = "' + where[field] + '"');
         }
       }
       if (filter.length) {
@@ -267,9 +272,101 @@ var Data = {
       });
     },
     
-    getLastChangeTime: function(table, callback) {
+    
+    // Retrieve list of entries
+    list: function(table, where, callback, errorCallback) {
       // Prepare statement
-      var stmnt = 'SELECT MAX(changed) as changed FROM ' + table.name;
+      var stmnt = 'SELECT * FROM `' + table.name + '`';
+      var filter = [];
+      if (where) {
+        for (field in where) {
+          filter.push('`' + field + '` = "' + where[field] + '"');
+        }
+      }
+      if (filter.length) {
+        stmnt += ' WHERE ' + filter.join(' AND ');
+      }
+      
+      // Execute query
+      Data.query(stmnt, function(tx, result) {
+        // Do we have data?
+        if (result.rows.length) {
+          if (callback) {
+            callback(result.rows);
+          }
+        } else {
+          // No entry found
+          if (callback) {
+            callback({});
+          }
+        }
+      }, function(err) {
+        // Oops, something went wrong
+        Notify.alert('Oops', 'Data.queryError: ' + err.message);
+        if (errorCallback) {
+          errorCallback(err);
+        }
+      });
+    },
+    
+    
+    // Retrieve list of entries
+    listSynchData: function(table, callback, errorCallback) {
+      // Prepare
+      var synchData = {
+          'create': {},
+          'update': {},
+          'remove': {}
+      };
+      if (table.mode == 0) {
+        // Downstream only, no local changes
+        callback(synchData);
+      }
+      var errorCallback = errorCallback ? errorCallback : Data.queryError;
+      var stmnt = '';
+      
+      // Collect data
+      Data.db.transaction(function(tx) {
+        // Collect newly created entries
+        stmnt = 'SELECT * FROM `' + table.name + '`';
+              + ' WHERE `sid` IS NULL';
+        tx.executeSql(stmnt, function(tx, result) {
+          if (result.rows.length) {
+            synchData.create = result.rows;
+          }
+        });
+        // Collect updated entries
+        stmnt = 'SELECT * FROM `' + table.name + '`';
+              + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
+        if (table.fields.archived) {
+          stmnt += ' AND `archived` = 0';
+        }
+        tx.executeSql(stmnt, function(tx, result) {
+          if (result.rows.length) {
+            synchData.update = result.rows;
+          }
+        });
+        // Collect archived entries
+        if (table.fields.archived) {
+          stmnt = 'SELECT * FROM `' + table.name + '`';
+                + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
+          tx.executeSql(stmnt, function(tx, result) {
+            if (result.rows.length) {
+              synchData.remove = result.rows;
+            }
+          });
+        }
+      }, errorCallback, function() {
+        callback(synchData);
+      });
+    },
+    
+    
+    // Get latest change datetime from a table
+    getLastChangeTime: function(table, callback, datefield) {
+      // Prepare statement
+      var datefield = datefield ? datefield : 'changed';
+      var stmnt = 'SELECT MAX(`' + datefield + '`) as changed FROM ' + table.name;
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
@@ -286,8 +383,12 @@ var Data = {
       });
     },
     
-    model: function (name, meta) {
-      this.name = name;
+    
+    // Table model
+    model: function (objName, tableName, meta) {
+      Data.tableMap[tableName] = objName;
+      this.objName = objName;
+      this.name = tableName;
       this.fields = meta;
       this.data = {};
       this.hooks = {};
@@ -303,6 +404,9 @@ var Data = {
         alert(this.name + ': ' + myFields.join(','));
       }
     },
+    
+    
+    // Entity model
     entity: function(meta) {
       this.struct = meta;
       this.hooks = {};
@@ -310,4 +414,5 @@ var Data = {
         
       };
     }
+    
 };

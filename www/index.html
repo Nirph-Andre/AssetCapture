@@ -36,9 +36,7 @@
 			  $.getScript("phonegap.js")
 			  .done(function () {
 			      App.location = 'Device';
-			      document.addEventListener("deviceready", function () {
-			        App.initialize();
-			      }, false);
+			      App.bindEvents();
 			  })
 			  .fail(function () {
 			      App.location = 'Browser';
