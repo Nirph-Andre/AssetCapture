@@ -33,6 +33,7 @@
     
 		<script type="text/javascript">
 			$(document).ready(function(){
+			  document.addEventListener("deviceready", App.initialize, false);
 			  $.getScript("phonegap.js")
 			  .done(function () {
 			      App.location = 'Device';

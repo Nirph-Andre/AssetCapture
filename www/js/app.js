@@ -26,7 +26,6 @@ var App = {
     bindEvents: function() {
       document.addEventListener('offline', App.nowOffline, false);
       document.addEventListener('online', App.nowOnline, false);
-      document.addEventListener("deviceready", App.initialize, false);
     },
     
     
