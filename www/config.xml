@@ -23,7 +23,6 @@
     
     <gap:plugin name="BarcodeScanner" />
     
-    <access origin="*" />
 
     <preference name="phonegap-version" value="2.3.0" />
     <preference name="target-device"    value="universal" />
