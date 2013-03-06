@@ -12,9 +12,7 @@ var App = {
     initialize: function() {
       Util.setEventInfo('initEvent', 'Ready', 'ready');
       this.setState();
-      //if ('Device' == this.location) {
-        Data.initialize();
-      //}
+      Data.initialize();
     },
     
     
@@ -23,8 +21,8 @@ var App = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-      document.addEventListener('offline', App.nowOffline, false);
-      document.addEventListener('online', App.nowOnline, false);
+      $(document).bind('offline', App.nowOffline);
+      $(document).bind('onfline', App.nowOnline);
     },
     
     

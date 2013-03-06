@@ -140,7 +140,7 @@ var Data = {
       }
       
       // Add intial synch records
-      tx.executeSql('INSERT INTO x_synch SET `table`="x_content", `mode`=0');
+      tx.executeSql('INSERT INTO x_synch (`table`, `mode`) VALUES ("x_content", 0)');
       alert('moo');
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
     },
@@ -175,16 +175,16 @@ var Data = {
       var field = '';
       var dataSet = {};
       var fieldSet = [];
-      for (field in table.fields) {
-        if (data[field]) {
-          fieldSet.push('`' + field + '` = "' + data[field] + '"');
-          dataSet[field] = data[field];
-        }
-      }
       var dTime = Util.getCurrentDateTime();
-      fieldSet.push('`changed` = "' + dTime + '"');
       if (id) {
         // Build update statement
+        for (field in table.fields) {
+          if (data[field]) {
+            fieldSet.push('`' + field + '` = "' + data[field] + '"');
+            dataSet[field] = data[field];
+          }
+        }
+        fieldSet.push('`changed` = "' + dTime + '"');
         var filter = [];
         if ('object' == typeof(id)) {
           var field = '';
@@ -197,8 +197,17 @@ var Data = {
         stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
+        fieldSet = {'fields': [], 'values': []};
+        for (field in table.fields) {
+          if (data[field]) {
+            fieldSet.fields.push('`' + field + '`');
+            fieldSet.values.push('"' + data[field] + '"');
+            dataSet[field] = data[field];
+          }
+        }
+        fieldSet.push('`changed` = "' + dTime + '"');
         fieldSet.push('`created` = "' + dTime + '"');
-        stmnt = 'INSERT INTO ' + table.name + ' SET ' + fieldSet.join(', ');
+        stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.fields.join(', ') + ') ';
       }
       
       // Execute query
