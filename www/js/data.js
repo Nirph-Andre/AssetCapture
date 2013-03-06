@@ -139,16 +139,18 @@ var Data = {
         tx.executeSql(stmnt);
       }
       
-      // Add intial synch records
-      tx.executeSql('INSERT INTO x_synch (`table`, `mode`) VALUES ("x_content", 0)');
-      alert('moo');
-      Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
     },
     
     
     // Success and error handling
     transactSuccess: function() {
       App.setState();
+
+      // Add intial synch records
+      alert('moo');
+      Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
+        Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
+      });
     },
     transactError: function(err) {
       Notify.alert('Oops', 'Data.transactError: ' + err.message);
@@ -207,8 +209,9 @@ var Data = {
         }
         fieldSet.push('`changed` = "' + dTime + '"');
         fieldSet.push('`created` = "' + dTime + '"');
-        stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.fields.join(', ') + ') ';
+        stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
+      alert(stmnt);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
@@ -226,9 +229,10 @@ var Data = {
         }
       }, function(err) {
         // Oops, something went wrong
-        Notify.alert('Oops', 'Data.queryError: ' + err.message);
         if (errorCallback) {
           errorCallback(err);
+        } else {
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
       });
     },
