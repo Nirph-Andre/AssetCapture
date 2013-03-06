@@ -13,6 +13,8 @@
     <author href="http://phonegap.com" email="support@phonegap.com">
         Nirph Online
     </author>
+    
+    <access origin="*" />
 
     <feature name="http://api.phonegap.com/1.0/device" />
     <feature name="http://api.phonegap.com/1.0/camera" />
@@ -20,6 +22,8 @@
     <feature name="http://api.phonegap.com/1.0/geolocation" />
     <feature name="http://api.phonegap.com/1.0/network" />
     <feature name="http://api.phonegap.com/1.0/notification" />
+    
+    <gap:plugin name="BarcodeScanner" />
 
     <preference name="phonegap-version" value="2.3.0" />
     <preference name="target-device"    value="universal" />
@@ -35,8 +39,6 @@
     <icon src="res/icon/ios/icon-57-2x.png"         gap:platform="ios"        width="114" height="114" />
     <icon src="res/icon/ios/icon-72-2x.png"         gap:platform="ios"        width="144" height="144" />
     
-    
-    <gap:plugin name="BarcodeScanner" /> <!-- latest release -->
 
     <gap:splash src="res/screen/android/screen-ldpi-portrait.png"  gap:platform="android" gap:density="ldpi" />
     <gap:splash src="res/screen/android/screen-mdpi-portrait.png"  gap:platform="android" gap:density="mdpi" />
