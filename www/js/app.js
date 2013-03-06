@@ -10,7 +10,6 @@ var App = {
     
     // Application Constructor
     initialize: function() {
-      this.bindEvents();
       Util.setEventInfo('initEvent', 'Ready', 'ready');
       this.setState();
       //if ('Device' == this.location) {

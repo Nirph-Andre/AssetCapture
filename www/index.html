@@ -33,13 +33,25 @@
     
 		<script type="text/javascript">
 			$(document).ready(function(){
-			  document.addEventListener("deviceready", App.initialize, false);
+			  $(document).bind('deviceready', function() {
+			    alert('bind init');
+			    App.initialize();
+			    });
+
+			  alert('added evnt listnr');
 			  $.getScript("phonegap.js")
 			  .done(function () {
+			      if (PhoneGap.available) {
+			        alert('avail init');
+			        App.initialize();
+			      }
+            alert('phonegap script loaded');
+            alert('ready: ' + PhoneGap.available);
 			      App.location = 'Device';
 			      App.bindEvents();
 			  })
 			  .fail(function () {
+			      alert('phonegap script NOT loaded');
 			      App.location = 'Browser';
 			      isPhoneGapReady = true;
 			      App.initialize();
