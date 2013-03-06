@@ -13,6 +13,8 @@ var App = {
       Util.setEventInfo('initEvent', 'Ready', 'ready');
       this.setState();
       Data.initialize();
+      Barcode.initialize();
+      Barcode.scan();
     },
     
     

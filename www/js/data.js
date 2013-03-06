@@ -138,7 +138,6 @@ var Data = {
         tx.executeSql('DROP TABLE IF EXISTS ' + table);
         tx.executeSql(stmnt);
       }
-      
     },
     
     
@@ -147,8 +146,9 @@ var Data = {
       App.setState();
 
       // Add intial synch records
-      alert('moo');
+      alert('moo?');
       Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
+        alert('moo.');
         Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
       });
     },
@@ -224,12 +224,12 @@ var Data = {
           // No change
         }
         dataSet['id'] = id;
-        if (callback) {
+        if (typeof callback != 'undefined') {
           callback(dataSet);
         }
       }, function(err) {
         // Oops, something went wrong
-        if (errorCallback) {
+        if (typeof errorCallback != 'undefined') {
           errorCallback(err);
         } else {
           Notify.alert('Oops', 'Data.queryError: ' + err.message);
@@ -267,20 +267,21 @@ var Data = {
         // Do we have data?
         if (result.rows.length) {
           var item = result.rows.shift();
-          if (callback) {
+          if (typeof callback != 'undefined') {
             callback(item);
           }
         } else {
           // No entry found
-          if (callback) {
+          if (typeof callback != 'undefined') {
             callback({});
           }
         }
       }, function(err) {
         // Oops, something went wrong
-        Notify.alert('Oops', 'Data.queryError: ' + err.message);
-        if (errorCallback) {
+        if (typeof errorCallback != 'undefined') {
           errorCallback(err);
+        } else {
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
       });
     },
@@ -304,19 +305,19 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result.rows.length) {
-          if (callback) {
+          if (typeof callback != 'undefined') {
             callback(result.rows);
           }
         } else {
           // No entry found
-          if (callback) {
+          if (typeof callback != 'undefined') {
             callback({});
           }
         }
       }, function(err) {
         // Oops, something went wrong
         Notify.alert('Oops', 'Data.queryError: ' + err.message);
-        if (errorCallback) {
+        if (typeof errorCallback != 'undefined') {
           errorCallback(err);
         }
       });
@@ -386,7 +387,7 @@ var Data = {
         // Do we have data?
         if (result.rows.length) {
           var item = result.rows.shift();
-          if (callback) {
+          if (typeof callback != 'undefined') {
             callback(item.changed);
           }
         }
