@@ -149,7 +149,13 @@ var Data = {
       alert('moo?');
       Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
         alert('moo.');
-        Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) { alert(JSON.stringify(data)); });
+        Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
+          alert(JSON.stringify(data));
+        }, function(err) {
+          alert('no moo. ' + err.message);
+        });
+      }, function (err) {
+        alert('no moo! ' + err.message);
       });
     },
     transactError: function(err) {
