@@ -135,8 +135,12 @@ var Data = {
         stmnt += ', `created` DATETIME';
         stmnt += ', `changed` DATETIME';
         stmnt += ')';
-        tx.executeSql('DROP TABLE IF EXISTS ' + table);
-        tx.executeSql(stmnt);
+        alert(stmnt);
+        tx.executeSql(stmnt, [], function(tx, result) {
+          alert('table created');
+        }, function(err) {
+          alert(err.message);
+        });
       }
     },
     
