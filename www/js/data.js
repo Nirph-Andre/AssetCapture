@@ -166,6 +166,7 @@ var Data = {
       Notify.alert('Oops', 'Data.queryError: ' + err.message);
       App.setState('DbError', 'Local database error');
     },
+    devNull: function() { },
     
     
     // Generic query execution
@@ -173,25 +174,28 @@ var Data = {
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       Data.db.transaction(function(tx) {
         tx.executeSql(statement, [], callback);
-      }, errorCallback);
+      }, errorCallback, Data.devNull);
     },
     
     
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
       // Prepare data for query
+      alert(1);
       var field = '';
       var dataSet = {};
       var fieldSet = [];
       var dTime = Util.getCurrentDateTime();
       if (id) {
         // Build update statement
+        alert(2);
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.push('`' + field + '` = "' + data[field] + '"');
             dataSet[field] = data[field];
           }
         }
+        alert(3);
         fieldSet.push('`changed` = "' + dTime + '"');
         var filter = [];
         if ('object' == typeof(id)) {
@@ -202,10 +206,13 @@ var Data = {
         } else {
           filter.push('`id` = ' + id);
         }
+        alert(4);
         stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
+        alert(5);
         fieldSet = {'fields': [], 'values': []};
+        alert(6);
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.fields.push('`' + field + '`');
@@ -213,6 +220,7 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
+        alert(7);
         fieldSet.push('`changed` = "' + dTime + '"');
         fieldSet.push('`created` = "' + dTime + '"');
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
@@ -253,6 +261,7 @@ var Data = {
     // View a single record with relevant dependants
     view: function(table, id, where, callback, errorCallback) {
       // Prepare statement
+      alert(10);
       var stmnt = 'SELECT * FROM `' + table.name + '`';
       var filter = [];
       if (id) {
@@ -267,22 +276,27 @@ var Data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       stmnt += ' LIMIT 1';
+      alert(11);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
-        if (result.rows.length) {
+        alert(12);
+        if (result != null && result.rows != null && result.rows.length) {
+          alert(13);
           var item = result.rows.shift();
           if (typeof callback != 'undefined') {
             callback(item);
           }
         } else {
+          alert(14);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
           }
         }
       }, function(err) {
+        alert(15);
         // Oops, something went wrong
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
