@@ -126,7 +126,7 @@ var Data = {
       var dType = '';
       for (table in Table) {
         var field = '';
-        var stmnt = 'CREATE TABLE IF NOT EXISTS `' + table + '` (id INTEGER PRIMARY KEY AUTOINCREMENT';
+        var stmnt = 'CREATE TABLE IF NOT EXISTS `' + Table[table]['name'] + '` (id INTEGER PRIMARY KEY AUTOINCREMENT';
         for (field in Table[table]['fields']) {
           if ('hasMany' != Table[table]['fields'][field]['type']) {
             stmnt += ', `' + field + '` ' + Table[table]['fields'][field]['datatype'];
@@ -135,12 +135,7 @@ var Data = {
         stmnt += ', `created` DATETIME';
         stmnt += ', `changed` DATETIME';
         stmnt += ')';
-        alert(stmnt);
-        tx.executeSql(stmnt, [], function(tx, result) {
-          alert('table created');
-        }, function(err) {
-          alert(err.message);
-        });
+        tx.executeSql(stmnt);
       }
     },
     
@@ -189,8 +184,10 @@ var Data = {
       var dataSet = {};
       var fieldSet = [];
       var dTime = Util.getCurrentDateTime();
+      var mode = '';
       if (id) {
         // Build update statement
+        mode = 'updated';
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.push('`' + field + '` = "' + data[field] + '"');
@@ -210,6 +207,7 @@ var Data = {
         stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
+        mode = 'created';
         fieldSet = {'fields': [], 'values': []};
         for (field in table.fields) {
           if (data[field]) {
@@ -239,6 +237,7 @@ var Data = {
         dataSet['id'] = id;
         if (typeof callback != 'undefined') {
           callback(dataSet);
+          table.trigger(mode, dataSet);
         }
       }, function(err) {
         // Oops, something went wrong
@@ -286,12 +285,14 @@ var Data = {
           var item = result.rows.shift();
           if (typeof callback != 'undefined') {
             callback(item);
+            table.trigger('loaded', item);
           }
         } else {
           alert(14);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
+            table.trigger('loaded', {});
           }
         }
       }, function(err) {
@@ -326,11 +327,13 @@ var Data = {
         if (result.rows.length) {
           if (typeof callback != 'undefined') {
             callback(result.rows);
+            table.trigger('listed', result.rows);
           }
         } else {
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
+            table.trigger('listed', {});
           }
         }
       }, function(err) {
@@ -424,18 +427,17 @@ var Data = {
       this.name = tableName;
       this.fields = meta;
       this.data = {};
-      this.hooks = {};
+      this.hooks = {'created': [], 'updated': [], 'removed': [], 'loaded': [], 'listed': []};
       this.listen = function(event, callback) {
-        
-      };
-      this.speak = function() {
-        var field = '';
-        var myFields = []
-        for (field in this.fields) {
-          myFields.push(field);
+        if (this.hooks[event]) {
+          this.hooks[event] = callback;
         }
-        alert(this.name + ': ' + myFields.join(','));
-      }
+      };
+      this.trigger = function(event, data) {
+        for (var ind in this.hooks[event]) {
+          (this.hooks[event][ind])(event, data);
+        }
+      };
     },
     
     
