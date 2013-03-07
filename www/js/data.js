@@ -181,21 +181,18 @@ var Data = {
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
       // Prepare data for query
-      alert(1);
       var field = '';
       var dataSet = {};
       var fieldSet = [];
       var dTime = Util.getCurrentDateTime();
       if (id) {
         // Build update statement
-        alert(2);
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.push('`' + field + '` = "' + data[field] + '"');
             dataSet[field] = data[field];
           }
         }
-        alert(3);
         fieldSet.push('`changed` = "' + dTime + '"');
         var filter = [];
         if ('object' == typeof(id)) {
@@ -206,13 +203,10 @@ var Data = {
         } else {
           filter.push('`id` = ' + id);
         }
-        alert(4);
         stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
-        alert(5);
         fieldSet = {'fields': [], 'values': []};
-        alert(6);
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.fields.push('`' + field + '`');
@@ -220,9 +214,10 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
-        alert(7);
-        fieldSet.push('`changed` = "' + dTime + '"');
-        fieldSet.push('`created` = "' + dTime + '"');
+        fieldSet.fields.push('`changed`');
+        fieldSet.values.push('"' + dTime + '"');
+        fieldSet.fields.push('`created`');
+        fieldSet.values.push('"' + dTime + '"');
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
       alert(stmnt);
