@@ -150,20 +150,25 @@ var Data = {
         alert('moo.');
         Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
           alert(JSON.stringify(data));
+          return true;
         }, function(err) {
           alert('no moo. ' + err.message);
+          return true;
         });
       }, function (err) {
         alert('no moo! ' + err.message);
+        return true;
       });
     },
     transactError: function(err) {
       Notify.alert('Oops', 'Data.transactError: ' + err.message);
       App.setState('DbError', 'Local database error');
+      return true;
     },
-    queryError: function(err) {
+    queryError: function(tx, err) {
       Notify.alert('Oops', 'Data.queryError: ' + err.message);
       App.setState('DbError', 'Local database error');
+      return true;
     },
     devNull: function() { },
     
@@ -259,7 +264,6 @@ var Data = {
     // View a single record with relevant dependants
     view: function(table, id, where, callback, errorCallback) {
       // Prepare statement
-      alert(10);
       var stmnt = 'SELECT * FROM `' + table.name + '`';
       var filter = [];
       if (id) {
@@ -274,21 +278,17 @@ var Data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       stmnt += ' LIMIT 1';
-      alert(11);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
-        alert(12);
         if (result != null && result.rows != null && result.rows.length) {
-          alert(13);
-          var item = result.rows.shift();
+          var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item);
             table.trigger('loaded', item);
           }
         } else {
-          alert(14);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
@@ -296,7 +296,6 @@ var Data = {
           }
         }
       }, function(err) {
-        alert(15);
         // Oops, something went wrong
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
@@ -408,7 +407,7 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result.rows.length) {
-          var item = result.rows.shift();
+          var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item.changed);
           }
