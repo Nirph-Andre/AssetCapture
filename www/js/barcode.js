@@ -5,16 +5,6 @@ var Barcode = {
     scanner: null,
     
     
-    // Initialize scanner
-    scan2: function() {
-      try {
-        Barcode.scanner = PhoneGap.require("cordova/plugin/BarcodeScanner");
-      } catch(err) {
-        Notify.alert('Oops', 'Could not load scanner plugin: ' + err.message);
-      }
-    },
-    
-    
     // Scan a barcode
     scan: function(callback, errorCallback) {
       try {
@@ -22,6 +12,7 @@ var Barcode = {
           alert("We got a barcode\n" +
                 "Result: " + result.text + "\n" +
                 "Format: " + result.format); 
+          alert(JSON.stringify(result));
         }, function(error) {
           alert("Scanning failed: " + error);
         });
