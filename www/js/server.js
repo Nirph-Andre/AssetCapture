@@ -102,6 +102,7 @@ var Server = {
     addressFromCoordinates: function(lat, long, callback, errorCallback) {
       var url = 'http://where.yahooapis.com/geocode?location='
               + lat + ',' + long + '&gflags=R&flags=J';
+      alert('calling: ' + url);
       Server.get(
           url, {}, function(jsonp) {
             alert(JSON.stringify(result));
