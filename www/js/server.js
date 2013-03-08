@@ -98,12 +98,71 @@ var Server = {
     },
     
     
+    // Reverse geocode lookup on yahoo geocode api
+    addressFromCoordinates: function(lat, long, callback, errorCallback) {
+      var url = 'http://where.yahooapis.com/geocode?location='
+              + lat + ',' + long + '&gflags=R&flags=J';
+      Server.get(
+          url, {}, function(jsonp) {
+            alert(JSON.stringify(result));
+            if (result) {
+              if (result.Found == 0) {
+                alert('No address found for coordinates on geocode api.');
+                if (typeof callback != 'undefined') {
+                  callback({
+                    'city': false,
+                    'neighborhood': false,
+                    'street': false,
+                    'code': false,
+                    'lat': lat,
+                    'long': long
+                  });
+                }
+              } else {
+                var addr = result.Results.shift();
+                alert(addr.street + ' : ' + addr.neighborhood + ' : ' + addr.city);
+                if (typeof callback != 'undefined') {
+                  callback({
+                    'city': addr.city,
+                    'neighborhood': addr.neighborhood,
+                    'street': addr.street,
+                    'code': addr.postal,
+                    'lat': lat,
+                    'long': long
+                  });
+                }
+              }
+            }
+          }, function(jqXHR, textStatus, errorThrown) {
+            if (typeof errorCallback != 'undefined') {
+              errorCallback(textStatus);
+            } else {
+              Notify.alert('Oops', 'Could not load address data from geocode api.');
+              alert(JSON.stringify(textStatus));
+            }
+          }
+      );
+    },
+    
+    
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
       $.ajax({
         type: 'POST',
         dataType: 'json',
         url: Config.serviveNode + action,
+        data: data,
+        success: callback,
+        error: errorCallback
+      });
+    },
+    
+    // Ajax post helper
+    get: function(uri, data, callback, errorCallback) {
+      $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: uri,
         data: data,
         success: callback,
         error: errorCallback
