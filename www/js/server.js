@@ -105,7 +105,7 @@ var Server = {
       alert('calling: ' + url);
       Server.get(
           url, {}, function(jsonp) {
-            alert(JSON.stringify(result));
+            alert(JSON.stringify(jsonp));
             if (result) {
               if (result.Found == 0) {
                 alert('No address found for coordinates on geocode api.');
@@ -161,7 +161,7 @@ var Server = {
     // Ajax post helper
     get: function(uri, data, callback, errorCallback) {
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         dataType: 'json',
         url: uri,
         data: data,
