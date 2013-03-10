@@ -4,26 +4,11 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        
-        <!-- Styles -->
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="css/icons.css">
-        <link rel="stylesheet" href="css/navigation-app.css">
-        
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
         <title>Asset Capture</title>
-        
-        
-        <!-- Cordova -->
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
-        
-        <!-- Vendor -->
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.js"></script>
-        <script type="text/javascript" src="js/page-transitions.js"></script>
-        
-        <!-- Modules -->
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/notify.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
@@ -33,188 +18,34 @@
         <script type="text/javascript" src="js/models.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
-        
     </head>
     <body>
-      
-      <!-- Navigation -->
-			<nav id="header" class="navbar navbar-inverse navbar-fixed-top">
-				<div class="row-fluid">
-				  <div class="span4 sidemenu-header"></div>
-				  <div class="navbar-inner span12">
-				    <div class="container">
-				      <div class="row-fluid">
-				        <div class="span1 button-column"> 
-				          <button type="button" class="side-menu-link nav-button" id="btn-header-nav">
-				            <i class="icon-menu"></i>
-				          </button>  
-				        </div>
-				        <div class="span8 header-title">
-				           <h4>Asset Capture v0.1</h4>
-				        </div>
-				
-				      </div>
-				    </div>
-				  </div>                    
-				</div>
-				<div id="nav-bar" class="row-fluid black items-2">
-		      <div id="deviceready" class="">
-            <p id="initEvent" class="event processing">Initializing</p>
-          </div>
-		    </div>
-			</nav>
-			
-			<!-- Nav and Main content -->
-			<div id="main" class="container">
-			  <div class="row-fluid wrap">
-			    <!--Sidebar content-->
-			    <aside id="side-menu" role="navigation" class="well span4 oc">
-					  <ul class="nav nav-list">
-					    <li class="navigation page">
-					      <a data-trans="fade" href="./navigation.html"><i class="icon-layout"></i><i class="icon-right-open"></i> Navigation</a>
-					    </li>
-					    <li class="list page">
-					      <a data-trans="flip" href="./list.html"><i class="icon-list"></i><i class="icon-right-open"></i> List</a>
-					    </li>
-					    <li class="elements page">
-					      <a data-trans="sl" href="./elements.html"><i class="icon-info-circled"></i><i class="icon-right-open"></i> Elements</a>
-					    </li>
-					    <li class="settings">
-					      <a href="javascript:void(0)"><i class="icon-cog"></i><i class="icon-right-open"></i> Settings</a>
-					    </li>
-					    <li class="help">
-					      <a href="javascript:void(0)"><i class="icon-help"></i><i class="icon-right-open"></i> Help</a>
-					    </li> 
-					    <li class="logout">
-					      <a href="javascript:void(0);" id="btn-logout"><i class="icon-ccw"></i>Logout</a>
-					    </li>  
-					  </ul>
-			    </aside>
-			    
-			    <!--Body content-->
-					<section class="well span12" id="body-container">
-					  <div class="navigation">
-					    <section id="contentLayout">
-					    
-					      <div class="list-view">
-                  <div class="row listing-view-container">
-							      <div class="listing-view">
-								      <ul data-id="2" class="list-group-items-view nav nav-list">
-								        <li class="list-group"><span>A</span></li>
-										    <li><a href="javascript:void(0)" onClick="Server.loadContent('contentLayout', 'test.php');"
-										      ><i data-icon="" class="icon arrow"></i> Load from server</a></li>
-										    <li><a href="javascript:void(0)" onClick="Barcode.scan();"
-										      ><i data-icon="" class="icon arrow"></i> Scan a barcode</a></li>
-										    <li><a href="javascript:void(0)" onClick="Location.getPosition();"
-										      ><i data-icon="" class="icon arrow"></i> Get my location</a></li>
-									    </ul>
-							      </div>
-						      </div>
-					      </div>
-					      
-			        </section>
-			      </div>
-			    </section>
-			  </div>
-			</div>
-			
-			<!-- Footer -->
-			<footer id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
-				<div class="row-fluid">
-				  <div class="span4 footer-slider"></div>
-				  <div class="span8 footer-inner">
-				    <div class="container">
-				      <div class="row-fluid">
-				        <ul>
-				          <li data-id="1"><a href="javascript:void(0)"><i class="icon-direction"></i> Direction</a></li>  
-				          <li data-id="2"><a href="javascript:void(0)"><i class="icon-comment"></i> Status</a></li>
-				          <li class="active" data-id="3"><a href="javascript:void(0)"><i class="icon-location"></i> Location</a></li>
-				          <li data-id="4"><a href="javascript:void(0)"><i class="icon-dot-3"></i> More</a></li>  
-				        </ul>
-				      </div>                
-				    </div>
-				  </div> 
-				</div>
-				<div class="row-fluid">
-				  <div></div>
-				</div>
-			</footer>
-    
+        <div id="contentLayout" class="app">
+            <h1>Quick Asset<br/>Capture <small>v0.1</small></h1>
+            <div id="deviceready" class="blink">
+                <p id="initEvent" class="event processing">Initializing</p>
+            </div>
+            <div>
+                <p id="appStatus">...</p>
+            </div>
+            <div>
+                <p onClick="Server.loadContent('contentLayout', 'test.php');">Load me</p>
+            </div>
+            <div>
+                <p onClick="Barcode.scan();">Scan a barcode!</p>
+            </div>
+            <div>
+                <p onClick="Location.getPosition();">Get my location!</p>
+            </div>
+        </div>
     </body>
     
 		<script type="text/javascript">
 			$(document).ready(function(){
-			  // phonegap device linking
 			  $(document).bind('deviceready', function() {
 			    alert('bind init');
 			    App.initialize();
 		    });
-			  
-			  // header
-			  $('#btn-header-nav').click(function(e) {
-			    e.preventDefault();
-			    $('body').toggleClass("side-active");
-			    $('#body-container').toggleClass('span12').toggleClass('span8');
-			    $('#header .navbar-inner').toggleClass('span12').toggleClass('span8');
-			  });
-			  
-			  // footer
-			  $('#footer li a').click(function(e) {
-			    var li;
-			    e.preventDefault();
-			    li = $(e.target).parents("li[data-id]");
-			    $('#footer li').removeClass('active');
-			    return li.addClass('active');
-			  });
-			  
-			  // navbar
-			  $('#nav-bar li a').click(function(e) {
-			    var id, li;
-			    e.preventDefault();
-			    id = $(e.target).data("id");
-			    li = $(e.target).parent();
-			    if (typeof id === 'undefined') {
-			      id = $(e.target).parent().data("id");
-			      li = li.parent();
-			    }
-			    $('#nav-bar li').removeClass('active');
-			    li.addClass('active');
-
-			    // section for navigation.html page
-			    $('.listing-view ul[data-id]').addClass('hide');
-			    $('.listing-view ul[data-id="'+id+'"]').removeClass('hide');
-			    // end section for navigation.html page
-
-			    // section for list.html page
-			    if (id != currentView) {
-			      $('#nav-bar').toggleClass('black');
-			    }
-			    // end section for list.html page
-
-			    // section for elements.html page
-			    if (id === 1 && currentView !== 1) {
-			      $('section.elements-section').addClass('hide');
-			      $('#bootstrap').removeClass('hide');
-			      $("#bootstrap .section").addClass('hide');
-			      $("#bootstrap .section." + section).removeClass('hide');
-			    } else if (id === 2 && currentView !== 2) {
-			      $('section.elements-section').addClass('hide');
-			      $('#icons').removeClass('hide');
-			    }
-
-			    currentView = id;
-			    // end section for elements.html page
-			  });
-
-			  // section for elements.html page
-			  var section = 'bootstrap', currentView = 0;
-			  $('#selection select').on('change', function(e) {
-			    e.preventDefault();
-			    $("#bootstrap .section").addClass('hide');
-			    section = $('#selection select').val();
-			    return $("#bootstrap .section." + section).removeClass('hide');
-			  });
-			  // end section for elements.html page
 			});
 		</script>
 </html>
