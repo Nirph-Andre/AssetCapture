@@ -145,18 +145,13 @@ var Data = {
       App.setState();
 
       // Add intial synch records
-      alert('moo?');
       Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
-        alert('moo.');
         Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
-          alert(JSON.stringify(data));
           return true;
         }, function(err) {
-          alert('no moo. ' + err.message);
           return true;
         });
       }, function (err) {
-        alert('no moo! ' + err.message);
         return true;
       });
     },
@@ -227,7 +222,6 @@ var Data = {
         fieldSet.values.push('"' + dTime + '"');
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
-      alert(stmnt);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {

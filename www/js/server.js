@@ -102,13 +102,10 @@ var Server = {
     addressFromCoordinates: function(lat, long, callback, errorCallback) {
       var url = 'http://where.yahooapis.com/geocode?location='
               + lat + ',' + long + '&gflags=R&flags=J';
-      alert('calling: ' + url);
       Server.get(
           url, {}, function(jsonp) {
-            alert(JSON.stringify(jsonp));
             if (jsonp) {
               if (jsonp.ResultSet.Found == 0) {
-                alert('No address found for coordinates on geocode api.');
                 if (typeof callback != 'undefined') {
                   callback({
                     'city': false,
@@ -121,7 +118,6 @@ var Server = {
                 }
               } else {
                 var addr = jsonp.ResultSet.Results.shift();
-                alert(addr.street + ' : ' + addr.neighborhood + ' : ' + addr.city);
                 if (typeof callback != 'undefined') {
                   callback({
                     'city': addr.city,
@@ -139,7 +135,6 @@ var Server = {
               errorCallback(textStatus);
             } else {
               Notify.alert('Oops', 'Could not load address data from geocode api.');
-              alert(JSON.stringify(textStatus));
             }
           }
       );
