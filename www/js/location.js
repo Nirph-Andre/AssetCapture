@@ -11,7 +11,7 @@ var Location = {
                 "Acc: " + result.coords.accuracy);
           alert(JSON.stringify(result));
           Server.addressFromCoordinates(result.coords.latitude, result.coords.longitude, function(data) {
-            alert('YAY!');
+            alert(JSON.stringify(data));
           });
         }, function(error) {
           alert("Scanning failed: " + error);
