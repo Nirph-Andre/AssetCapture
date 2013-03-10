@@ -107,7 +107,7 @@ var Server = {
           url, {}, function(jsonp) {
             alert(JSON.stringify(jsonp));
             if (jsonp) {
-              if (jsonp.Found == 0) {
+              if (jsonp.ResultSet.Found == 0) {
                 alert('No address found for coordinates on geocode api.');
                 if (typeof callback != 'undefined') {
                   callback({
@@ -120,7 +120,7 @@ var Server = {
                   });
                 }
               } else {
-                var addr = jsonp.Results.shift();
+                var addr = jsonp.ResultSet.Results.shift();
                 alert(addr.street + ' : ' + addr.neighborhood + ' : ' + addr.city);
                 if (typeof callback != 'undefined') {
                   callback({
