@@ -4,11 +4,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
         <title>Asset Capture</title>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/notify.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
@@ -20,24 +22,36 @@
         <script type="text/javascript" src="js/app.js"></script>
     </head>
     <body>
-        <div id="contentLayout" class="app">
-            <h1>Quick Asset<br/>Capture <small>v0.1</small></h1>
-            <div id="deviceready" class="blink">
-                <p id="initEvent" class="event processing">Initializing</p>
-            </div>
-            <div>
-                <p id="appStatus">...</p>
-            </div>
-            <div>
-                <p onClick="Server.loadContent('contentLayout', 'test.php');">Load me</p>
-            </div>
-            <div>
-                <p onClick="Barcode.scan();">Scan a barcode!</p>
-            </div>
-            <div>
-                <p onClick="Location.getPosition();">Get my location!</p>
-            </div>
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <ul class="nav">
+              <li class="active"><a href="">Home</a></li>
+            </ul>
         </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row-fluid">
+	        <div id="contentLayout" class="span12">
+	            <center><h3>Quick Asset Capture <small>0.1</small></h3></center>
+	            <div id="deviceready">
+	                <p id="initEvent" class="event processing">Initializing</p>
+	            </div>
+	            <div>
+	                <p id="appStatus">...</p>
+	            </div>
+	            <div>
+	                <p onClick="Server.loadContent('contentLayout', 'test.php');">Load me</p>
+	            </div>
+	            <div>
+	                <p onClick="Barcode.scan();">Scan a barcode!</p>
+	            </div>
+	            <div>
+	                <p onClick="Location.getPosition();">Get my location!</p>
+	            </div>
+	        </div>
+	      </div>
+      </div>
+      
     </body>
     
 		<script type="text/javascript">
