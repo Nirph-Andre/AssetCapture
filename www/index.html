@@ -24,34 +24,30 @@
     <body>
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
-            <ul class="nav">
-              <li class="active"><a href="">Home</a></li>
-            </ul>
+          <p class="app-title pull-left">Asset Capture v0.1</p>
+          <p id="initEvent" class="event processing pull-right">Initializing</p>
         </div>
       </div>
       <div class="container-fluid">
         <div class="row-fluid">
 	        <div id="contentLayout" class="span12">
-	            <center><h3>Quick Asset Capture <small>0.1</small></h3></center>
-	            <div id="deviceready">
-	                <p id="initEvent" class="event processing">Initializing</p>
+              <div>
+                  <button class="btn btn-mobile span12" onClick="Server.loadContent('contentLayout', 'test.php');">Load me</button>
+              </div>
+	            <div>
+                  <button class="btn btn-mobile span12" onClick="Barcode.scan();">Scan a barcode!</button>
 	            </div>
 	            <div>
-	                <p id="appStatus">...</p>
-	            </div>
-	            <div>
-	                <p onClick="Server.loadContent('contentLayout', 'test.php');">Load me</p>
-	            </div>
-	            <div>
-	                <p onClick="Barcode.scan();">Scan a barcode!</p>
-	            </div>
-	            <div>
-	                <p onClick="Location.getPosition();">Get my location!</p>
+                  <button class="btn btn-mobile span12" onClick="Location.getPosition();">Get my location!</button>
 	            </div>
 	        </div>
 	      </div>
       </div>
-      
+      <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="navbar-inner">
+          Moo
+        </div>
+      </div>
     </body>
     
 		<script type="text/javascript">
