@@ -155,7 +155,7 @@ var Data = {
           });
           Data.save(Table.Synch, null, {'table': 'moveable', 'mode': 1});
           Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': 1, 'filter': 'location'});
-          Data.save(Table.Synch, null, {'name': 'location', 'value': 'Unknown'});
+          Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
           Data.list(Table.Config, {}, function(data) {
@@ -238,14 +238,14 @@ var Data = {
         }
         if (!data['synchdate']) {
           fieldSet.fields.push('`changed`');
-          fieldSet.values.push('"' + data['synchdate'] + '"');
+          fieldSet.values.push('"' + dTime + '"');
           fieldSet.fields.push('`created`');
-          fieldSet.values.push('"' + data['synchdate'] + '"');
+          fieldSet.values.push('"' + dTime + '"');
         } else {
           fieldSet.fields.push('`changed`');
-          fieldSet.values.push('"' + dTime + '"');
+          fieldSet.values.push('"' + data['synchdate'] + '"');
           fieldSet.fields.push('`created`');
-          fieldSet.values.push('"' + dTime + '"');
+          fieldSet.values.push('"' + data['synchdate'] + '"');
         }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }

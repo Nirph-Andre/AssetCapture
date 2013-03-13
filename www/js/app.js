@@ -63,15 +63,19 @@ var App = {
     },
     connectionRequired: function() {
       Notify.notifyStatic('Connection required for application to proceed.');
+      return true;
     },
     dbFail: function() {
       Notify.notifyStatic('Fatal database error, application cannot proceed.');
+      return true;
     },
     configFail: function() {
       Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
+      return true;
     },
     synchFail: function() {
       Notify.notifyStatic('Could synchronize data to server, application cannot proceed.');
+      return true;
     },
     
     
