@@ -8,31 +8,42 @@ var Server = {
     
     
     // Synchronize all relevant data to and from server
-    refreshAppMeta: function() {
+    refreshAppMeta: function(callback, errorCallback) {
       if (Server.synching) {
         return;
       }
+      if (!App.online) {
+        App.connectionRequired();
+        return;
+      }
       Server.synching = true;
-      Data.list(Table.Synch, null, loadSynchData);
+      App.setState('Loading', 'Synchronizing application data.');
+      Data.list(Table.Synch, null, function(data) {
+        Server.loadSynchData(data, callback, errorCallback);
+      });
     },
     
     
     // Load synch data from server
-    loadSynchData: function(synchEntries) {
+    loadSynchData: function(synchEntries, callback, errorCallback) {
       Server.synchItems = synchEntries.length;
       var item = {};
       var data = {};
       var objName = '';
+      var filter = {};
       for (var i = 0; i < Server.synchItems; i++) {
         item = synchEntries.item(i);
-        objName = Data.tableMap[synchEntries.table];
+        objName = Data.tableMap[item.table];
+        filter = {};
+        if (item.filter && item.filter.length) {
+          filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
+        }
         Data.listSynchData(Table[objName], function(synchData) {
           Server.post('synch', {
-            'table': synchEntries.table,
+            'table': item.table,
+            'filter': filter,
             'data': synchData
           }, function(jsonp) {
-            Server.synchedItems++;
-            
             // Update local entries with relevant server id's
             for (var ind in jsonp.Data.Feedback) {
               data = jsonp.Data.Feedback[ind];
@@ -64,18 +75,27 @@ var Server = {
             }
             
             // Cleanup
+            Server.synchedItems++;
             if (Server.synchedItems >= Server.synchItems) {
               Server.synchItems = 0;
               Server.synchItsynchedItemsems = 0;
               Server.synching = false;
+              App.setState();
+              if (typeof callback != 'undefined') {
+                callback();
+              }
             }
           }, function(err) {
             Server.synchedItems++;
-            Notify.alert('Oops', 'Could nto collect required data for synchronizing to server.');
+            Notify.alert('Oops', 'Could not collect required data for synchronizing to server.');
+            App.setState('Error', 'Could not collect required data for synchronizing to server.');
             if (Server.synchedItems >= Server.synchItems) {
               Server.synchItems = 0;
               Server.synchItsynchedItemsems = 0;
               Server.synching = false;
+              if (typeof errorCallback != 'undefined') {
+                errorCallback(err);
+              }
             }
           });
         });

@@ -103,7 +103,7 @@ var Data = {
     
     // Initialize db handling
     initialize: function() {
-      App.setState('DbInit', 'Local database initializing.');
+      App.setState('Init Database', 'Local database initializing.');
       Data.openDatabase();
     },
     
@@ -112,15 +112,16 @@ var Data = {
     openDatabase: function() {
       Data.db = window.openDatabase(Config.dbName, Config.dbVersion, Config.dbDisplayName, Config.dbSize);
       if (true) {
-        Data.db.transaction(Data.resetDb, Data.transactError, Data.transactSuccess);
+        Data.db.transaction(Data.initDb, Data.transactError, Data.initData);
       } else {
-        App.setState();
+        App.dbFail();
+        App.setState('Error', 'Could not open local database');
       }
     },
 
     
-    // ReCreate tables
-    resetDb: function(tx) {
+    // Create tables
+    initDb: function(tx) {
       // Create tables
       var table = '';
       var dType = '';
@@ -140,29 +141,45 @@ var Data = {
     },
     
     
-    // Success and error handling
-    transactSuccess: function() {
+    // Initial data setup
+    initData: function() {
       App.setState();
-
-      // Add intial synch records
-      Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
-        Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
-          return true;
-        }, function(err) {
-          return true;
-        });
-      }, function (err) {
+      Data.list(Table.Config, {}, Config.setData);
+      Data.view(Table.Content, null, {'type': 'page', 'name': 'index'}, function(data) {
+        if (!data.length) {
+          // First application run on new device
+          // Add content table to synch list and init server synch
+          App.newDevice();
+          Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
+            Server.refreshAppMeta(App.dbReady, App.synchFail);
+          });
+          Data.save(Table.Synch, null, {'table': 'moveable', 'mode': 1});
+          Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': 1, 'filter': 'location'});
+          Data.save(Table.Synch, null, {'name': 'location', 'value': 'Unknown'});
+          Config.setDataItem('location', 'Unknown');
+        } else {
+          Data.list(Table.Config, {}, function(data) {
+            Config.setData(data);
+            App.dbReady();
+          }, function() {
+            App.configFail();
+          });
+        }
+      }, function(err) {
         return true;
       });
     },
+
+    
+    // Success and error handling
     transactError: function(err) {
       Notify.alert('Oops', 'Data.transactError: ' + err.message);
-      App.setState('DbError', 'Local database error');
+      App.setState('Error', 'Local database error');
       return true;
     },
     queryError: function(tx, err) {
       Notify.alert('Oops', 'Data.queryError: ' + err.message);
-      App.setState('DbError', 'Local database error');
+      App.setState('Error', 'Local database error');
       return true;
     },
     devNull: function() { },
@@ -194,7 +211,9 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
-        fieldSet.push('`changed` = "' + dTime + '"');
+        if (!data['synchdate']) {
+          fieldSet.push('`changed` = "' + dTime + '"');
+        }
         var filter = [];
         if ('object' == typeof(id)) {
           var field = '';
@@ -216,10 +235,17 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
-        fieldSet.fields.push('`changed`');
-        fieldSet.values.push('"' + dTime + '"');
-        fieldSet.fields.push('`created`');
-        fieldSet.values.push('"' + dTime + '"');
+        if (!data['synchdate']) {
+          fieldSet.fields.push('`changed`');
+          fieldSet.values.push('"' + data['synchdate'] + '"');
+          fieldSet.fields.push('`created`');
+          fieldSet.values.push('"' + data['synchdate'] + '"');
+        } else {
+          fieldSet.fields.push('`changed`');
+          fieldSet.values.push('"' + dTime + '"');
+          fieldSet.fields.push('`created`');
+          fieldSet.values.push('"' + dTime + '"');
+        }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
       

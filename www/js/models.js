@@ -1,4 +1,9 @@
 
+Table.Config = new Data.model('Config', 'x_config', {
+  'name': EM.attr('string', {required: true, maxLength: 250}),
+  'value': EM.attr('string', {required: true, maxLength: 250})
+});
+
 Table.Content = new Data.model('Content', 'x_content', {
   'type': EM.attr('string', {required: true, maxLength: 25}),
   'name': EM.attr('string', {required: true, maxLength: 250}),
@@ -10,15 +15,29 @@ Table.Content = new Data.model('Content', 'x_content', {
 Table.Synch = new Data.model('Synch', 'x_synch', {
   'table': EM.attr('string', {required: true, maxLength: 100}),
   'mode': EM.attr('tinyint', {required: true}),
+  'filter': EM.attr('string', {maxLength: 100}),
   'local_time': EM.attr('datetime', {}),
   'server_time': EM.attr('datetime', {})
 });
 
-Table.Asset = new Data.model('Asset', 'asset', {
+Table.Moveable = new Data.model('Moveable', 'moveable', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
+  'location': EM.attr('string', {required: true, maxLength: 100}),
+  'identifier': EM.attr('string', {required: true, maxLength: 100}),
   'type': EM.attr('string', {required: true, maxLength: 100}),
-  'name': EM.attr('string', {required: true, maxLength: 100})
+  'sub_type': EM.attr('string', {required: true, maxLength: 100}),
+  'description': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.Infrastructure = new Data.model('Infrastructure', 'infrastructure', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'location': EM.attr('string', {required: true, maxLength: 100}),
+  'identifier': EM.attr('string', {required: true, maxLength: 100}),
+  'type': EM.attr('string', {required: true, maxLength: 100}),
+  'sub_type': EM.attr('string', {required: true, maxLength: 100}),
+  'description': EM.attr('string', {required: true, maxLength: 100})
 });
 
 Table.Profile = new Data.model('Profile', 'profile', {
@@ -29,13 +48,8 @@ Table.Profile = new Data.model('Profile', 'profile', {
   'app_access_times': EM.hasMany('AppAccessTime', {})
 });
 
-Table.Contact = new Data.model('Contact', 'contact', {
-  'name': EM.attr('string', {required: true, maxLength: 100}),
-  'surname': EM.attr('string', {required: true, maxLength: 100}),
-  'mobile': EM.attr('int', {required: true, maxLength: 16})
-});
 
-Entity.Profile = new Data.entity({
+/*Entity.Profile = new Data.entity({
   'root': 'Profile',
   'parent': 'Dealer',
   'relations': ['Title', {
@@ -44,4 +58,4 @@ Entity.Profile = new Data.entity({
     'children': ['AppAccessTime']
   }],
   'children': ['Permissions']
-});
+});*/

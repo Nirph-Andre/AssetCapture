@@ -10,6 +10,7 @@ var App = {
     
     // Application Constructor
     initialize: function() {
+      App.bindEvents();
       Util.setEventInfo('initEvent', 'Ready', 'ready');
       this.setState();
       Data.initialize();
@@ -21,8 +22,10 @@ var App = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
+      App.online = (navigator.connection.type == Connection.NONE) ? false : true;
       $(document).bind('offline', App.nowOffline);
-      $(document).bind('onfline', App.nowOnline);
+      $(document).bind('online', App.nowOnline);
+      Notify.alert(App.online ? 'Online' : 'Offline');
     },
     
     
@@ -36,10 +39,38 @@ var App = {
     
     
     // Application status
-    setState: function(state, description) {
+    setState: function(state, description, evtClass) {
       App.state = state ? state : 'Ready';
       App.stateDescription = description ? description : 'Ready';
+      var evtClass = 'processing';
+      switch (App.state) {
+        case 'Ready': evtClass = 'ready'; break;
+        case 'Error': evtClass = 'problem'; break;
+      }
       $('#appStatus').html(App.state);
+      Util.setEventInfo('appStatus', state, evtClass);
+    },
+    
+    
+    // Callbacks
+    newDevice: function() {
+      Notify.alert('First Load', '');
+    },
+    dbReady: function() {
+      Notify.hideStatic();
+      $('#lblCurrentLocation').html(Config.data.location);
+    },
+    connectionRequired: function() {
+      Notify.notifyStatic('Connection required for application to proceed.');
+    },
+    dbFail: function() {
+      Notify.notifyStatic('Fatal database error, application cannot proceed.');
+    },
+    configFail: function() {
+      Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
+    },
+    synchFail: function() {
+      Notify.notifyStatic('Could synchronize data to server, application cannot proceed.');
     },
     
     
