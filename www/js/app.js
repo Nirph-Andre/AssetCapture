@@ -10,6 +10,7 @@ var App = {
     
     // Application Constructor
     initialize: function() {
+      Notify.notifyStatic();
       App.bindEvents();
       Util.setEventInfo('initEvent', 'Ready', 'ready');
       this.setState();
@@ -25,7 +26,7 @@ var App = {
       App.online = (navigator.connection.type == Connection.NONE) ? false : true;
       $(document).bind('offline', App.nowOffline);
       $(document).bind('online', App.nowOnline);
-      Notify.alert(App.online ? 'Online' : 'Offline');
+      Notify.alert('Connected', App.online ? 'Online' : 'Offline');
     },
     
     

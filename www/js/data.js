@@ -163,6 +163,7 @@ var Data = {
             App.dbReady();
           }, function() {
             App.configFail();
+            return true;
           });
         }
       }, function(err) {
@@ -271,6 +272,7 @@ var Data = {
         } else {
           Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
+        return true;
       });
     },
     
@@ -322,6 +324,7 @@ var Data = {
         } else {
           Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
+        return true;
       });
     },
     
@@ -361,6 +364,7 @@ var Data = {
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
         }
+        return true;
       });
     },
     
@@ -435,6 +439,7 @@ var Data = {
       }, function(err) {
         // Oops, something went wrong
         Notify.alert('Oops', 'getLastChangeTime.queryError: ' + err.message);
+        return true;
       });
     },
     
