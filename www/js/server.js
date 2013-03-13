@@ -176,14 +176,18 @@ var Server = {
     
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
+      alert();
       $.ajax({
         type: 'POST',
         dataType: 'json',
         url: Config.serviveNode + action,
         data: data,
-        success: callback,
-        error: errorCallback
-      });
+        success: function() {alert('success: ' + Config.serviveNode + action);},
+        error: function() {alert('error: ' + Config.serviveNode + action);}
+      })
+      .done(function(data, textStatus, jqXHR) {alert('done: ' + Config.serviveNode + action);})
+      .fail(function(jqXHR, textStatus, errorThrown) {alert('fail: ' + Config.serviveNode + action);})
+      .always(function() {alert('always: ' + Config.serviveNode + action);});
     },
     
     // Ajax post helper
