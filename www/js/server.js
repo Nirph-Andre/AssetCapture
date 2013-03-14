@@ -18,9 +18,7 @@ var Server = {
       }
       Server.synching = true;
       App.setState('Loading', 'Synchronizing application data.');
-      alert('1');
       Data.list(Table.Synch, {}, function(data) {
-        alert('list retrieved');
         Server.loadSynchData(data, callback, errorCallback);
       });
     },
@@ -28,7 +26,6 @@ var Server = {
     
     // Load synch data from server
     loadSynchData: function(synchEntries, callback, errorCallback) {
-      alert('load synch');
       Server.synchItems = synchEntries.length;
       var item = {};
       var data = {};
@@ -36,13 +33,11 @@ var Server = {
       var filter = {};
       for (var i = 0; i < Server.synchItems; i++) {
         item = synchEntries.item(i);
-        alert(JSON.stringify(item));
         objName = Data.tableMap[item.table];
         filter = {};
         if (item.filter && item.filter.length) {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
-        alert('2');
         Data.listSynchData(Table[objName], function(synchData) {
           alert('list synch');
           Server.post('synch', {

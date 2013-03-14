@@ -99,6 +99,10 @@ var Data = {
     db: null,
     // Map tables to object names
     tableMap: {},
+    // Some constants
+    SYNCH_FROM_SERVER: 1,
+    SYNCH_TO_SERVER: 2,
+    SYNCH_BOTH: 3,
     
     
     // Initialize db handling
@@ -144,17 +148,14 @@ var Data = {
     // Initial data setup
     initData: function() {
       App.setState();
-      Data.list(Table.Config, {}, Config.setData);
-      Data.view(Table.Content, null, {'type': 'page', 'name': 'index'}, function(data) {
+      Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
         if (!data.length) {
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
-          Data.save(Table.Synch, null, {'table': 'x_content', 'mode': 0}, function() {
-            Server.refreshAppMeta(App.dbReady, App.synchFail);
-          });
-          Data.save(Table.Synch, null, {'table': 'moveable', 'mode': 1});
-          Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': 1, 'filter': 'location'});
+          Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'moveable', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH, 'filter': 'location'});
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
@@ -166,6 +167,11 @@ var Data = {
             return true;
           });
         }
+        Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
+          Server.refreshAppMeta(App.dbReady, App.synchFail);
+        }, function(err) {
+          return true;
+        });
       }, function(err) {
         return true;
       });
@@ -332,33 +338,26 @@ var Data = {
     // Retrieve list of entries
     list: function(table, where, callback, errorCallback) {
       // Prepare statement
-      alert(21);
       var stmnt = 'SELECT * FROM `' + table.name + '`';
       var filter = [];
-      alert(22);
       if (where) {
         for (field in where) {
           filter.push('`' + field + '` = "' + where[field] + '"');
         }
       }
-      alert(23);
       if (filter.length) {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
-      alert(24);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
-        alert(25);
         // Do we have data?
         if (result.rows.length) {
-          alert(26);
           if (typeof callback != 'undefined') {
             callback(result.rows);
             table.trigger('listed', result.rows);
           }
         } else {
-          alert(27);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
@@ -366,7 +365,6 @@ var Data = {
           }
         }
       }, function(err) {
-        alert(28);
         // Oops, something went wrong
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
@@ -381,20 +379,25 @@ var Data = {
     // Retrieve list of entries
     listSynchData: function(table, callback, errorCallback) {
       // Prepare
+      alert(31);
       var synchData = {
           'create': {},
           'update': {},
           'remove': {}
       };
-      if (table.mode == 0) {
+      alert(32);
+      if (table.mode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
         callback(synchData);
       }
+      alert(33);
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       var stmnt = '';
       
       // Collect data
+      alert(34);
       Data.db.transaction(function(tx) {
+        alert(35);
         // Collect newly created entries
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NULL';
@@ -403,6 +406,7 @@ var Data = {
             synchData.create = result.rows;
           }
         });
+        alert(36);
         // Collect updated entries
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
@@ -414,6 +418,7 @@ var Data = {
             synchData.update = result.rows;
           }
         });
+        alert(37);
         // Collect archived entries
         if (table.fields.archived) {
           stmnt = 'SELECT * FROM `' + table.name + '`';
@@ -423,8 +428,10 @@ var Data = {
               synchData.remove = result.rows;
             }
           });
+          alert(38);
         }
       }, errorCallback, function() {
+        alert(39);
         callback(synchData);
       });
     },
