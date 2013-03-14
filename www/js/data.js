@@ -332,26 +332,33 @@ var Data = {
     // Retrieve list of entries
     list: function(table, where, callback, errorCallback) {
       // Prepare statement
+      alert(21);
       var stmnt = 'SELECT * FROM `' + table.name + '`';
       var filter = [];
+      alert(22);
       if (where) {
         for (field in where) {
           filter.push('`' + field + '` = "' + where[field] + '"');
         }
       }
+      alert(23);
       if (filter.length) {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
+      alert(24);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
+        alert(25);
         // Do we have data?
         if (result.rows.length) {
+          alert(26);
           if (typeof callback != 'undefined') {
             callback(result.rows);
             table.trigger('listed', result.rows);
           }
         } else {
+          alert(27);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
@@ -359,10 +366,12 @@ var Data = {
           }
         }
       }, function(err) {
+        alert(28);
         // Oops, something went wrong
-        Notify.alert('Oops', 'Data.queryError: ' + err.message);
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
+        } else {
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
         return true;
       });

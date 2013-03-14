@@ -176,7 +176,7 @@ var Server = {
     
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
-      alert();
+      alert('post call to ' + Config.serviveNode + action);
       $.ajax({
         type: 'POST',
         dataType: 'json',
