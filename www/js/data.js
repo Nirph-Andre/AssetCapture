@@ -428,8 +428,8 @@ var Data = {
               synchData.remove = result.rows;
             }
           });
-          alert(38);
         }
+        alert(38);
       }, errorCallback, function() {
         alert(39);
         callback(synchData);
