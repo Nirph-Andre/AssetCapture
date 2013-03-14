@@ -379,59 +379,56 @@ var Data = {
     // Retrieve list of entries
     listSynchData: function(table, callback, errorCallback) {
       // Prepare
-      alert(31);
       var synchData = {
           'create': {},
           'update': {},
           'remove': {}
       };
-      alert(32);
       if (table.mode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
         callback(synchData);
       }
-      alert(33);
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       var stmnt = '';
       
       // Collect data
-      alert(34);
       Data.db.transaction(function(tx) {
-        alert(35);
         // Collect newly created entries
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NULL';
-        tx.executeSql(stmnt, function(tx, result) {
+        tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
             synchData.create = result.rows;
           }
         });
-        alert(36);
         // Collect updated entries
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
         if (table.fields.archived) {
           stmnt += ' AND `archived` = 0';
         }
-        tx.executeSql(stmnt, function(tx, result) {
+        tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
             synchData.update = result.rows;
           }
         });
-        alert(37);
         // Collect archived entries
         if (table.fields.archived) {
           stmnt = 'SELECT * FROM `' + table.name + '`';
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
-          tx.executeSql(stmnt, function(tx, result) {
+          tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
               synchData.remove = result.rows;
             }
           });
         }
-        alert(38);
-      }, errorCallback, function() {
-        alert(39);
+      }, function(err) {
+        alert('listSynchData.success');
+        Notify.alert('Oops', 'Data.transactError: ' + err.message);
+        App.setState('Error', 'Could not load local synch data.');
+        return true;
+      }, function() {
+        alert('listSynchData.error');
         callback(synchData);
       });
     },
