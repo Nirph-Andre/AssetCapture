@@ -149,13 +149,14 @@ var Data = {
     initData: function() {
       App.setState();
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
+        alert(JSON.stringify(data));
         if (!data.length) {
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
           Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'moveable', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH, 'filter': 'location'});
+          //Data.save(Table.Synch, null, {'table': 'moveable', 'mode': Data.SYNCH_BOTH});
+          //Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH, 'filter': 'location'});
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
@@ -269,8 +270,8 @@ var Data = {
         dataSet['id'] = id;
         if (typeof callback != 'undefined') {
           callback(dataSet);
-          table.trigger(mode, dataSet);
         }
+        table.trigger(mode, dataSet);
       }, function(err) {
         // Oops, something went wrong
         if (typeof errorCallback != 'undefined') {
@@ -306,22 +307,25 @@ var Data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       stmnt += ' LIMIT 1';
+      alert(stmnt);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
+        alert('view result');
+        alert(JSON.stringify(result));
         if (result != null && result.rows != null && result.rows.length) {
           var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item);
-            table.trigger('loaded', item);
           }
+          table.trigger('loaded', item);
         } else {
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
-            table.trigger('loaded', {});
           }
+          table.trigger('loaded', {});
         }
       }, function(err) {
         // Oops, something went wrong
@@ -355,14 +359,14 @@ var Data = {
         if (result.rows.length) {
           if (typeof callback != 'undefined') {
             callback(result.rows);
-            table.trigger('listed', result.rows);
           }
+          table.trigger('listed', result.rows);
         } else {
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
-            table.trigger('listed', {});
           }
+          table.trigger('listed', {});
         }
       }, function(err) {
         // Oops, something went wrong
@@ -423,12 +427,9 @@ var Data = {
           });
         }
       }, function(err) {
-        alert('listSynchData.success');
-        Notify.alert('Oops', 'Data.transactError: ' + err.message);
-        App.setState('Error', 'Could not load local synch data.');
+        App.dbFail(err.message);
         return true;
       }, function() {
-        alert('listSynchData.error');
         callback(synchData);
       });
     },

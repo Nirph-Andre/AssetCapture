@@ -88,6 +88,7 @@ var Server = {
               Server.synchItsynchedItemsems = 0;
               Server.synching = false;
               App.setState();
+              App.synchComplete();
               if (typeof callback != 'undefined') {
                 callback();
               }
@@ -101,6 +102,7 @@ var Server = {
               Server.synchItems = 0;
               Server.synchItsynchedItemsems = 0;
               Server.synching = false;
+              App.synchFail();
               if (typeof errorCallback != 'undefined') {
                 errorCallback(err);
               }

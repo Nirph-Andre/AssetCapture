@@ -55,26 +55,35 @@ var App = {
     
     // Callbacks
     newDevice: function() {
-      Notify.alert('First Load', '');
+      //Notify.alert('First Load', '');
     },
     dbReady: function() {
       Notify.hideStatic();
       $('#lblCurrentLocation').html(Config.data.location);
     },
+    synchComplete: function() {
+      Notify.hideStatic();
+    },
     connectionRequired: function() {
       Notify.notifyStatic('Connection required for application to proceed.');
       return true;
     },
-    dbFail: function() {
+    dbFail: function(message) {
       Notify.notifyStatic('Fatal database error, application cannot proceed.');
+      if (message) {
+        Notify.alert('Database Error', message);
+      }
       return true;
     },
     configFail: function() {
       Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
       return true;
     },
-    synchFail: function() {
-      Notify.notifyStatic('Could synchronize data to server, application cannot proceed.');
+    synchFail: function(message) {
+      Notify.notifyStatic('Could not synchronize data to server, application cannot proceed.');
+      if (message) {
+        Notify.alert('Synchronization Error', message);
+      }
       return true;
     },
     
