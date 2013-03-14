@@ -149,6 +149,7 @@ var Data = {
     initData: function() {
       App.setState();
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
+        alert('initData: view result');
         alert(JSON.stringify(data));
         if (!data.length) {
           // First application run on new device
@@ -313,8 +314,8 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         alert('view result');
-        alert(JSON.stringify(result));
-        if (result != null && result.rows != null && result.rows.length) {
+        alert(result.rows.length);
+        if (result && result.rows && result.rows.length) {
           var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item);
@@ -329,10 +330,11 @@ var Data = {
         }
       }, function(err) {
         // Oops, something went wrong
+        Notify.alert('Oops', 'Data.queryError: ' + err.message);
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
         } else {
-          Notify.alert('Oops', 'Data.queryError: ' + err.message);
+          //Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
         return true;
       });
