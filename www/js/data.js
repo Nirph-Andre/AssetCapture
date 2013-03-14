@@ -151,7 +151,7 @@ var Data = {
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
         alert('initData: view result');
         alert(JSON.stringify(data));
-        if (!data.length) {
+        if (!data.id) {
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();

@@ -90,22 +90,37 @@ var App = {
     
     // Content loading
     loadLayout: function(name) {
-      $('#contentLayout').html(Data.view(Table.Content, {
+      Data.view(Table.Content, null, {
         'type': 'layout',
         'name': name
-        }));
+      }, function(data) {
+        $('#contentLayout').html(data.html);
+        if (data.js && data.js.length) {
+          eval(data.js);
+        }
+      });
     },
     loadPage: function(name) {
-      $('#contentPage').html(Data.view(Table.Content, {
+      Data.view(Table.Content, null, {
         'type': 'page',
         'name': name
-        }));
+      }, function(data) {
+        $('#contentPage').html(data.html);
+        if (data.js && data.js.length) {
+          eval(data.js);
+        }
+      });
     },
     loadContent: function(container, name) {
-      $('#' + container).html(Data.view(Table.Content, {
+      Data.view(Table.Content, null, {
         'type': 'content',
         'name': name
-        }));
+      }, function(data) {
+        $('#' + container).html(data.html);
+        if (data.js && data.js.length) {
+          eval(data.js);
+        }
+      });
     }
     
 };
