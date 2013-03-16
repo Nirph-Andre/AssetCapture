@@ -97,14 +97,24 @@ var Data = {
     
     // Database object
     db: null,
+    
     // Map tables to object names
     tableMap: {},
+    
+    // Synchronization status
+    synching: false,
+    synchItems: 0,
+    synchedItems: 0,
+    
     // Some constants
     SYNCH_FROM_SERVER: 1,
     SYNCH_TO_SERVER: 2,
     SYNCH_BOTH: 3,
     
     
+    
+
+    // ****************************** INITIALIZATION ********************************* //
     // Initialize db handling
     initialize: function() {
       App.setState('Init Database', 'Local database initializing.');
@@ -149,10 +159,7 @@ var Data = {
     initData: function() {
       App.setState();
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
-        alert('initData: view result');
-        alert(JSON.stringify(data));
         if (!data.id) {
-          alert('add default synch and config entries');
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
@@ -162,7 +169,6 @@ var Data = {
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
-          alert('already have default synch and config entries');
           Data.list(Table.Config, {}, function(data) {
             Config.setData(data);
             App.dbReady();
@@ -172,7 +178,7 @@ var Data = {
           });
         }
         Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
-          Server.refreshAppMeta(App.dbReady, App.synchFail);
+          Data.refreshAppMeta(App.dbReady, App.synchFail);
         }, function(err) {
           return true;
         });
@@ -182,6 +188,9 @@ var Data = {
     },
 
     
+    
+
+    // ****************************** ERROR HANDLING ********************************* //
     // Success and error handling
     transactError: function(err) {
       Notify.alert('Oops', 'Data.transactError: ' + err.message);
@@ -196,6 +205,9 @@ var Data = {
     devNull: function() { },
     
     
+    
+
+    // ****************************** DATA MANIPULATION ********************************* //
     // Generic query execution
     query: function(statement, callback, errorCallback) {
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
@@ -315,14 +327,12 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result && result.rows && result.rows.length) {
-          alert('found data entry for ' + table.name);
           var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item);
           }
           table.trigger('loaded', item);
         } else {
-          alert('did NOT find data entry for ' + table.name);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
@@ -331,11 +341,10 @@ var Data = {
         }
       }, function(err) {
         // Oops, something went wrong
-        Notify.alert('Oops', 'Data.queryError: ' + err.message);
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
         } else {
-          //Notify.alert('Oops', 'Data.queryError: ' + err.message);
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
         }
         return true;
       });
@@ -461,6 +470,9 @@ var Data = {
     },
     
     
+    
+    
+    // ****************************** MODELS ********************************* //
     // Table model
     model: function (objName, tableName, meta) {
       Data.tableMap[tableName] = objName;
@@ -489,6 +501,113 @@ var Data = {
       this.listen = function(event, callback) {
         
       };
+    },
+    
+    
+    
+
+    // ****************************** SYNCHRONIZATION ********************************* //
+    // Synchronize all relevant data to and from server
+    refreshAppMeta: function(callback, errorCallback) {
+      if (Data.synching) {
+        return;
+      }
+      if (!App.online) {
+        App.connectionRequired();
+        return;
+      }
+      Data.synching = true;
+      App.setState('Loading', 'Synchronizing application data.');
+      Data.list(Table.Synch, {}, function(data) {
+        Data.loadSynchData(data, callback, errorCallback);
+      });
+    },
+    
+    
+    // Load synch data from server
+    loadSynchData: function(synchEntries, callback, errorCallback) {
+      Data.synchItems = synchEntries.length;
+      var item = {};
+      var data = {};
+      var objName = '';
+      var filter = {};
+      for (var i = 0; i < Data.synchItems; i++) {
+        item = synchEntries.item(i);
+        objName = Data.tableMap[item.table];
+        filter = {};
+        if (item.filter && item.filter.length) {
+          filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
+        }
+        Data.listSynchData(Table[objName], function(synchData) {
+          Server.post('synch', {
+            'table': item.table,
+            'filter': filter,
+            'data': synchData
+          }, function(jsonResult) {
+            alert('3');
+            // Update local entries with relevant server id's
+            for (var ind in jsonResult.Data.Feedback) {
+              data = jsonResult.Data.Feedback[ind];
+              Data.save(Table[objName], data['id'], {
+                'sid': data['sid'],
+                'synchdate': jsonResult.Result['synch_datetime']
+              });
+            }
+
+            alert('4');
+            // Create new entries as provided by server
+            for (var ind in jsonResult.Data.Create) {
+              data = jsonResult.Data.Create[ind];
+              data['synchdate'] = jsonResult.Result['synch_datetime'];
+              Data.save(Table[objName], null, data);
+            }
+
+            alert('5');
+            // Update existing entries
+            for (var ind in jsonResult.Data.Update) {
+              data = jsonResult.Data.Update[ind];
+              data['synchdate'] = jsonResult.Result['synch_datetime'];
+              Data.save(Table[objName], {'sid': data.sid}, data);
+            }
+
+            alert('6');
+            // Remove existing entries
+            for (var ind in jsonResult.Data.Remove) {
+              data = jsonResult.Data.Remove[ind];
+              data['synchdate'] = jsonResult.Result['synch_datetime'];
+              Data.save(Table[objName], {'sid': data.sid});
+            }
+
+            alert('7');
+            // Cleanup
+            Data.synchedItems++;
+            if (Data.synchedItems >= Data.synchItems) {
+              alert('8');
+              Data.synchItems = 0;
+              Data.synchItsynchedItemsems = 0;
+              Data.synching = false;
+              App.setState();
+              App.synchComplete();
+              if (typeof callback != 'undefined') {
+                callback();
+              }
+            }
+          }, function(jqXHR, textStatus, errorThrown) {
+            Data.synchedItems++;
+            Notify.alert('Oops', 'Could not collect required data for synchronizing to server.');
+            App.setState('Error', 'Could not collect required data for synchronizing to server: ' + textStatus);
+            if (Data.synchedItems >= Data.synchItems) {
+              Data.synchItems = 0;
+              Data.synchItsynchedItemsems = 0;
+              Data.synching = false;
+              App.synchFail();
+              if (typeof errorCallback != 'undefined') {
+                errorCallback(err);
+              }
+            }
+          });
+        });
+      }
     }
     
 };

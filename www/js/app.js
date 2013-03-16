@@ -66,6 +66,7 @@ var App = {
     },
     connectionRequired: function() {
       Notify.notifyStatic('Connection required for application to proceed.');
+      Notify.alert('Connection Error', 'Please connect to internet to proceed.');
       return true;
     },
     dbFail: function(message) {
