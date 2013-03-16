@@ -4,18 +4,24 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <!-- Twitter Bootstrap -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrapSwitch.css" />
-        <link rel="stylesheet" type="text/css" href="css/app.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap-modal.css" />
+        <!-- Application -->
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
         <title>Asset Capture</title>
+        <!-- Cordova -->
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
+        <!-- jQuery -->
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <!-- Twitter Bootstrap -->
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/bootstrapSwitch.js"></script>
         <script type="text/javascript" src="js/bootstrap-modalmanager.js"></script>
         <script type="text/javascript" src="js/bootstrap-modal.js"></script>
+        <!-- Application -->
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/notify.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
@@ -85,13 +91,10 @@
 		<script type="text/javascript">
 		
 		  $(function(){
-	
 		    $.fn.modalmanager.defaults.resize = true;
-	
 		    $('[data-source]').each(function(){
 		      var $this = $(this),
 		        $source = $($this.data('source'));
-	
 		      var text = [];
 		      $source.each(function(){
 		        var $s = $(this);
@@ -101,7 +104,6 @@
 		          text.push($s.clone().wrap('<div>').parent().html());
 		        }
 		      });
-		      
 		      $this.text(text.join('\n\n').replace(/\t/g, '    '));
 		    });
 		  });

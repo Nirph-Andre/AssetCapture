@@ -228,6 +228,12 @@ var Data = {
       if (id) {
         // Build update statement
         mode = 'updated';
+        if (data.created) {
+          delete data.created;
+        }
+        if (data.changed) {
+          delete data.changed;
+        }
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.push('`' + field + '` = "' + data[field] + '"');
@@ -249,6 +255,12 @@ var Data = {
         stmnt = 'UPDATE `' + table.name + '` SET ' + fieldSet.join(', ') + ' WHERE ' + filter.join(' AND ');
       } else {
         // Build insert statement
+        if (data.created) {
+          delete data.created;
+        }
+        if (data.changed) {
+          delete data.changed;
+        }
         mode = 'created';
         fieldSet = {'fields': [], 'values': []};
         for (field in table.fields) {
@@ -392,61 +404,6 @@ var Data = {
     },
     
     
-    // Retrieve list of entries
-    listSynchData: function(table, callback, errorCallback) {
-      // Prepare
-      var synchData = {
-          'create': {},
-          'update': {},
-          'remove': {}
-      };
-      if (table.mode == Data.SYNCH_FROM_SERVER) {
-        // Downstream only, no local changes
-        callback(synchData);
-      }
-      var errorCallback = errorCallback ? errorCallback : Data.queryError;
-      var stmnt = '';
-      
-      // Collect data
-      Data.db.transaction(function(tx) {
-        // Collect newly created entries
-        stmnt = 'SELECT * FROM `' + table.name + '`';
-              + ' WHERE `sid` IS NULL';
-        tx.executeSql(stmnt, [], function(tx, result) {
-          if (result.rows.length) {
-            synchData.create = result.rows;
-          }
-        });
-        // Collect updated entries
-        stmnt = 'SELECT * FROM `' + table.name + '`';
-              + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
-        if (table.fields.archived) {
-          stmnt += ' AND `archived` = 0';
-        }
-        tx.executeSql(stmnt, [], function(tx, result) {
-          if (result.rows.length) {
-            synchData.update = result.rows;
-          }
-        });
-        // Collect archived entries
-        if (table.fields.archived) {
-          stmnt = 'SELECT * FROM `' + table.name + '`';
-                + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
-          tx.executeSql(stmnt, [], function(tx, result) {
-            if (result.rows.length) {
-              synchData.remove = result.rows;
-            }
-          });
-        }
-      }, function(err) {
-        App.dbFail(err.message);
-        return true;
-      }, function() {
-        callback(synchData);
-      });
-    },
-    
-    
     // Get latest change datetime from a table
     getLastChangeTime: function(table, callback, datefield) {
       // Prepare statement
@@ -527,6 +484,7 @@ var Data = {
     // Load synch data from server
     loadSynchData: function(synchEntries, callback, errorCallback) {
       Data.synchItems = synchEntries.length;
+      Data.synchedItems = 0;
       var item = {};
       var data = {};
       var objName = '';
@@ -538,58 +496,77 @@ var Data = {
         if (item.filter && item.filter.length) {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
-        Data.listSynchData(Table[objName], function(synchData) {
-          Server.post('synch', {
-            'table': item.table,
-            'filter': filter,
-            'data': synchData
-          }, function(jsonResult) {
+        Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
+          Server.post('data/synch', synchData, function(jsonResult) {
             alert('3');
             // Update local entries with relevant server id's
-            for (var ind in jsonResult.Data.Feedback) {
-              data = jsonResult.Data.Feedback[ind];
-              Data.save(Table[objName], data['id'], {
-                'sid': data['sid'],
-                'synchdate': jsonResult.Result['synch_datetime']
+            for (var retObjName in jsonResult.Data) {
+              var table = Tables[retObjName];
+              var retPacket = jsonResult.Data[retObjName];
+              var localTime = Util.getCurrentDateTime();
+              alert(retObjName);
+              alert(JSON.stringify(retPacket.Result));
+              alert(JSON.stringify(retPacket.Data));
+              for (var ind in retPacket.Data.Feedback) {
+                data = retPacket.Data.Feedback[ind];
+                if (!data.archive) {
+                  Data.save(table, data.id, {
+                    'sid': data.sid,
+                    'synchdate': retPacket.Result.synch_datetime
+                  });
+                } else {
+                  Data.remove(table, data.id);
+                }
+              }
+  
+              alert('4');
+              // Create new entries as provided by server
+              for (var ind in retPacket.Data.Create) {
+                data = retPacket.Data.Create[ind];
+                data.synchdate = retPacket.Result.synch_datetime;
+                Data.synchUpdate(table, data);
+              }
+  
+              alert('5');
+              // Update existing entries
+              for (var ind in retPacket.Data.Update) {
+                data = retPacket.Data.Update[ind];
+                data.synchdate = retPacket.Result.synch_datetime;
+                Data.synchUpdate(table, data);
+              }
+  
+              alert('6');
+              // Remove existing entries
+              for (var ind in retPacket.Data.Remove) {
+                data = retPacket.Data.Remove[ind];
+                data.synchdate = retPacket.Result.synch_datetime;
+                Data.synchUpdate(table, data);
+              }
+  
+              alert('7');
+              // Update synch entry with relevant timestamps
+              Data.view(Table.Synch, null, {'table': table.name}, function(data) {
+                if (data.id) {
+                  Data.save(Table.Synch, data.id, {
+                    'local_time': localTime,
+                    'server_time': retPacket.Result.synch_datetime
+                  });
+                }
               });
-            }
-
-            alert('4');
-            // Create new entries as provided by server
-            for (var ind in jsonResult.Data.Create) {
-              data = jsonResult.Data.Create[ind];
-              data['synchdate'] = jsonResult.Result['synch_datetime'];
-              Data.save(Table[objName], null, data);
-            }
-
-            alert('5');
-            // Update existing entries
-            for (var ind in jsonResult.Data.Update) {
-              data = jsonResult.Data.Update[ind];
-              data['synchdate'] = jsonResult.Result['synch_datetime'];
-              Data.save(Table[objName], {'sid': data.sid}, data);
-            }
-
-            alert('6');
-            // Remove existing entries
-            for (var ind in jsonResult.Data.Remove) {
-              data = jsonResult.Data.Remove[ind];
-              data['synchdate'] = jsonResult.Result['synch_datetime'];
-              Data.save(Table[objName], {'sid': data.sid});
-            }
-
-            alert('7');
-            // Cleanup
-            Data.synchedItems++;
-            if (Data.synchedItems >= Data.synchItems) {
+              
+              // Cleanup
               alert('8');
-              Data.synchItems = 0;
-              Data.synchItsynchedItemsems = 0;
-              Data.synching = false;
-              App.setState();
-              App.synchComplete();
-              if (typeof callback != 'undefined') {
-                callback();
+              Data.synchedItems++;
+              if (Data.synchedItems >= Data.synchItems) {
+                alert('9');
+                Data.synchItems = 0;
+                Data.synchItsynchedItemsems = 0;
+                Data.synching = false;
+                App.setState();
+                App.synchComplete();
+                if (typeof callback != 'undefined') {
+                  callback();
+                }
               }
             }
           }, function(jqXHR, textStatus, errorThrown) {
@@ -600,12 +577,90 @@ var Data = {
               Data.synchItems = 0;
               Data.synchItsynchedItemsems = 0;
               Data.synching = false;
-              App.synchFail();
               if (typeof errorCallback != 'undefined') {
                 errorCallback(err);
               }
             }
           });
+        });
+      }
+    },
+    
+    
+    // Retrieve list of entries
+    listSynchData: function(table, synchFilter, serverTime, callback, errorCallback) {
+      // Prepare
+      var synchData = {
+          table.objName: {
+          'lastSynchDate': serverTime,
+          'filter': synchFilter,
+          'create': {},
+          'update': {},
+          'remove': {}
+      }};
+      if (table.mode == Data.SYNCH_FROM_SERVER) {
+        // Downstream only, no local changes
+        callback(synchData);
+      }
+      var errorCallback = errorCallback ? errorCallback : Data.queryError;
+      var stmnt = '';
+      
+      // Collect data
+      Data.db.transaction(function(tx) {
+        // Collect newly created entries
+        stmnt = 'SELECT * FROM `' + table.name + '`';
+              + ' WHERE `sid` IS NULL';
+        tx.executeSql(stmnt, [], function(tx, result) {
+          if (result.rows.length) {
+            synchData.create = result.rows;
+          }
+        });
+        // Collect updated entries
+        stmnt = 'SELECT * FROM `' + table.name + '`';
+              + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
+        if (table.fields.archived) {
+          stmnt += ' AND `archived` = 0';
+        }
+        tx.executeSql(stmnt, [], function(tx, result) {
+          if (result.rows.length) {
+            synchData.update = result.rows;
+          }
+        });
+        // Collect archived entries
+        if (table.fields.archived) {
+          stmnt = 'SELECT * FROM `' + table.name + '`';
+                + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
+          tx.executeSql(stmnt, [], function(tx, result) {
+            if (result.rows.length) {
+              synchData.remove = result.rows;
+            }
+          });
+        }
+      }, function(err) {
+        App.dbFail(err.message);
+        return true;
+      }, function() {
+        callback(table, synchData);
+      });
+    },
+    
+    
+    // Synch retrieved server data to local store
+    synchUpdate: function(table, serverData) {
+      if (serverData.archived) {
+        Data.view(table, null, {'sid': serverData.id}, function(data) {
+          if (data.id) {
+            Data.remove(Table[objName], data.id);
+          }
+        });
+      } else if (serverData.id) {
+        Data.view(table, null, {'sid': serverData.id}, function(data) {
+          delete serverData.id;
+          if (data.id) {
+            Data.save(table, data.id, data);
+          } else {
+            Data.save(table, null, serverData);
+          }
         });
       }
     }

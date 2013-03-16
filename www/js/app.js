@@ -26,7 +26,6 @@ var App = {
       App.online = (navigator.connection.type == Connection.NONE) ? false : true;
       $(document).bind('offline', App.nowOffline);
       $(document).bind('online', App.nowOnline);
-      Notify.alert('Connected', App.online ? 'Online' : 'Offline');
     },
     
     
@@ -53,7 +52,7 @@ var App = {
     },
     
     
-    // Callbacks
+    // Status handling
     newDevice: function() {
       //Notify.alert('First Load', '');
     },
@@ -67,10 +66,12 @@ var App = {
     connectionRequired: function() {
       Notify.notifyStatic('Connection required for application to proceed.');
       Notify.alert('Connection Error', 'Please connect to internet to proceed.');
+      App.setState('Connection Required', 'Please connect to internet to proceed', 'processing');
       return true;
     },
     dbFail: function(message) {
       Notify.notifyStatic('Fatal database error, application cannot proceed.');
+      App.setState('Database Error', message, 'problem');
       if (message) {
         Notify.alert('Database Error', message);
       }
@@ -78,10 +79,12 @@ var App = {
     },
     configFail: function() {
       Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
+      App.setState('Configuration Error', 'Could not load configuration data.', 'problem');
       return true;
     },
     synchFail: function(message) {
       Notify.notifyStatic('Could not synchronize data to server, application cannot proceed.');
+      App.setState('Synchronization Error', message, 'problem');
       if (message) {
         Notify.alert('Synchronization Error', message);
       }
