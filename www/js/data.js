@@ -152,6 +152,7 @@ var Data = {
         alert('initData: view result');
         alert(JSON.stringify(data));
         if (!data.id) {
+          alert('add default synch and config entries');
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
@@ -161,6 +162,7 @@ var Data = {
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
+          alert('already have default synch and config entries');
           Data.list(Table.Config, {}, function(data) {
             Config.setData(data);
             App.dbReady();
@@ -308,20 +310,19 @@ var Data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       stmnt += ' LIMIT 1';
-      alert(stmnt);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
-        alert('view result');
-        alert(result.rows.length);
         if (result && result.rows && result.rows.length) {
+          alert('found data entry for ' + table.name);
           var item = result.rows.item(0);
           if (typeof callback != 'undefined') {
             callback(item);
           }
           table.trigger('loaded', item);
         } else {
+          alert('did NOT find data entry for ' + table.name);
           // No entry found
           if (typeof callback != 'undefined') {
             callback({});
