@@ -12,8 +12,7 @@ var App = {
     initialize: function() {
       Notify.notifyStatic();
       App.bindEvents();
-      Util.setEventInfo('initEvent', 'Ready', 'ready');
-      this.setState();
+      this.setState('Processing', 'Initializing Application');
       Data.initialize();
     },
     
@@ -48,7 +47,7 @@ var App = {
         case 'Error': evtClass = 'problem'; break;
       }
       $('#appStatus').html(App.state);
-      Util.setEventInfo('appStatus', state, evtClass);
+      Util.setEventInfo('initEvent', state, evtClass);
     },
     
     
@@ -58,10 +57,12 @@ var App = {
     },
     dbReady: function() {
       Notify.hideStatic();
+      App.setState();
       $('#lblCurrentLocation').html(Config.data.location);
     },
     synchComplete: function() {
       Notify.hideStatic();
+      App.setState();
     },
     connectionRequired: function() {
       Notify.notifyStatic('Connection required for application to proceed.');

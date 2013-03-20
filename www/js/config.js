@@ -8,6 +8,9 @@ var Config = {
     data: {},
     setData: function(data) {
       Config.data = data;
+      for (var i = 0; i < data; i++) {
+        Config.data[synchEntries.item(i).name] = synchEntries.item(i).value;
+      }
     },
     setDataItem: function(name, value) {
       Data.view(Table.Config, null, {'name': name}, function(data) {

@@ -157,9 +157,11 @@ var Data = {
     
     // Initial data setup
     initData: function() {
+      Notify.alert('initData', 'let us begin');
       App.setState();
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
         if (!data.id) {
+          Notify.alert('initData', 'no synch entry');
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
@@ -169,6 +171,7 @@ var Data = {
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
         } else {
+          Notify.alert('initData', 'found synch entry');
           Data.list(Table.Config, {}, function(data) {
             Config.setData(data);
             App.dbReady();
@@ -177,8 +180,14 @@ var Data = {
             return true;
           });
         }
+        Notify.alert('initData', 'look for content entry');
         Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
-          Data.refreshAppMeta(App.dbReady, App.synchFail);
+          if (!data.id) {
+            Notify.alert('initData', 'found content entry');
+          } else {
+            Notify.alert('initData', 'no content entry, running synch');
+            Data.refreshAppMeta(App.dbReady, App.synchFail);
+          }
         }, function(err) {
           return true;
         });
@@ -466,6 +475,7 @@ var Data = {
     // ****************************** SYNCHRONIZATION ********************************* //
     // Synchronize all relevant data to and from server
     refreshAppMeta: function(callback, errorCallback) {
+      Notify.alert('refreshAppMeta', '...');
       if (Data.synching) {
         return;
       }
@@ -483,6 +493,7 @@ var Data = {
     
     // Load synch data from server
     loadSynchData: function(synchEntries, callback, errorCallback) {
+      Notify.alert('loadSynchData', '...');
       Data.synchItems = synchEntries.length;
       Data.synchedItems = 0;
       var item = {};
@@ -590,14 +601,14 @@ var Data = {
     // Retrieve list of entries
     listSynchData: function(table, synchFilter, serverTime, callback, errorCallback) {
       // Prepare
-      var synchData = {
-          table.objName: {
+      var synchData = {};
+      synchData[table.objName] =  {
           'lastSynchDate': serverTime,
           'filter': synchFilter,
           'create': {},
           'update': {},
           'remove': {}
-      }};
+      };
       if (table.mode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
         callback(synchData);

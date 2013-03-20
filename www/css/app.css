@@ -50,8 +50,8 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
 
 .modal-static {
 	opacity: 0.6 !important;
-	background: #fff;
-  color: #000;
+	background: #000;
+  color: #fff;
 }
 
 @media (max-width: 979px) {
