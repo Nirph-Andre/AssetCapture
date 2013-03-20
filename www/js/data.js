@@ -183,10 +183,10 @@ var Data = {
         Notify.alert('initData', 'look for content entry');
         Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
           if (!data.id) {
-            Notify.alert('initData', 'found content entry');
-          } else {
             Notify.alert('initData', 'no content entry, running synch');
             Data.refreshAppMeta(App.dbReady, App.synchFail);
+          } else {
+            Notify.alert('initData', 'found content entry');
           }
         }, function(err) {
           return true;
