@@ -515,16 +515,16 @@ var Data = {
               alert(retObjName);
               var table = Table[retObjName];
               alert('2');
-              var retPacket = jsonResult.Data[retObjName];
+              var synchItem = jsonResult.Data[retObjName];
               alert('3');
               var localTime = Util.getCurrentDateTime();
-              alert(JSON.stringify(retPacket.Data));
-              for (var ind in retPacket.Data.Feedback) {
-                data = retPacket.Data.Feedback[ind];
+              alert(JSON.stringify(synchItem));
+              for (var ind in synchItem.Feedback) {
+                data = synchItem.Feedback[ind];
                 if (!data.archive) {
                   Data.save(table, data.id, {
                     'sid': data.sid,
-                    'synchdate': retPacket.synch_datetime
+                    'synchdate': jsonResult.synch_datetime
                   });
                 } else {
                   Data.remove(table, data.id);
@@ -533,25 +533,25 @@ var Data = {
   
               alert('4');
               // Create new entries as provided by server
-              for (var ind in retPacket.Data.Create) {
-                data = retPacket.Data.Create[ind];
-                data.synchdate = retPacket.synch_datetime;
+              for (var ind in synchItem.Create) {
+                data = synchItem.Create[ind];
+                data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
               alert('5');
               // Update existing entries
-              for (var ind in retPacket.Data.Update) {
-                data = retPacket.Data.Update[ind];
-                data.synchdate = retPacket.synch_datetime;
+              for (var ind in synchItem.Update) {
+                data = synchItem.Update[ind];
+                data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
               alert('6');
               // Remove existing entries
-              for (var ind in retPacket.Data.Remove) {
-                data = retPacket.Data.Remove[ind];
-                data.synchdate = retPacket.synch_datetime;
+              for (var ind in synchItem.Remove) {
+                data = synchItem.Remove[ind];
+                data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
@@ -561,7 +561,7 @@ var Data = {
                 if (data.id) {
                   Data.save(Table.Synch, data.id, {
                     'local_time': localTime,
-                    'server_time': retPacket.synch_datetime
+                    'server_time': jsonResult.synch_datetime
                   });
                 }
               });
