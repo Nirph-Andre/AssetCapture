@@ -229,6 +229,8 @@ var Data = {
     
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
+      alert('Data.save');
+      alert(JSON.stringify(data));
       // Prepare data for query
       var field = '';
       var dataSet = {};
@@ -298,13 +300,12 @@ var Data = {
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
+        alert('Data.save query returned success');
         if (result.rowsAffected) {
           // All good
           if (!id) {
             id = result.insertId;
           }
-        } else {
-          // No change
         }
         dataSet['id'] = id;
         if (typeof callback != 'undefined') {
@@ -312,6 +313,7 @@ var Data = {
         }
         table.trigger(mode, dataSet);
       }, function(err) {
+        alert('Data.save query returned error: ' + err.message);
         // Oops, something went wrong
         if (typeof errorCallback != 'undefined') {
           errorCallback(err);
@@ -650,19 +652,26 @@ var Data = {
     
     // Synch retrieved server data to local store
     synchUpdate: function(table, serverData) {
+      alert('synchUpdate');
+      alert('synchUpdate for ' + table.name);
       if (serverData.archived) {
+        alert('synchUpdate archived');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           if (data.id) {
             Data.remove(Table[objName], data.id);
           }
         });
       } else if (serverData.id) {
+        alert('synchUpdate has server id');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
+          alert('synchUpdate find id returned');
           delete serverData.id;
           serverData.synchSave = true;
           if (data.id) {
+            alert('synchUpdate updating entry for id ' + data.id);
             Data.save(table, data.id, serverData);
           } else {
+            alert('synchUpdate creating new entry');
             Data.save(table, null, serverData);
           }
         });
