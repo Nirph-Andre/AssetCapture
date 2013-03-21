@@ -10,7 +10,7 @@ var App = {
     
     // Application Constructor
     initialize: function() {
-      Notify.notifyStatic();
+      //Notify.notifyStatic();
       App.bindEvents();
       this.setState('Processing', 'Initializing Application');
       Data.initialize();

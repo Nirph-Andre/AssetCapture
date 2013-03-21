@@ -131,7 +131,6 @@ var Data = {
         App.dbFail();
         App.setState('Error', 'Could not open local database');
       }
-      alert('openDatabase.done');
     },
 
     
@@ -153,7 +152,6 @@ var Data = {
         stmnt += ')';
         tx.executeSql(stmnt);
       }
-      alert('initDb.done');
     },
     
     
@@ -189,18 +187,15 @@ var Data = {
           } else {
             App.dbReady();
           }
-          alert('initData.viewContentEntry.done');
         }, function(err) {
           alert('initData.viewContentEntry.error');
           return true;
         });
         App.dbReady();
-        alert('initData.viewSynchEntry.done');
       }, function(err) {
         alert('initData.viewSynchEntry.error');
         return true;
       });
-      alert('initData.done');
     },
 
     
@@ -519,7 +514,7 @@ var Data = {
             for (var retObjName in jsonResult.Data) {
               alert('1');
               alert(retObjName);
-              var table = Tables[retObjName];
+              var table = Table[retObjName];
               alert('2');
               var retPacket = jsonResult.Data[retObjName];
               alert('3');

@@ -1,6 +1,6 @@
 # Asset Capture Mobile Application
 
-> Mobile applciation to capture assets in the field.
+> Mobile application to capture assets in the field.
 
 ## Mobile Requirements
 
