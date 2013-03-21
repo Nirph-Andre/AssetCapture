@@ -179,7 +179,6 @@ var Data = {
             return true;
           });
         }
-        Notify.alert('initData', 'look for content entry');
         Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
           if (!data.id) {
             App.dbReady();
