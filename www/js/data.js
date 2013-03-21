@@ -169,6 +169,7 @@ var Data = {
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
+          App.dbReady();
         } else {
           Data.list(Table.Config, {}, function(data) {
             Config.setData(data);
@@ -506,7 +507,7 @@ var Data = {
         }
         Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
           Server.post('data/synch', synchData, function(jsonResult) {
-            alert('3');
+            alert(JSON.stringify(jsonResult));
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
               var table = Tables[retObjName];

@@ -1,30 +1,21 @@
-# Apache Cordova Hello World Application
+# Asset Capture Mobile Application
 
-> Simple Hello World application and test suite.
+> Mobile applciation to capture assets in the field.
+
+## Mobile Requirements
+
+1. Good camera with auto-focus.
+2. Android or iOS platform.
 
 ## Run Application
 
     /www/index.html
 
-## Run Tests
-
-    /www/spec.html
-
 ## Versions and Tags
 
-The Hello World's version is directly tied to an Apache Cordova release.
+This application is currently on version 0.1
 
-For example, Hello World `2.0.0` is compatible with Apache Cordova `2.0.0`.
+## Updates
 
-## How to Update
-
-Update to Apache Cordova x.x.x by:
-
-1. `www/index.html`
-    - Update `<script type="text/javascript" src="cordova-x.x.x.js"></script>`
-2. `VERSION`
-    - Update the version
-3. Commit and Tag
-    - `git commit -am "[app] Version x.x.x"`
-    - `git tag x.x.x`
+Application updates are pulled automatically. Only initial installation is required, application will keep itself up to date.
 
