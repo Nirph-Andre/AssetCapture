@@ -7,9 +7,8 @@ var Config = {
     serviveNode: 'http://qac.nirphrdp.com/api/',
     data: {},
     setData: function(data) {
-      Config.data = data;
-      for (var i = 0; i < data; i++) {
-        Config.data[synchEntries.item(i).name] = synchEntries.item(i).value;
+      for (var i in data) {
+        Config.data[data[i].name] = Data.stripSlashes(data[i].value);
       }
       App.configReady();
     },

@@ -114,9 +114,6 @@ var App = {
         'type': 'page',
         'name': name
       }, function(data) {
-        alert('load page');
-        alert(data.js);
-        alert(Util.stripSlashes(data.js));
         $('#contentPage').html(data.html);
         if (data.js && data.js.length) {
           eval(data.js);

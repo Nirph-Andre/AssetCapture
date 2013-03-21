@@ -350,7 +350,7 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result && result.rows && result.rows.length) {
-          var item = result.rows.item(0);
+          var item = Data.stripRecordSlashes(result.rows.item(0));
           if (typeof callback != 'undefined') {
             callback(item);
           }
@@ -392,10 +392,11 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result.rows.length) {
+          var recSet = Data.stripRecordsetSlashes(result.rows);
           if (typeof callback != 'undefined') {
-            callback(result.rows);
+            callback(recSet);
           }
-          table.trigger('listed', result.rows);
+          table.trigger('listed', recSet);
         } else {
           // No entry found
           if (typeof callback != 'undefined') {
@@ -425,7 +426,7 @@ var Data = {
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
         if (result.rows.length) {
-          var item = result.rows.item(0);
+          var item = Data.stripRecordSlashes(result.rows.item(0));
           if (typeof callback != 'undefined') {
             callback(item.changed);
           }
@@ -479,9 +480,7 @@ var Data = {
       if (typeof(input) != 'string') {
         return input;
       }
-      alert('addSlashes input: ' + input);
       input = input.replace(/'/g,"''");
-      alert('addSlashes result: ' + input);
       return input;
     },
     
@@ -493,6 +492,26 @@ var Data = {
       }
       input = input.replace(/''/g,"'");
       return input;
+    },
+    
+    
+    // Unescape all strings for a record
+    stripRecordSlashes: function(record) {
+      for (var field in record) {
+        record[field] = Data.stripSlashes(record[field]);
+      }
+      return record;
+    },
+    
+    
+    // Unescape all strings for a recordset and pack into array
+    stripRecordsetSlashes: function(recordset) {
+      var len = recordset.length;
+      var recSet = [];
+      for (var i = 0; i < len; i++) {
+        recSet[i] = Data.stripRecordSlashes(recordset.item(i));
+      }
+      return recSet;
     },
     
     
@@ -524,8 +543,8 @@ var Data = {
       var data = {};
       var objName = '';
       var filter = {};
-      for (var i = 0; i < Data.synchItems; i++) {
-        item = synchEntries.item(i);
+      for (var i in  Data.synchItems) {
+        item = Data.synchItems[i];
         objName = Data.tableMap[item.table];
         filter = {};
         if (item.filter && item.filter.length) {
