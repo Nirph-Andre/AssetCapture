@@ -5,6 +5,8 @@ Table.Config = new Data.model('Config', 'x_config', {
 });
 
 Table.Content = new Data.model('Content', 'x_content', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
   'type': EM.attr('string', {required: true, maxLength: 25}),
   'name': EM.attr('string', {required: true, maxLength: 250}),
   'html': EM.attr('text', {}),

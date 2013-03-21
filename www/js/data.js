@@ -250,8 +250,10 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
-        if (!data['synchdate']) {
+        if (!data.synchSave) {
           fieldSet.push('`changed` = "' + dTime + '"');
+        } else {
+          fieldSet.push('`changed` = "' + data.synchdate + '"');
         }
         var filter = [];
         if ('object' == typeof(id)) {
@@ -280,16 +282,16 @@ var Data = {
             dataSet[field] = data[field];
           }
         }
-        if (!data['synchdate']) {
+        if (!data.synchSave) {
           fieldSet.fields.push('`changed`');
           fieldSet.values.push('"' + dTime + '"');
           fieldSet.fields.push('`created`');
           fieldSet.values.push('"' + dTime + '"');
         } else {
           fieldSet.fields.push('`changed`');
-          fieldSet.values.push('"' + data['synchdate'] + '"');
+          fieldSet.values.push('"' + data.synchdate + '"');
           fieldSet.fields.push('`created`');
-          fieldSet.values.push('"' + data['synchdate'] + '"');
+          fieldSet.values.push('"' + data.synchdate + '"');
         }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
@@ -511,14 +513,9 @@ var Data = {
             alert(JSON.stringify(jsonResult));
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
-              alert('1');
-              alert(retObjName);
               var table = Table[retObjName];
-              alert('2');
               var synchItem = jsonResult.Data[retObjName];
-              alert('3');
               var localTime = Util.getCurrentDateTime();
-              alert(JSON.stringify(synchItem));
               for (var ind in synchItem.Feedback) {
                 data = synchItem.Feedback[ind];
                 if (!data.archive) {
@@ -531,7 +528,6 @@ var Data = {
                 }
               }
   
-              alert('4');
               // Create new entries as provided by server
               for (var ind in synchItem.Create) {
                 data = synchItem.Create[ind];
@@ -539,7 +535,6 @@ var Data = {
                 Data.synchUpdate(table, data);
               }
   
-              alert('5');
               // Update existing entries
               for (var ind in synchItem.Update) {
                 data = synchItem.Update[ind];
@@ -547,7 +542,6 @@ var Data = {
                 Data.synchUpdate(table, data);
               }
   
-              alert('6');
               // Remove existing entries
               for (var ind in synchItem.Remove) {
                 data = synchItem.Remove[ind];
@@ -555,7 +549,6 @@ var Data = {
                 Data.synchUpdate(table, data);
               }
   
-              alert('7');
               // Update synch entry with relevant timestamps
               Data.view(Table.Synch, null, {'table': table.name}, function(data) {
                 if (data.id) {
@@ -567,10 +560,8 @@ var Data = {
               });
               
               // Cleanup
-              alert('8');
               Data.synchedItems++;
               if (Data.synchedItems >= Data.synchItems) {
-                alert('9');
                 Data.synchItems = 0;
                 Data.synchItsynchedItemsems = 0;
                 Data.synching = false;
@@ -668,8 +659,9 @@ var Data = {
       } else if (serverData.id) {
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           delete serverData.id;
+          serverData.synchSave = true;
           if (data.id) {
-            Data.save(table, data.id, data);
+            Data.save(table, data.id, serverData);
           } else {
             Data.save(table, null, serverData);
           }
