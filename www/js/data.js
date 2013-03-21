@@ -166,7 +166,6 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
           //Data.save(Table.Synch, null, {'table': 'moveable', 'mode': Data.SYNCH_BOTH});
           //Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH, 'filter': 'location'});
-          Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -654,14 +653,14 @@ var Data = {
     synchUpdate: function(table, serverData) {
       alert('synchUpdate');
       alert('synchUpdate for ' + table.name);
-      if (serverData.archived) {
+      if (serverData.archived && serverData.archived == 1) {
         alert('synchUpdate archived');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           if (data.id) {
             Data.remove(Table[objName], data.id);
           }
         });
-      } else if (serverData.id) {
+      } else if (serverData.id > 0) {
         alert('synchUpdate has server id');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           alert('synchUpdate find id returned');
