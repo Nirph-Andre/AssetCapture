@@ -28,13 +28,11 @@ var Util = {
       if (typeof(input) != 'string') {
         return input;
       }
-      alert('addSlashes input: ' + input);
       input = input
         .replace(/\\/g,'\\\\')
         .replace(/\'/g,'\\\'')
         .replace(/\"/g,'\\"')
         .replace(/\0/g,'\\0');
-      alert('addSlashes result: ' + input);
       return input;
     },
     

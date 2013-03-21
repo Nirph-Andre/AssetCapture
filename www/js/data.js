@@ -245,20 +245,20 @@ var Data = {
         }
         for (field in table.fields) {
           if (data[field]) {
-            fieldSet.push('`' + field + '` = "' + Util.addSlashes(data[field]) + '"');
+            fieldSet.push("`" + field + "` = '" + Data.addSlashes(data[field]) + "'");
             dataSet[field] = data[field];
           }
         }
         if (!data.synchSave) {
-          fieldSet.push('`changed` = "' + dTime + '"');
+          fieldSet.push("`changed` = '" + dTime + "'");
         } else {
-          fieldSet.push('`changed` = "' + data.synchdate + '"');
+          fieldSet.push("`changed` = '" + data.synchdate + "'");
         }
         var filter = [];
         if ('object' == typeof(id)) {
           var field = '';
           for (field in id) {
-            filter.push('`' + field + '` = "' + id[field] + '"');
+            filter.push("`" + field + "` = '" + id[field] + "'");
           }
         } else {
           filter.push('`id` = ' + id);
@@ -276,21 +276,21 @@ var Data = {
         fieldSet = {'fields': [], 'values': []};
         for (field in table.fields) {
           if (data[field]) {
-            fieldSet.fields.push('`' + field + '`');
-            fieldSet.values.push('"' + Util.addSlashes(data[field]) + '"');
+            fieldSet.fields.push("`" + field + "`");
+            fieldSet.values.push("'" + Data.addSlashes(data[field]) + "'");
             dataSet[field] = data[field];
           }
         }
         if (!data.synchSave) {
-          fieldSet.fields.push('`changed`');
-          fieldSet.values.push('"' + dTime + '"');
-          fieldSet.fields.push('`created`');
-          fieldSet.values.push('"' + dTime + '"');
+          fieldSet.fields.push("`changed`");
+          fieldSet.values.push("'" + dTime + "'");
+          fieldSet.fields.push("`created`");
+          fieldSet.values.push("'" + dTime + "'");
         } else {
-          fieldSet.fields.push('`changed`');
-          fieldSet.values.push('"' + data.synchdate + '"');
-          fieldSet.fields.push('`created`');
-          fieldSet.values.push('"' + data.synchdate + '"');
+          fieldSet.fields.push("`changed`");
+          fieldSet.values.push("'" + data.synchdate + "'");
+          fieldSet.fields.push("`created`");
+          fieldSet.values.push("'" + data.synchdate + "'");
         }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
@@ -469,6 +469,30 @@ var Data = {
       this.listen = function(event, callback) {
         
       };
+    },
+    
+
+    
+    // ****************************** UTILS ********************************* //
+    // Escape a string
+    addSlashes: function(input) {
+      if (typeof(input) != 'string') {
+        return input;
+      }
+      alert('addSlashes input: ' + input);
+      input = input.replace(/'/g,"''");
+      alert('addSlashes result: ' + input);
+      return input;
+    },
+    
+    
+    // Unescape a string
+    stripSlashes: function(input) {
+      if (typeof(input) != 'string') {
+        return input;
+      }
+      input = input.replace(/''/g,"'");
+      return input;
     },
     
     
