@@ -24,24 +24,32 @@ var Util = {
     
     
     // Escape a string
-    addSlashes: function(str) {
-      alert('addSlashes to ' + str);
-      str = str.replace(/\\/g,'\\\\');
-      str = str.replace(/\'/g,'\\\'');
-      str = str.replace(/\"/g,'\\"');
-      str = str.replace(/\0/g,'\\0');
-      alert('addSlashes result ' + str);
-      return str;
+    addSlashes: function(input) {
+      if (typeof(str) != 'string') {
+        return str;
+      }
+      alert('addSlashes input: ' + input);
+      input = input
+        .replace(/\\/g,'\\\\')
+        .replace(/\'/g,'\\\'')
+        .replace(/\"/g,'\\"')
+        .replace(/\0/g,'\\0');
+      alert('addSlashes result: ' + input);
+      return input;
     },
     
     
     // Unescape a string
-    stripSlashes: function(str) {
-      str = str.replace(/\\'/g,'\'');
-      str = str.replace(/\\"/g,'"');
-      str = str.replace(/\\0/g,'\0');
-      str = str.replace(/\\\\/g,'\\');
-      return str;
+    stripSlashes: function(input) {
+      if (typeof(input) != 'string') {
+        return input;
+      }
+      input = input
+        .replace(/\\'/g,'\'')
+        .replace(/\\"/g,'"')
+        .replace(/\\0/g,'\0')
+        .replace(/\\\\/g,'\\');
+      return input;
     }
     
 };
