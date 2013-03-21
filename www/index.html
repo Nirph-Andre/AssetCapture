@@ -54,10 +54,10 @@
                 </div>
               </div>
               <div>
-                <button id="actSyncronize" class="btn btn-mobile span12" onClick="" disabled>Synchronize Data</button>
+                <button id="actSyncronize" class="btn btn-mobile span12" onClick="Data.refreshAppMeta(App.dbReady, App.synchFail);">Synchronize Data</button>
               </div>
               <div>
-                <label id="lblCurrentLocation" for="actChangeLocation"></label>
+                <label id="lblCurrentLocation" for="actChangeLocation">&nbsp;</label>
               </div>
               <div>
                 <button id="actChangeLocation" class="btn btn-mobile span12" onClick="">Change Location</button>
@@ -66,8 +66,14 @@
                 &nbsp;<br/>&nbsp;<br/>&nbsp;
               </div>
               <div>
-                <button id="actMovables" class="btn btn-mobile-large span6" onClick="">Movables</button>
-                <button id="actInfrastructure" class="btn btn-mobile-large span6" onClick="">Infrastructure</button>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Barcode.scan(); Location.getPosition();">Scan Barcode</button>
+              </div>
+              <div>
+                &nbsp;<br/>&nbsp;<br/>&nbsp;
+              </div>
+              <div>
+                <button id="actMovables" class="btn btn-mobile-large span6" onClick="" disabled>Movables</button>
+                <button id="actInfrastructure" class="btn btn-mobile-large span6" onClick="" disabled>Infrastructure</button>
               </div>
 	        </div>
 	      </div>

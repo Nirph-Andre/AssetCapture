@@ -70,7 +70,6 @@ var Server = {
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
-        Notify.alert('Oops', JSON.stringify(errorThrown));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {
@@ -91,7 +90,6 @@ var Server = {
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
-        Notify.alert('Oops', JSON.stringify(errorThrown));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {
@@ -112,7 +110,6 @@ var Server = {
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
-        Notify.alert('Oops', JSON.stringify(errorThrown));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {
@@ -133,7 +130,6 @@ var Server = {
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
-        Notify.alert('Oops', JSON.stringify(errorThrown));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {

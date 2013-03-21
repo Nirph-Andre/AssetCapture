@@ -14,7 +14,7 @@ var Location = {
             alert(JSON.stringify(data));
           });
         }, function(error) {
-          alert("Scanning failed: " + error);
+          alert("GPS call failed: " + error);
         });
       } catch(err) {
         Notify.alert('Oops', 'Could not do scan: ' + err.message);
