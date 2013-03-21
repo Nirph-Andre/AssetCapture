@@ -80,12 +80,12 @@ var Server = {
     
     
     // Ajax get helper
-    get: function(uri, data, callback, errorCallback) {
-      alert('get call to ' + uri);
+    get: function(action, data, callback, errorCallback) {
+      alert('get call to ' + Config.serviveNode + action);
       $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: uri,
+        url: Config.serviveNode + action,
         data: data
       })
       .done(callback)
