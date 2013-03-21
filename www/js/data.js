@@ -157,11 +157,9 @@ var Data = {
     
     // Initial data setup
     initData: function() {
-      Notify.alert('initData', 'let us begin');
       App.setState();
       Data.view(Table.Synch, null, {'table': 'x_content'}, function(data) {
         if (!data.id) {
-          Notify.alert('initData', 'no synch entry');
           // First application run on new device
           // Add content table to synch list and init server synch
           App.newDevice();
@@ -170,8 +168,8 @@ var Data = {
           //Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH, 'filter': 'location'});
           Data.save(Table.Config, null, {'name': 'location', 'value': 'Unknown'});
           Config.setDataItem('location', 'Unknown');
+          App.configReady();
         } else {
-          Notify.alert('initData', 'found synch entry');
           Data.list(Table.Config, {}, function(data) {
             Config.setData(data);
             App.dbReady();
@@ -183,10 +181,10 @@ var Data = {
         Notify.alert('initData', 'look for content entry');
         Data.view(Table.Content, null, {'type': 'page', 'name': 'home'}, function(data) {
           if (!data.id) {
-            Notify.alert('initData', 'no content entry, running synch');
+            App.dbReady();
             //Data.refreshAppMeta(App.dbReady, App.synchFail);
           } else {
-            Notify.alert('initData', 'found content entry');
+            App.dbReady();
           }
         }, function(err) {
           return true;

@@ -11,6 +11,7 @@ var Config = {
       for (var i = 0; i < data; i++) {
         Config.data[synchEntries.item(i).name] = synchEntries.item(i).value;
       }
+      App.configReady();
     },
     setDataItem: function(name, value) {
       Data.view(Table.Config, null, {'name': name}, function(data) {

@@ -53,12 +53,16 @@ var App = {
     
     // Status handling
     newDevice: function() {
-      //Notify.alert('First Load', '');
+      Notify.alert('First Load', '');
     },
     dbReady: function() {
       Notify.hideStatic();
       App.setState();
-      $('#lblCurrentLocation').html(Config.data.location);
+    },
+    configReady: function() {
+      if (Config.data.location) {
+        $('#lblCurrentLocation').html(Config.data.location);
+      }
     },
     synchComplete: function() {
       Notify.hideStatic();
