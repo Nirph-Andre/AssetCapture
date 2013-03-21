@@ -131,6 +131,7 @@ var Data = {
         App.dbFail();
         App.setState('Error', 'Could not open local database');
       }
+      alert('openDatabase.done');
     },
 
     
@@ -152,6 +153,7 @@ var Data = {
         stmnt += ')';
         tx.executeSql(stmnt);
       }
+      alert('initDb.done');
     },
     
     
@@ -187,13 +189,18 @@ var Data = {
           } else {
             App.dbReady();
           }
+          alert('initData.viewContentEntry.done');
         }, function(err) {
+          alert('initData.viewContentEntry.error');
           return true;
         });
         App.dbReady();
+        alert('initData.viewSynchEntry.done');
       }, function(err) {
+        alert('initData.viewSynchEntry.error');
         return true;
       });
+      alert('initData.done');
     },
 
     
@@ -510,18 +517,20 @@ var Data = {
             alert(JSON.stringify(jsonResult));
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
-              var table = Tables[retObjName];
-              var retPacket = jsonResult.Data[retObjName];
-              var localTime = Util.getCurrentDateTime();
+              alert('1');
               alert(retObjName);
-              alert(JSON.stringify(retPacket.Result));
+              var table = Tables[retObjName];
+              alert('2');
+              var retPacket = jsonResult.Data[retObjName];
+              alert('3');
+              var localTime = Util.getCurrentDateTime();
               alert(JSON.stringify(retPacket.Data));
               for (var ind in retPacket.Data.Feedback) {
                 data = retPacket.Data.Feedback[ind];
                 if (!data.archive) {
                   Data.save(table, data.id, {
                     'sid': data.sid,
-                    'synchdate': retPacket.Result.synch_datetime
+                    'synchdate': retPacket.synch_datetime
                   });
                 } else {
                   Data.remove(table, data.id);
@@ -532,7 +541,7 @@ var Data = {
               // Create new entries as provided by server
               for (var ind in retPacket.Data.Create) {
                 data = retPacket.Data.Create[ind];
-                data.synchdate = retPacket.Result.synch_datetime;
+                data.synchdate = retPacket.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
@@ -540,7 +549,7 @@ var Data = {
               // Update existing entries
               for (var ind in retPacket.Data.Update) {
                 data = retPacket.Data.Update[ind];
-                data.synchdate = retPacket.Result.synch_datetime;
+                data.synchdate = retPacket.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
@@ -548,7 +557,7 @@ var Data = {
               // Remove existing entries
               for (var ind in retPacket.Data.Remove) {
                 data = retPacket.Data.Remove[ind];
-                data.synchdate = retPacket.Result.synch_datetime;
+                data.synchdate = retPacket.synch_datetime;
                 Data.synchUpdate(table, data);
               }
   
@@ -558,7 +567,7 @@ var Data = {
                 if (data.id) {
                   Data.save(Table.Synch, data.id, {
                     'local_time': localTime,
-                    'server_time': retPacket.Result.synch_datetime
+                    'server_time': retPacket.synch_datetime
                   });
                 }
               });
