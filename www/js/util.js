@@ -25,8 +25,8 @@ var Util = {
     
     // Escape a string
     addSlashes: function(input) {
-      if (typeof(str) != 'string') {
-        return str;
+      if (typeof(input) != 'string') {
+        return input;
       }
       alert('addSlashes input: ' + input);
       input = input
