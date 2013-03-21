@@ -186,12 +186,12 @@ var Data = {
             App.dbReady();
           }
         }, function(err) {
-          alert('initData.viewContentEntry.error');
+          alert('initData.viewContentEntry.error ' + err.message);
           return true;
         });
         App.dbReady();
       }, function(err) {
-        alert('initData.viewSynchEntry.error');
+        alert('initData.viewSynchEntry.error ' + err.message);
         return true;
       });
     },
