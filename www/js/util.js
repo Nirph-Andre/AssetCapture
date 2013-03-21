@@ -25,10 +25,12 @@ var Util = {
     
     // Escape a string
     addSlashes: function(str) {
+      alert('addSlashes to ' + str);
       str = str.replace(/\\/g,'\\\\');
       str = str.replace(/\'/g,'\\\'');
       str = str.replace(/\"/g,'\\"');
       str = str.replace(/\0/g,'\\0');
+      alert('addSlashes result ' + str);
       return str;
     },
     
