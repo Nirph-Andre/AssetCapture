@@ -475,7 +475,6 @@ var Data = {
     // ****************************** SYNCHRONIZATION ********************************* //
     // Synchronize all relevant data to and from server
     refreshAppMeta: function(callback, errorCallback) {
-      Notify.alert('refreshAppMeta', '...');
       if (Data.synching) {
         return;
       }
@@ -493,7 +492,6 @@ var Data = {
     
     // Load synch data from server
     loadSynchData: function(synchEntries, callback, errorCallback) {
-      Notify.alert('loadSynchData', '...');
       Data.synchItems = synchEntries.length;
       Data.synchedItems = 0;
       var item = {};
@@ -582,9 +580,9 @@ var Data = {
             }
           }, function(jqXHR, textStatus, errorThrown) {
             Data.synchedItems++;
-            Notify.alert('Oops', 'Could not collect required data for synchronizing to server.');
-            App.setState('Error', 'Could not collect required data for synchronizing to server: ' + textStatus);
+            Notify.alert('Oops', textStatus);
             if (Data.synchedItems >= Data.synchItems) {
+              App.synchFail('Could not collect required data for synchronizing to server: ' + textStatus);
               Data.synchItems = 0;
               Data.synchItsynchedItemsems = 0;
               Data.synching = false;
