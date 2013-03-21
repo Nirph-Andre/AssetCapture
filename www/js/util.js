@@ -20,6 +20,28 @@ var Util = {
               + currentdate.getHours() + ":"  
               + currentdate.getMinutes() + ":" 
               + currentdate.getSeconds();
+    },
+    
+    
+    // Escape a string
+    addSlashes: function(str) {
+      str = str
+        .replace(/\\/g,'\\\\')
+        .replace(/\'/g,'\\\'')
+        .replace(/\"/g,'\\"')
+        .replace(/\0/g,'\\0');
+      return str;
+    },
+    
+    
+    // Unescape a string
+    stripSlashes: function(str) {
+      str = str
+        .replace(/\\'/g,'\'')
+        .replace(/\\"/g,'"')
+        .replace(/\\0/g,'\0')
+        .replace(/\\\\/g,'\\');
+      return str;
     }
     
 };

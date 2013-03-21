@@ -228,8 +228,6 @@ var Data = {
     
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
-      alert('Data.save');
-      alert(JSON.stringify(data));
       // Prepare data for query
       var field = '';
       var dataSet = {};
@@ -247,7 +245,7 @@ var Data = {
         }
         for (field in table.fields) {
           if (data[field]) {
-            fieldSet.push('`' + field + '` = "' + data[field] + '"');
+            fieldSet.push('`' + field + '` = "' + Util.addSlashes(data[field]) + '"');
             dataSet[field] = data[field];
           }
         }
@@ -279,7 +277,7 @@ var Data = {
         for (field in table.fields) {
           if (data[field]) {
             fieldSet.fields.push('`' + field + '`');
-            fieldSet.values.push('"' + data[field] + '"');
+            fieldSet.values.push('"' + Util.addSlashes(data[field]) + '"');
             dataSet[field] = data[field];
           }
         }
@@ -296,10 +294,10 @@ var Data = {
         }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
+      alert(stmnt);
       
       // Execute query
       Data.query(stmnt, function(tx, result) {
-        alert('Data.save query returned success');
         if (result.rowsAffected) {
           // All good
           if (!id) {
@@ -651,26 +649,19 @@ var Data = {
     
     // Synch retrieved server data to local store
     synchUpdate: function(table, serverData) {
-      alert('synchUpdate');
-      alert('synchUpdate for ' + table.name);
       if (serverData.archived && serverData.archived == 1) {
-        alert('synchUpdate archived');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           if (data.id) {
             Data.remove(Table[objName], data.id);
           }
         });
       } else if (serverData.id > 0) {
-        alert('synchUpdate has server id');
         Data.view(table, null, {'sid': serverData.id}, function(data) {
-          alert('synchUpdate find id returned');
           delete serverData.id;
           serverData.synchSave = true;
           if (data.id) {
-            alert('synchUpdate updating entry for id ' + data.id);
             Data.save(table, data.id, serverData);
           } else {
-            alert('synchUpdate creating new entry');
             Data.save(table, null, serverData);
           }
         });
