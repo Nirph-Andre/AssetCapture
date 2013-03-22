@@ -486,36 +486,30 @@ var Data = {
     
     // Unescape a string
     stripSlashes: function(input) {
-      alert('stripSlashes start');
       if (typeof(input) != 'string') {
         return input;
       }
       input = input.replace(/''/g,"'");
-      alert('stripSlashes end');
       return input;
     },
     
     
     // Unescape all strings for a record
     stripRecordSlashes: function(record) {
-      alert('stripRecordSlashes start');
       for (var field in record) {
         record[field] = Data.stripSlashes(record[field]);
       }
-      alert('stripRecordSlashes end');
       return record;
     },
     
     
     // Unescape all strings for a recordset and pack into array
     stripRecordsetSlashes: function(recordset) {
-      alert('stripRecordsetSlashes start');
       var len = recordset.length;
       var recSet = [];
       for (var i = 0; i < len; i++) {
         recSet[i] = Data.stripRecordSlashes(recordset.item(i));
       }
-      alert('stripRecordsetSlashes end');
       return recSet;
     },
     
