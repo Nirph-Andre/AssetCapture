@@ -548,7 +548,10 @@ var Data = {
       var data = {};
       var objName = '';
       var filter = {};
+      alert('loadSynchData');
+      alert(JSON.stringify(synchEntries));
       for (var i in  synchEntries) {
+        alert('loadSynchData in loop');
         item = synchEntries[i];
         objName = Data.tableMap[item.table];
         filter = {};
