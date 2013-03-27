@@ -22,6 +22,12 @@ Table.Synch = new Data.model('Synch', 'x_synch', {
   'server_time': EM.attr('datetime', {})
 });
 
+Table.Location = new Data.model('Location', 'location', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
 Table.Moveable = new Data.model('Moveable', 'moveable', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
@@ -40,14 +46,6 @@ Table.Infrastructure = new Data.model('Infrastructure', 'infrastructure', {
   'type': EM.attr('string', {required: true, maxLength: 100}),
   'sub_type': EM.attr('string', {required: true, maxLength: 100}),
   'description': EM.attr('string', {required: true, maxLength: 100})
-});
-
-Table.Profile = new Data.model('Profile', 'profile', {
-  'company': EM.belongsTo('Company', {required: true}),
-  'name': EM.attr('string', {required: true, maxLength: 100}),
-  'surname': EM.attr('string', {required: true, maxLength: 100}),
-  'app_access_type': EM.hasOne('AppAccessType', {required: true}),
-  'app_access_times': EM.hasMany('AppAccessTime', {})
 });
 
 

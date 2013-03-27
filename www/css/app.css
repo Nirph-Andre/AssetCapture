@@ -26,7 +26,7 @@ body {
 .container-fluid {
 	position: absolute;
 	top: 47px;
-  bottom: 51px;
+  bottom: 41px;
   left: 0px;
   right: 0px;
 	overflow: auto;
@@ -36,7 +36,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], 
 input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 		display: inline-block;
-		height: 60px;
+		height: 100px;
 		padding: 8px 12px;
 		margin: 0px;
 		font-size: 32px;
@@ -66,8 +66,12 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
 label {
     padding: 0px;
 	  margin: 10px 0px -10px 0px;
-    font-size: 32px;
+    font-size: 36px;
     line-height: 70px;	
+}
+
+.spacer {
+    height: 50px;	
 }
 
 .has-switch span.switch-large,
@@ -212,7 +216,9 @@ label {
   border-radius: 6px;
 }
 
-
+.white {
+	color: #fff;
+}
 
 
 

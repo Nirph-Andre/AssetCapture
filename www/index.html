@@ -29,6 +29,7 @@
         <script type="text/javascript" src="js/server.js"></script>
         <script type="text/javascript" src="js/data.js"></script>
         <script type="text/javascript" src="js/models.js"></script>
+        <script type="text/javascript" src="js/interface.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
     </head>
@@ -44,45 +45,109 @@
       
       <!-- BODY -->
       <div class="container-fluid">
-        <div class="row-fluid">
-	        <div id="contentPage" class="span12">
-              <div>
-                <div id="switchBtn" class="switch switch-large span12"
-                  data-on-label="Synchronized" data-off-label="Local Data Changes"
-                  data-on="success" data-off="danger">
-                    <input type="checkbox" checked="checked" disabled>
-                </div>
+      
+        <!-- PAGE: LOGIN -->
+        <div id="pageLogin" class="page">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="spacer">
+                &nbsp;
               </div>
               <div>
-                <button id="actSyncronize" class="btn btn-mobile span12" onClick="Data.refreshAppMeta(App.dbReady, App.synchFail);">Synchronize Data</button>
+                <label for="inputUsername">LOGIN</label>
+              </div>
+              <div class="spacer">
+                &nbsp;
               </div>
               <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="">Change Location</button>
+                <input type="text" id="loginUsername" class="span12" placeholder="Username">
+              </div>
+              <div>
+                <input type="password" id="loginPassword" class="span12" placeholder="PIN">
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <button id="actLogin" class="btn btn-mobile btn-success span12"
+                  onClick="App.login($('#loginUsername').val(), $('#loginPassword').val());">Login</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: LOGIN -->
+      
+        <!-- PAGE: LOCATION -->
+        <div id="pageLocation" class="page hide">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <label>LOCATION</label>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <button id="actLogin" class="btn btn-mobile span12 location"
+                  onClick="Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);">Select Location</button>
+              </div>
+              <div>
+                <button id="actLogin" class="btn btn-mobile span12 location"
+                  onClick="Interface.listFromData([{'value':1, 'label':'Pretoria'}, {'value':2, 'label':'Johannesburg'}, {'value':3, 'label':'Centurion'}], App.setLocation);">Select Location</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: LOCATION -->
+      
+        <!-- PAGE: HOME -->
+        <div id="pageHome" class="page hide">
+          <div class="row-fluid">
+            <div class="span12">
+              <div>
+                <button id="actSyncronize" class="btn btn-mobile span12" onClick="Data.refreshAppMeta();">Synchronize Data</button>
+              </div>
+              <div>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('Location');">Change Location</button>
               </div>
               <div>
                 <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Barcode.scan(); Location.getPosition();">Scan Barcode</button>
               </div>
               <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="App.loadPage('home');">Home</button>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('Home');">Home</button>
               </div>
-              <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="App.loadPage('settings');">Settings</button>
+              <div class="spacer">
+                &nbsp;
               </div>
-              <div>
-                &nbsp;<br/>&nbsp;<br/>&nbsp;
-              </div>
-              <div>
-                <button id="actMovables" class="btn btn-mobile-large span6" onClick="" disabled>Movables</button>
-                <button id="actInfrastructure" class="btn btn-mobile-large span6" onClick="" disabled>Infrastructure</button>
-              </div>
-	        </div>
-	      </div>
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: HOME -->
+      
+        <!-- PAGE: LIST SELECT -->
+        <div id="pageListSelect" class="page hide">
+          <div class="row-fluid">
+            <div id="listDataContent" class="span12">
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: LIST SELECT -->
+	      
       </div>
       
       <!-- FOOTER -->
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="navbar-inner">
-          Moo
+          <div class="white location"><center>Location</center></div>
         </div>
       </div>
       

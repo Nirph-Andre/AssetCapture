@@ -5,7 +5,10 @@ var App = {
     location: 'Device',
     state: 'Initializing',
     stateDescription: 'Initializing',
+    connectionStact: {},
     online: true,
+    firstRun: false,
+    authenticated: false,
     
     
     // Application Constructor
@@ -25,6 +28,7 @@ var App = {
       App.online = (navigator.connection.type == Connection.NONE) ? false : true;
       $(document).bind('offline', App.nowOffline);
       $(document).bind('online', App.nowOnline);
+      $(document).bind('backbutton', Interface.back);
     },
     
     
@@ -34,6 +38,10 @@ var App = {
     },
     nowOnline: function() {
       App.online = true;
+      for (var id in App.connectionStact) {
+        App.connectionStact[id]();
+      }
+      App.connectionStact = {};
     },
     
     
@@ -46,33 +54,17 @@ var App = {
         case 'Ready': evtClass = 'ready'; break;
         case 'Error': evtClass = 'problem'; break;
       }
-      $('#appStatus').html(App.state);
-      Util.setEventInfo('initEvent', state, evtClass);
+      Util.setEventInfo('initEvent', App.state, evtClass);
     },
     
     
     // Status handling
     newDevice: function() {
-      Notify.alert('First Load', '');
+      App.firstRun = true;
     },
     dbReady: function() {
       Notify.hideStatic();
       App.setState();
-    },
-    configReady: function() {
-      if (Config.data.location) {
-        $('#lblCurrentLocation').html(Config.data.location);
-      }
-    },
-    synchComplete: function() {
-      Notify.hideStatic();
-      App.setState();
-    },
-    connectionRequired: function() {
-      Notify.notifyStatic('Connection required for application to proceed.');
-      Notify.alert('Connection Error', 'Please connect to internet to proceed.');
-      App.setState('Connection Required', 'Please connect to internet to proceed', 'processing');
-      return true;
     },
     dbFail: function(message) {
       Notify.notifyStatic('Fatal database error, application cannot proceed.');
@@ -82,54 +74,68 @@ var App = {
       }
       return true;
     },
+    configReady: function() {
+      if (Config.data.location) {
+        $('.location').html(Config.data.location);
+      }
+    },
     configFail: function() {
       Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
       App.setState('Configuration Error', 'Could not load configuration data.', 'problem');
       return true;
     },
-    synchFail: function(message) {
-      Notify.notifyStatic('Could not synchronize data to server, application cannot proceed.');
-      App.setState('Synchronization Error', message, 'problem');
-      if (message) {
-        Notify.alert('Synchronization Error', message);
+    synchComplete: function() {
+      Notify.hideStatic();
+      App.setState();
+      Data.list(Table.Location, {}, function(data) {
+        Util.populateSelect('locationSelect', 'Select Location', data, Config.data.location);
+      });
+      if (App.firstRun) {
+        Interface.loadPage('Location');
       }
+    },
+    synchFail: function() {
+      App.connectionRequired('synch', Data.refreshAppMeta);
+      return true;
+    },
+    connectionRequired: function(id, callback) {
+      App.connectionStact[id] = callback;
+      Notify.notifyStatic('Connection required for application to proceed.');
+      Notify.alert('Connection Error', 'Please connect to internet to proceed.');
+      App.setState('Connection Required', 'Please connect to internet to proceed', 'processing');
       return true;
     },
     
     
-    // Content loading
-    loadLayout: function(name) {
-      Data.view(Table.Content, null, {
-        'type': 'layout',
-        'name': name
-      }, function(data) {
-        $('#contentLayout').html(data.html);
-        if (data.js && data.js.length) {
-          eval(data.js);
+    // Authentication
+    login: function (username, password) {
+      Server.post('authentication/login', {"username": username, "password": password}, function (jsonResult) {
+        if ('Error' == jsonResult.Status) {
+          Notify.alert('Oops', jsonResult.Message);
+        } else if ('Success' == jsonResult.Status) {
+          App.authenticated = true;
+          if (App.firstRun) {
+            Data.refreshAppMeta();
+          } else {
+            if ('Unknown' == Config.data.location) {
+              Interface.loadPage('Location');
+            } else {
+              Interface.loadPage('Home');
+            }
+          }
         }
+      }, function(jqXHR, textStatus, errorThrown) {
+        alert(textStatus);
+        //Notify.alert('Oops', 'Could not reach the server. Please ensure you are connected to the internet and try again.');
       });
     },
-    loadPage: function(name) {
-      Data.view(Table.Content, null, {
-        'type': 'page',
-        'name': name
-      }, function(data) {
-        $('#contentPage').html(data.html);
-        if (data.js && data.js.length) {
-          eval(data.js);
-        }
-      });
-    },
-    loadContent: function(container, name) {
-      Data.view(Table.Content, null, {
-        'type': 'content',
-        'name': name
-      }, function(data) {
-        $('#' + container).html(data.html);
-        if (data.js && data.js.length) {
-          eval(data.js);
-        }
-      });
+    
+    
+    // Location
+    setLocation: function(id, name) {
+      Config.setDataItem('location', name);
+      $('.location').html(Config.data.location);
+      Interface.loadPage('Home');
     }
     
 };

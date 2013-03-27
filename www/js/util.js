@@ -29,10 +29,8 @@ var Util = {
         return input;
       }
       input = input
-        .replace(/\\/g,'\\\\')
-        .replace(/\'/g,'\\\'')
-        .replace(/\"/g,'\\"')
-        .replace(/\0/g,'\\0');
+        .replace(/'/g, "\'")
+        .replace(/"/g, '\"');
       return input;
     },
     
@@ -43,11 +41,20 @@ var Util = {
         return input;
       }
       input = input
-        .replace(/\\'/g,'\'')
-        .replace(/\\"/g,'"')
-        .replace(/\\0/g,'\0')
-        .replace(/\\\\/g,'\\');
+        .replace(/\'/g, "'")
+        .replace(/\"/g,'"');
       return input;
+    },
+    
+    populateSelect: function(target, instruction, data, selected) {
+      var opts = instruction
+        ? '<option value="">-- ' + instruction + ' --</option>'
+        : '';
+      for (var i in data) {
+        var chosen = (selected == i) ? ' selected' : '';
+        opts += '<option value="' + i + '"' + chosen + '>' + data[i] + '</option>';
+      }
+      $('#' + target).html(opts);
     }
     
 };

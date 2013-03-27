@@ -4,15 +4,24 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <!-- Twitter Bootstrap -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrapSwitch.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-modal.css" />
+        <!-- Application -->
         <link rel="stylesheet" type="text/css" href="css/app.css" />
         <title>Asset Capture</title>
+        <!-- Cordova -->
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
+        <!-- jQuery -->
         <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+        <!-- Twitter Bootstrap -->
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/bootstrapSwitch.js"></script>
+        <script type="text/javascript" src="js/bootstrap-modalmanager.js"></script>
+        <script type="text/javascript" src="js/bootstrap-modal.js"></script>
+        <!-- Application -->
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/notify.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
@@ -20,19 +29,24 @@
         <script type="text/javascript" src="js/server.js"></script>
         <script type="text/javascript" src="js/data.js"></script>
         <script type="text/javascript" src="js/models.js"></script>
+        <script type="text/javascript" src="js/interface.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
     </head>
-    <body>
+    <body id="contentLayout">
+      
+      <!-- HEADER -->
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
           <p class="app-title pull-left">Asset Capture v0.1</p>
           <p id="initEvent" class="event processing pull-right">Initializing</p>
         </div>
       </div>
+      
+      <!-- BODY -->
       <div class="container-fluid">
         <div class="row-fluid">
-	        <div id="contentLayout" class="span12">
+          <div id="contentPage" class="span12">
               <div>
                 <div id="switchBtn" class="switch switch-large span12"
                   data-on-label="Synchronized" data-off-label="Local Data Changes"
@@ -41,30 +55,75 @@
                 </div>
               </div>
               <div>
-                <button id="actSyncronize" class="btn btn-mobile span12" onClick="" disabled>Synchronize Data</button>
+                <button id="actSyncronize" class="btn btn-mobile span12" onClick="Data.refreshAppMeta(App.dbReady, App.synchFail);">Synchronize Data</button>
               </div>
               <div>
-                <label for="actChangeLocation">Erasmuskloof</label>
-              </div>
-	            <div>
                 <button id="actChangeLocation" class="btn btn-mobile span12" onClick="">Change Location</button>
-	            </div>
-	        </div>
-	      </div>
+              </div>
+              <div>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Barcode.scan(); Location.getPosition();">Scan Barcode</button>
+              </div>
+              <div>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('home');">Home</button>
+              </div>
+              <div>
+                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('settings');">Settings</button>
+              </div>
+              <div>
+                &nbsp;<br/>&nbsp;<br/>&nbsp;
+              </div>
+              <div>
+                <button id="actMovables" class="btn btn-mobile-large span6" onClick="" disabled>Movables</button>
+                <button id="actInfrastructure" class="btn btn-mobile-large span6" onClick="" disabled>Infrastructure</button>
+              </div>
+          </div>
+        </div>
       </div>
+      
+      <!-- FOOTER -->
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="navbar-inner">
           Moo
         </div>
       </div>
+      
+      <!-- LOADER -->
+      <div id="modalStaticNotify" class="modal modal-static hide fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-body">
+          <center><p><br/><span id="modalStaticNotifyContent" class="blink">LOADING</span><br/>&nbsp;</p></center>
+        </div>
+      </div>
     </body>
     
-		<script type="text/javascript">
-			$(document).ready(function(){
-			  $(document).bind('deviceready', function() {
-			    App.initialize();
-		    });
-			});
-		</script>
-</html>
+    
+    <!-- Load up the app -->
+    <script type="text/javascript">
+    
+      $(function(){
+        $.fn.modalmanager.defaults.resize = true;
+        $('[data-source]').each(function(){
+          var $this = $(this),
+            $source = $($this.data('source'));
+          var text = [];
+          $source.each(function(){
+            var $s = $(this);
+            if ($s.attr('type') == 'text/javascript'){
+              text.push($s.html().replace(/(\n)*/, ''));
+            } else {
+              text.push($s.clone().wrap('<div>').parent().html());
+            }
+          });
+          $this.text(text.join('\n\n').replace(/\t/g, '    '));
+        });
+      });
 
+    
+      $(document).ready(function(){
+        $('body').modalmanager({backdropLimit: 1});
+        $(document).bind('deviceready', function() {
+          App.initialize();
+        });
+      });
+      
+    </script>
+</html>
