@@ -577,7 +577,7 @@ var Data = {
         if (item.filter && item.filter.length) {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
-        Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
+        Data.listSynchData(Table[objName], filter, item.server_time, item.mode, function(table, synchData) {
           alert(JSON.stringify(synchData));
           Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
@@ -655,7 +655,7 @@ var Data = {
     
     
     // Retrieve list of entries
-    listSynchData: function(table, synchFilter, serverTime, callback, errorCallback) {
+    listSynchData: function(table, synchFilter, serverTime, synchMode, callback, errorCallback) {
       // Prepare
       var synchData = {};
       synchData[table.objName] =  {
@@ -665,8 +665,9 @@ var Data = {
           'update': [],
           'remove': []
       };
-      if (table.mode == Data.SYNCH_FROM_SERVER) {
+      if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
+        alert('shortcircuit on ' + table.objName);
         callback(synchData);
       }
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
@@ -675,7 +676,7 @@ var Data = {
       // Collect data
       Data.db.transaction(function(tx) {
         // Collect newly created entries
-        stmnt = 'SELECT * FROM `' + table.name + '`';
+        stmnt = 'SELECT * FROM `' + table.name + '`'
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
@@ -685,7 +686,7 @@ var Data = {
           }
         });
         // Collect updated entries
-        stmnt = 'SELECT * FROM `' + table.name + '`';
+        stmnt = 'SELECT * FROM `' + table.name + '`'
               + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed`';
         if (table.fields.archived) {
           stmnt += ' AND `archived` = 0';
@@ -699,7 +700,7 @@ var Data = {
         });
         // Collect archived entries
         if (table.fields.archived) {
-          stmnt = 'SELECT * FROM `' + table.name + '`';
+          stmnt = 'SELECT * FROM `' + table.name + '`'
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {

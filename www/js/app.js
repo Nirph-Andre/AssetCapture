@@ -92,6 +92,7 @@ var App = {
       });
       if (App.firstRun) {
         Interface.loadPage('Location');
+        App.firstRun = false;
       }
     },
     synchFail: function(message) {
