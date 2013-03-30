@@ -69,6 +69,13 @@ var Server = {
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
+        alert('post failure');
+        alert(JSON.stringify(data));
+        alert(textStatus);
+        alert(errorThrown);
+        alert(jqXHR.responseText);
+        alert(JSON.stringify(jqXHR.responseText));
+        alert(JSON.stringify(jqXHR));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {
