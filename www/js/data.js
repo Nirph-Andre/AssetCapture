@@ -165,13 +165,21 @@ var Data = {
           // Add content table to synch list and init server synch
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'floor', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'room', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
           Config.setDataItem('location', 'Unknown');
           App.configReady();

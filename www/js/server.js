@@ -61,7 +61,6 @@ var Server = {
     
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
-      alert('post call to ' + Config.serviveNode + action);
       $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -81,7 +80,6 @@ var Server = {
     
     // Ajax get helper
     get: function(action, data, callback, errorCallback) {
-      alert('get call to ' + Config.serviveNode + action);
       $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -101,7 +99,6 @@ var Server = {
     
     // Ajax post helper
     postUri: function(uri, data, callback, errorCallback) {
-      alert('post call to ' + uri);
       $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -121,7 +118,6 @@ var Server = {
     
     // Ajax get helper
     getUri: function(uri, data, callback, errorCallback) {
-      alert('get call to ' + uri);
       $.ajax({
         type: 'GET',
         dataType: 'json',
