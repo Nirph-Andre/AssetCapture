@@ -674,20 +674,11 @@ var Data = {
       // Collect data
       Data.db.transaction(function(tx) {
         // Collect newly created entries
-        if (synchData && synchData[table.objName] && synchData[table.objName].create) {
-          alert('have create space');
-        } else {
-          if (typeof synchData != 'undefined') {
-            alert('have synchData');
-            if (typeof table != 'undefined') {
-              alert('have table');
-            }
-          }
-        }
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
+            alert('create on ' + table.name + ': ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
               synchData[table.objName].create.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
@@ -701,6 +692,7 @@ var Data = {
         }
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
+            alert('update on ' + table.name + ': ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
               synchData[table.objName].update.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
@@ -712,6 +704,7 @@ var Data = {
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
+              alert('delete on ' + table.name + ': ' + result.rows.length);
               for (var i = 0; i < result.rows.length; i++) {
                 synchData[table.objName].remove.push(Data.stripRecordSlashes(result.rows.item(i)));
               }
@@ -738,6 +731,7 @@ var Data = {
       } else if (serverData.id > 0) {
         serverData.synchSave = true;
         Data.view(table, null, {'sid': serverData.id}, function(data) {
+          serverData.sid = serverData.id;
           delete serverData.id;
           serverData.synchSave = true;
           if (data.id) {
