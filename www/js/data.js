@@ -674,15 +674,22 @@ var Data = {
       // Collect data
       Data.db.transaction(function(tx) {
         // Collect newly created entries
+        if (synchData && synchData[table.objName] && synchData[table.objName].create) {
+          alert('have create space');
+        } else {
+          if (typeof synchData != 'undefined') {
+            alert('have synchData');
+            if (typeof table != 'undefined') {
+              alert('have table');
+            }
+          }
+        }
         stmnt = 'SELECT * FROM `' + table.name + '`';
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            alert(table.name + ' have rows to create: ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
-              alert(JSON.stringify(result.rows.item(i)));
-              alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
-              synchData.create.push(Data.stripRecordSlashes(result.rows.item(i)));
+              synchData[table.objName].create.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
           }
         });
@@ -694,11 +701,8 @@ var Data = {
         }
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            alert(table.name + ' have rows to update: ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
-              alert(JSON.stringify(result.rows.item(i)));
-              alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
-              synchData.update.push(Data.stripRecordSlashes(result.rows.item(i)));
+              synchData[table.objName].update.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
           }
         });
@@ -708,17 +712,13 @@ var Data = {
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
-              alert(table.name + ' have rows to archive: ' + result.rows.length);
               for (var i = 0; i < result.rows.length; i++) {
-                alert(JSON.stringify(result.rows.item(i)));
-                alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
-                synchData.remove.push(Data.stripRecordSlashes(result.rows.item(i)));
+                synchData[table.objName].remove.push(Data.stripRecordSlashes(result.rows.item(i)));
               }
             }
           });
         }
       }, function(err) {
-        alert(err.message);
         App.dbFail(err.message);
         return true;
       }, function() {
