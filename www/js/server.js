@@ -50,7 +50,7 @@ var Server = {
             }
           }, function(jqXHR, textStatus, errorThrown) {
             if (typeof errorCallback != 'undefined') {
-              errorCallback(textStatus);
+              errorCallback(errorThrown);
             } else {
               Notify.alert('Oops', 'Could not load address data from geocode api.');
             }
@@ -71,15 +71,12 @@ var Server = {
       .fail(function(jqXHR, textStatus, errorThrown) {
         alert('post failure');
         alert(JSON.stringify(data));
-        alert(textStatus);
         alert(errorThrown);
         alert(jqXHR.responseText);
-        alert(JSON.stringify(jqXHR.responseText));
-        alert(JSON.stringify(jqXHR));
         if (errorCallback !== 'undefined')  {
           errorCallback(jqXHR, textStatus, errorThrown);
         } else {
-          Notify.alert('Oops', 'Could not talk to server: ' + textStatus);
+          Notify.alert('Oops', 'Could not talk to server: ' + errorThrown);
         }
       });
     },
