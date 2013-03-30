@@ -1,4 +1,6 @@
 
+
+
 Table.Config = new Data.model('Config', 'x_config', {
   'name': EM.attr('string', {required: true, maxLength: 250}),
   'value': EM.attr('string', {required: true, maxLength: 250})
@@ -22,31 +24,75 @@ Table.Synch = new Data.model('Synch', 'x_synch', {
   'server_time': EM.attr('datetime', {})
 });
 
+
+
+
 Table.Location = new Data.model('Location', 'location', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
   'name': EM.attr('string', {required: true, maxLength: 100})
 });
 
-Table.Moveable = new Data.model('Moveable', 'moveable', {
+Table.AssetType = new Data.model('AssetType', 'asset_type', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
-  'location': EM.attr('string', {required: true, maxLength: 100}),
-  'identifier': EM.attr('string', {required: true, maxLength: 100}),
-  'type': EM.attr('string', {required: true, maxLength: 100}),
-  'sub_type': EM.attr('string', {required: true, maxLength: 100}),
-  'description': EM.attr('string', {required: true, maxLength: 100})
+  'name': EM.attr('string', {required: true, maxLength: 100})
 });
 
-Table.Infrastructure = new Data.model('Infrastructure', 'infrastructure', {
+Table.AssetSubType = new Data.model('AssetType', 'asset_sub_type', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'asset_type_id': EM.belongsTo(Table.AssetType, {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.AssetDescription = new Data.model('AssetDescription', 'asset_description', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'asset_sub_type_id': EM.belongsTo(Table.AssetSubType, {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.AssetSubDescription = new Data.model('AssetSubDescription', 'asset_sub_description', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'asset_description_id': EM.belongsTo(Table.AssetDescription, {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.Material = new Data.model('Material', 'material', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.PoleLength = new Data.model('PoleLength', 'pole_length', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
+Table.Asset = new Data.model('Asset', 'asset', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
   'location': EM.attr('string', {required: true, maxLength: 100}),
+  'town': EM.attr('string', {required: true, maxLength: 100}),
+  'street': EM.attr('string', {required: true, maxLength: 100}),
+  'gps_relative': EM.attr('tinyint', {required: true, maxLength: 100}),
+  'gps_lat': EM.attr('string', {required: true, maxLength: 50}),
+  'gps_long': EM.attr('string', {required: true, maxLength: 50}),
   'identifier': EM.attr('string', {required: true, maxLength: 100}),
-  'type': EM.attr('string', {required: true, maxLength: 100}),
-  'sub_type': EM.attr('string', {required: true, maxLength: 100}),
-  'description': EM.attr('string', {required: true, maxLength: 100})
+  'asset_type': EM.attr('string', {required: true, maxLength: 100}),
+  'asset_sub_type': EM.attr('string', {required: true, maxLength: 100}),
+  'asset_description': EM.attr('string', {required: true, maxLength: 100}),
+  'asset_sub_description': EM.attr('string', {required: true, maxLength: 100}),
+  'material': EM.attr('string', {required: true, maxLength: 100}),
+  'length': EM.attr('string', {required: true, maxLength: 100}),
+  'other_info': EM.attr('string', {required: true, maxLength: 100}),
+  'condition': EM.attr('string', {required: true, maxLength: 100})
 });
+
+
 
 
 /*Entity.Profile = new Data.entity({

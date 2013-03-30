@@ -166,8 +166,13 @@ var Data = {
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'moveable', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'infrastructure', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -609,7 +614,7 @@ var Data = {
               Data.synchItems = 0;
               Data.synchItsynchedItemsems = 0;
               Data.synching = false;
-              App.synchFail();
+              App.synchFail(textStatus);
             }
           });
         });

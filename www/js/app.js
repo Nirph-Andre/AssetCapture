@@ -94,8 +94,13 @@ var App = {
         Interface.loadPage('Location');
       }
     },
-    synchFail: function() {
-      App.connectionRequired('synch', Data.refreshAppMeta);
+    synchFail: function(message) {
+      if (typeof message == 'undefined') {
+        App.connectionRequired('synch', Data.refreshAppMeta);
+      } else {
+        Notify.notifyStatic('Synchronization Error', message);
+        App.setState('Synchronization Error', message, 'problem');
+      }
       return true;
     },
     connectionRequired: function(id, callback) {
