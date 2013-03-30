@@ -578,12 +578,9 @@ var Data = {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
         Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
-          alert('post req for ' + table.name);
-          alert(JSON.stringify(synchData));
           Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
-              alert('post response for ' + retObjName);
               var table = Table[retObjName];
               var synchItem = jsonResult.Data[retObjName];
               var localTime = Util.getCurrentDateTime();
@@ -681,7 +678,10 @@ var Data = {
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
+            alert(table.name + ' have rows to create: ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
+              alert(JSON.stringify(result.rows.item(i)));
+              alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
               synchData.create.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
           }
@@ -694,7 +694,10 @@ var Data = {
         }
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
+            alert(table.name + ' have rows to update: ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
+              alert(JSON.stringify(result.rows.item(i)));
+              alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
               synchData.update.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
           }
@@ -705,13 +708,17 @@ var Data = {
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
+              alert(table.name + ' have rows to archive: ' + result.rows.length);
               for (var i = 0; i < result.rows.length; i++) {
+                alert(JSON.stringify(result.rows.item(i)));
+                alert(JSON.stringify(Data.stripRecordSlashes(result.rows.item(i))));
                 synchData.remove.push(Data.stripRecordSlashes(result.rows.item(i)));
               }
             }
           });
         }
       }, function(err) {
+        alert(err.message);
         App.dbFail(err.message);
         return true;
       }, function() {
