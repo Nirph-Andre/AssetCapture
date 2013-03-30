@@ -150,6 +150,7 @@ var Data = {
         }
         stmnt += ', `created` DATETIME';
         stmnt += ', `changed` DATETIME';
+        stmnt += ', `archived` TINYINT DEFAULT 0';
         stmnt += ')';
         tx.executeSql(stmnt);
       }
@@ -326,8 +327,29 @@ var Data = {
     
     
     // Create a new data entity.
-    remove: function(table, id, callback, errorCallback) {
-      
+    remove: function(table, id, permanent, callback, errorCallback) {
+      // Execute query
+      if (!permanent) {
+        Data.save(table, id, {'archived': 1}, callback, errorCallback);
+        return true;
+      }
+      stmnt = 'DELETE FROM `' + table.name + '` WHERE `id`=' + id;
+      Data.query(stmnt, function(tx, result) {
+        dataSet['id'] = id;
+        if (typeof callback != 'undefined') {
+          callback(dataSet);
+        }
+        table.trigger(mode, dataSet);
+      }, function(err) {
+        alert('Data.save query returned error: ' + err.message);
+        // Oops, something went wrong
+        if (typeof errorCallback != 'undefined') {
+          errorCallback(err);
+        } else {
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
+        }
+        return true;
+      });
     },
     
     
@@ -570,10 +592,11 @@ var Data = {
                 if (!data.archive) {
                   Data.save(table, data.id, {
                     'sid': data.sid,
-                    'synchdate': jsonResult.synch_datetime
+                    'synchdate': jsonResult.synch_datetime,
+                    'synchSave': true
                   });
                 } else {
-                  Data.remove(table, data.id);
+                  Data.remove(table, data.id, true);
                 }
               }
   
@@ -640,9 +663,9 @@ var Data = {
       synchData[table.objName] =  {
           'lastSynchDate': serverTime,
           'filter': synchFilter,
-          'create': {},
-          'update': {},
-          'remove': {}
+          'create': [],
+          'update': [],
+          'remove': []
       };
       if (table.mode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
@@ -658,7 +681,9 @@ var Data = {
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            synchData.create = result.rows;
+            for (var i = 0; i < result.rows.length; i++) {
+              synchData.create.push(Data.stripRecordSlashes(result.rows.item(i)));
+            }
           }
         });
         // Collect updated entries
@@ -669,7 +694,9 @@ var Data = {
         }
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            synchData.update = result.rows;
+            for (var i = 0; i < result.rows.length; i++) {
+              synchData.update.push(Data.stripRecordSlashes(result.rows.item(i)));
+            }
           }
         });
         // Collect archived entries
@@ -678,7 +705,9 @@ var Data = {
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
-              synchData.remove = result.rows;
+              for (var i = 0; i < result.rows.length; i++) {
+                synchData.remove.push(Data.stripRecordSlashes(result.rows.item(i)));
+              }
             }
           });
         }
@@ -696,10 +725,11 @@ var Data = {
       if (serverData.archived && serverData.archived == 1) {
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           if (data.id) {
-            Data.remove(Table[objName], data.id);
+            Data.remove(table, data.id, true);
           }
         });
       } else if (serverData.id > 0) {
+        serverData.synchSave = true;
         Data.view(table, null, {'sid': serverData.id}, function(data) {
           delete serverData.id;
           serverData.synchSave = true;
