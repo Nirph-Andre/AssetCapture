@@ -556,12 +556,12 @@ var Data = {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
         Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
-          alert('post req for ' + table);
+          alert('post req for ' + table.name);
+          alert(JSON.stringify(synchData));
           Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
-            alert('post response');
-            alert(JSON.stringify(jsonResult));
             for (var retObjName in jsonResult.Data) {
+              alert('post response for ' + retObjName);
               var table = Table[retObjName];
               var synchItem = jsonResult.Data[retObjName];
               var localTime = Util.getCurrentDateTime();
