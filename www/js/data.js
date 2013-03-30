@@ -167,7 +167,7 @@ var Data = {
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
+          /*Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'floor', 'mode': Data.SYNCH_BOTH});
@@ -175,13 +175,13 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});*/
           Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
+          /*Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});*/
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -578,6 +578,7 @@ var Data = {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
         Data.listSynchData(Table[objName], filter, item.server_time, function(table, synchData) {
+          alert(JSON.stringify(synchData));
           Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
@@ -678,7 +679,6 @@ var Data = {
               + ' WHERE `sid` IS NULL';
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            alert('create on ' + table.name + ': ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
               synchData[table.objName].create.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
@@ -692,7 +692,6 @@ var Data = {
         }
         tx.executeSql(stmnt, [], function(tx, result) {
           if (result.rows.length) {
-            alert('update on ' + table.name + ': ' + result.rows.length);
             for (var i = 0; i < result.rows.length; i++) {
               synchData[table.objName].update.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
@@ -704,7 +703,6 @@ var Data = {
                 + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
           tx.executeSql(stmnt, [], function(tx, result) {
             if (result.rows.length) {
-              alert('delete on ' + table.name + ': ' + result.rows.length);
               for (var i = 0; i < result.rows.length; i++) {
                 synchData[table.objName].remove.push(Data.stripRecordSlashes(result.rows.item(i)));
               }
