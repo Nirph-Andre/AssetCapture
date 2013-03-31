@@ -43,7 +43,7 @@ Table.Town = new Data.model('Town', 'town', {
 Table.Street = new Data.model('Street', 'street', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
-  'town_id_id': EM.belongsTo(Table.Town, {}),
+  'town_id': EM.belongsTo(Table.Town, {}),
   'name': EM.attr('string', {required: true, maxLength: 100})
 });
 
