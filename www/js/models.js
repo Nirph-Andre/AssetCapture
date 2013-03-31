@@ -74,7 +74,7 @@ Table.AssetType = new Data.model('AssetType', 'asset_type', {
   'name': EM.attr('string', {required: true, maxLength: 100})
 });
 
-Table.AssetSubType = new Data.model('AssetType', 'asset_sub_type', {
+Table.AssetSubType = new Data.model('AssetSubType', 'asset_sub_type', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
   'asset_type_id': EM.belongsTo(Table.AssetType, {}),

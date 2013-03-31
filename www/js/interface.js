@@ -67,7 +67,7 @@ var Interface = {
     },
 
     // Select from list
-    listFromTable: function(table, filter, labelField, callback, allowNew) {
+    listFromTable: function(table, filter, labelField, callback, allowNew, instruction) {
       Interface.listTable = table;
       Interface.labelField = labelField;
       Interface.contextData = filter;
@@ -77,13 +77,17 @@ var Interface = {
         for (var i in data) {
           listData.push({"value": data[i].id, "label": data[i][labelField]});
         }
-        Interface.listFromData(listData, callback);
+        Interface.listFromData(listData, callback, instruction);
       });
     },
-    listFromData: function(data, callback) {
+    listFromData: function(data, callback, instruction) {
+      instruction = instruction
+        ? instruction.toUpperCase()
+        : 'SELECT ITEM';
       Interface.listCallback = callback;
       Interface.loadPage('ListSelect');
       $('#listDataContent').html('');
+      $('#listDataContent').append('<div><label>' + instruction + '</label></div>');
       for (var i in data) {
         $('#listDataContent').append('<div><button class="btn btn-mobile-list span12" onClick="Interface.listSelect('
                                      + data[i].value + ', \'' + Util.addSlashes(data[i].label) + '\');">'

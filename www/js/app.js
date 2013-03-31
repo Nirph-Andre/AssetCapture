@@ -187,7 +187,9 @@ var App = {
       $('#actStreet').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
+      $('#actFloorNA').prop('disabled', true);
       $('#actRoom').prop('disabled', true);
+      $('#actRoomNA').prop('disabled', true);
       $('#actMoveMain').prop('disabled', true);
       Interface.listFromTable(Table.Town, {'location_id': id}, 'name', App.setTown, true);
     },
@@ -210,7 +212,9 @@ var App = {
       $('#actStreet').prop('disabled', false);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
+      $('#actFloorNA').prop('disabled', true);
       $('#actRoom').prop('disabled', true);
+      $('#actRoomNA').prop('disabled', true);
       $('#actMoveMain').prop('disabled', true);
       Interface.listFromTable(Table.Street, {'town_id': id}, 'name', App.setStreet, true);
     },
@@ -229,7 +233,9 @@ var App = {
       $('#actRoom').html('Scan Room Barcode');
       $('#actBuilding').prop('disabled', false);
       $('#actFloor').prop('disabled', true);
+      $('#actFloorNA').prop('disabled', true);
       $('#actRoom').prop('disabled', true);
+      $('#actRoomNA').prop('disabled', true);
       $('#actMoveMain').prop('disabled', false);
     },
     setBuilding: function(id, name) {
@@ -243,7 +249,9 @@ var App = {
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actFloor').prop('disabled', false);
+      $('#actFloorNA').prop('disabled', false);
       $('#actRoom').prop('disabled', true);
+      $('#actRoomNA').prop('disabled', true);
     },
     setFloor: function(name) {
       var context = {
@@ -266,6 +274,7 @@ var App = {
         Config.setDataItem('room', '');
         $('#actRoom').html('Scan Room Barcode');
         $('#actRoom').prop('disabled', false);
+        $('#actRoomNA').prop('disabled', false);
       });
     },
     setRoom: function(name) {

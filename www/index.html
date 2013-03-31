@@ -107,22 +107,22 @@
               </div>
               <div>
                 <button id="actLocation" class="btn btn-mobile span12"
-                  onClick="Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);">Select Location</button>
+                  onClick="Interface.listFromTable(Table.Location, {}, 'name', App.setLocation, false, 'Select Location');">Select Location</button>
               </div>
               <div>
                 <button id="actTown" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Town, {'location_id': Config.data.location_id}, 'name', App.setTown);">Select Town</button>
+                  onClick="Interface.listFromTable(Table.Town, {'location_id': Config.data.location_id}, 'name', App.setTown, true, 'Select Town');">Select Town</button>
               </div>
               <div>
                 <button id="actStreet" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Street, {'town_id': Config.data.town_id}, 'name', App.setStreet);">Select Street</button>
+                  onClick="Interface.listFromTable(Table.Street, {'town_id': Config.data.town_id}, 'name', App.setStreet, true, 'Select Street');">Select Street</button>
               </div>
               <div class="spacer">
                 &nbsp;
               </div>
               <div>
                 <button id="actBuilding" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Building, {'location_id': Config.data.location_id}, 'name', App.setBuilding);">Select Building</button>
+                  onClick="Interface.listFromTable(Table.Building, {'location_id': Config.data.location_id}, 'name', App.setBuilding, true, 'Select Building');">Select Building</button>
               </div>
               <div>
                 <button id="actFloor" class="btn btn-mobile span8" disabled
