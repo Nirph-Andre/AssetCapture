@@ -14,6 +14,8 @@ var App = {
     // Application Constructor
     initialize: function() {
       //Notify.notifyStatic();
+      $('.page').hide();
+      $('#pageLogin').show();
       App.bindEvents();
       this.setState('Processing', 'Initializing Application');
       Data.initialize();

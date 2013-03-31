@@ -202,9 +202,9 @@
     <!-- Load up the app -->
 		<script type="text/javascript">
 
-      $(function(){
+      $(function() {
 				$.fn.modalmanager.defaults.resize = true;
-				$('[data-source]').each(function(){
+				$('[data-source]').each(function() {
 				  var $this = $(this),
 				    $source = $($this.data('source'));
 				  var text = [];
@@ -221,7 +221,7 @@
       });
 
 
-			$(document).ready(function(){
+			$(document).ready(function() {
 			  $('body').modalmanager({backdropLimit: 1});
 			  $(document).bind('deviceready', function() {
 			    App.initialize();
