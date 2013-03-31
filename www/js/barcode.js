@@ -1,24 +1,21 @@
 
 var Barcode = {
-    
+
     // Scan a barcode
     scan: function(callback, errorCallback) {
       try {
         window.plugins.barcodeScanner.scan(function(result) {
           if (result.cancelled == false) {
-            alert("We got a barcode\n" +
-                  "Result: " + result.text + "\n" +
-                  "Format: " + result.format);
+            callback(result.text);
           } else {
-            alert("Scanning cancelled.");
+            Notify.alert("Notice", "Scanning cancelled.");
           }
-          alert(JSON.stringify(result));
         }, function(error) {
-          alert("Scanning failed: " + error);
+          Notify.alert('Oops', 'Could not do scan: ' + error);
         });
       } catch(err) {
         Notify.alert('Oops', 'Could not do scan: ' + err.message);
       }
     }
-    
+
 };

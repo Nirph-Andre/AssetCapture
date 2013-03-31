@@ -47,7 +47,7 @@
       <div class="container-fluid">
 
         <!-- PAGE: LOGIN -->
-        <div id="pageLogin" class="page">
+        <div id="pageLogin" class="page hide">
           <div class="row-fluid">
             <div class="span12">
               <div class="spacer">
@@ -99,7 +99,7 @@
         <!-- PAGE END: HOME -->
 
         <!-- PAGE: LOCATION -->
-        <div id="pageLocation" class="page hide">
+        <div id="pageLocation" class="page">
           <div class="row-fluid">
             <div class="span12">
               <div class="spacer">
@@ -125,12 +125,16 @@
                   onClick="Interface.listFromTable(Table.Building, {'location_id': Config.data.location_id}, 'name', App.setBuilding);">Select Building</button>
               </div>
               <div>
-                <button id="actFloor" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Floor, {'building_id': Config.data.building_id}, 'name', App.setFloor);">Select Floor</button>
+                <button id="actFloor" class="btn btn-mobile span8" disabled
+                  onClick="Barcode.scan(App.setFloor)">Scan Floor Barcode</button>
+                <button id="actFloorNA" class="btn btn-mobile span4" disabled
+                  onClick="App.setFloor('N/A');">Floor N/A</button>
               </div>
               <div>
-                <button id="actRoom" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Room, {'floor_id': Config.data.floor_id}, 'name', App.setRoom);">Select Room</button>
+                <button id="actRoom" class="btn btn-mobile span8" disabled
+                  onClick="Barcode.scan(App.setRoom)">Scan Room Barcode</button>
+                <button id="actRoomNA" class="btn btn-mobile span4" disabled
+                  onClick="App.setRoom('N/A');">Room N/A</button>
               </div>
               <div class="spacer">
                 &nbsp;

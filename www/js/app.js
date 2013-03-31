@@ -176,6 +176,11 @@ var App = {
       Config.setDataItem('room', '');
       $('.location').html(Config.data.location);
       $('#actLocation').html(Config.data.location);
+      $('#actTown').html('Select Town');
+      $('#actStreet').html('Select Street');
+      $('#actBuilding').html('Select Building');
+      $('#actFloor').html('Scan Floor Barcode');
+      $('#actRoom').html('Scan Room Barcode');
       $('#actTown').prop('disabled', false);
       $('#actStreet').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
@@ -196,6 +201,10 @@ var App = {
       Config.setDataItem('room_id', 0);
       Config.setDataItem('room', '');
       $('#actTown').html(Config.data.town);
+      $('#actStreet').html('Select Street');
+      $('#actBuilding').html('Select Building');
+      $('#actFloor').html('Scan Floor Barcode');
+      $('#actRoom').html('Scan Room Barcode');
       $('#actStreet').prop('disabled', false);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
@@ -212,11 +221,14 @@ var App = {
       Config.setDataItem('floor', '');
       Config.setDataItem('room_id', 0);
       Config.setDataItem('room', '');
+      $('#actStreet').html(Config.data.street);
+      $('#actBuilding').html('Select Building');
+      $('#actFloor').html('Scan Floor Barcode');
+      $('#actRoom').html('Scan Room Barcode');
       $('#actBuilding').prop('disabled', false);
       $('#actFloor').prop('disabled', true);
       $('#actRoom').prop('disabled', true);
       $('#actMoveMain').prop('disabled', false);
-      $('#actStreet').html(Config.data.street);
     },
     setBuilding: function(id, name) {
       Config.setDataItem('building_id', id);
@@ -225,22 +237,53 @@ var App = {
       Config.setDataItem('floor', '');
       Config.setDataItem('room_id', 0);
       Config.setDataItem('room', '');
+      $('#actBuilding').html(Config.data.building);
+      $('#actFloor').html('Scan Floor Barcode');
+      $('#actRoom').html('Scan Room Barcode');
       $('#actFloor').prop('disabled', false);
       $('#actRoom').prop('disabled', true);
-      $('#actBuilding').html(Config.data.building);
     },
-    setFloor: function(id, name) {
-      Config.setDataItem('floor_id', id);
-      Config.setDataItem('floor', name);
-      Config.setDataItem('room_id', 0);
-      Config.setDataItem('room', '');
-      $('#actRoom').prop('disabled', false);
-      $('#actFloor').html(Config.data.floor);
+    setFloor: function(name) {
+      var context = {
+          'building_id': Config.data.building_id,
+          'name': name
+          };
+      Data.view(Table.Floor, null, context, function(xdata) {
+        if (!xdata.id) {
+          Data.save(Table.Floor, null, context, function(data) {
+            Config.setDataItem('floor_id', data.id);
+            Config.setDataItem('floor', data.name);
+            $('#actFloor').html(Config.data.floor);
+          });
+        } else {
+          Config.setDataItem('floor_id', xdata.id);
+          Config.setDataItem('floor', xdata.name);
+          $('#actFloor').html(Config.data.floor);
+        }
+        Config.setDataItem('room_id', 0);
+        Config.setDataItem('room', '');
+        $('#actRoom').html('Scan Room Barcode');
+        $('#actRoom').prop('disabled', false);
+      });
     },
-    setRoom: function(id, name) {
-      Config.setDataItem('room_id', id);
-      Config.setDataItem('room', name);
-      $('#actRoom').html(Config.data.room);
+    setRoom: function(name) {
+      var context = {
+          'floor_id': Config.data.floor_id,
+          'name': name
+          };
+      Data.view(Table.Room, null, context, function(xdata) {
+        if (!xdata.id) {
+          Data.save(Table.Room, null, context, function(data) {
+            Config.setDataItem('room_id', data.id);
+            Config.setDataItem('room', data.name);
+            $('#actRoom').html(Config.data.floor);
+          });
+        } else {
+          Config.setDataItem('room_id', xdata.id);
+          Config.setDataItem('room', xdata.name);
+          $('#actRoom').html(Config.data.floor);
+        }
+      });
     }
 
 };
