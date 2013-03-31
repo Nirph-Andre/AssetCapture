@@ -34,7 +34,7 @@
         <script type="text/javascript" src="js/app.js"></script>
     </head>
     <body id="contentLayout">
-      
+
       <!-- HEADER -->
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
@@ -42,10 +42,10 @@
           <p id="initEvent" class="event processing pull-right">Initializing</p>
         </div>
       </div>
-      
+
       <!-- BODY -->
       <div class="container-fluid">
-      
+
         <!-- PAGE: LOGIN -->
         <div id="pageLogin" class="page">
           <div class="row-fluid">
@@ -54,7 +54,7 @@
                 &nbsp;
               </div>
               <div>
-                <label for="inputUsername">LOGIN</label>
+                <label for="loginUsername">LOGIN</label>
               </div>
               <div class="spacer">
                 &nbsp;
@@ -79,47 +79,16 @@
           </div>
         </div>
         <!-- PAGE END: LOGIN -->
-      
-        <!-- PAGE: LOCATION -->
-        <div id="pageLocation" class="page hide">
-          <div class="row-fluid">
-            <div class="span12">
-              <div class="spacer">
-                &nbsp;
-              </div>
-              <div>
-                <label>LOCATION</label>
-              </div>
-              <div class="spacer">
-                &nbsp;
-              </div>
-              <div>
-                <button id="actLogin" class="btn btn-mobile span12"
-                  onClick="Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);">Select Location</button>
-              </div>
-              <div class="spacer">
-                &nbsp;
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- PAGE END: LOCATION -->
-      
+
         <!-- PAGE: HOME -->
         <div id="pageHome" class="page hide">
           <div class="row-fluid">
             <div class="span12">
               <div>
-                <button id="actSyncronize" class="btn btn-mobile span12" onClick="Data.refreshAppMeta();">Synchronize Data</button>
+                <button class="btn btn-mobile span12" onClick="Data.refreshAppMeta();">Synchronize Data</button>
               </div>
               <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('Location');">Change Location</button>
-              </div>
-              <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Barcode.scan(); Location.getPosition();">Scan Barcode</button>
-              </div>
-              <div>
-                <button id="actChangeLocation" class="btn btn-mobile span12" onClick="Interface.loadPage('Home');">Home</button>
+                <button class="btn btn-mobile span12" onClick="App.startCapture();">Capture Assets</button>
               </div>
               <div class="spacer">
                 &nbsp;
@@ -128,7 +97,59 @@
           </div>
         </div>
         <!-- PAGE END: HOME -->
-      
+
+        <!-- PAGE: LOCATION -->
+        <div id="pageLocation" class="page hide">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <button id="actLocation" class="btn btn-mobile span12"
+                  onClick="Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);">Select Location</button>
+              </div>
+              <div>
+                <button id="actTown" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Town, {'location_id': Config.data.location_id}, 'name', App.setTown);">Select Town</button>
+              </div>
+              <div>
+                <button id="actStreet" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Street, {'town_id': Config.data.town_id}, 'name', App.setStreet);">Select Street</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <button id="actMoveMain" class="btn btn-mobile btn-success span12" disabled
+                  onClick="Interface.loadPage('CaptureMain');">Next</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: LOCATION -->
+
+        <!-- PAGE: CAPTURE MAIN -->
+        <div id="pageCaptureMain" class="page hide">
+          <div class="row-fluid">
+            <div class="span12">
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div class="spacer">
+                CAPTURE MAIN!
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- PAGE END: CAPTURE MAIN -->
+
         <!-- PAGE: LIST SELECT -->
         <div id="pageListSelect" class="page hide">
           <div class="row-fluid">
@@ -137,16 +158,21 @@
           </div>
         </div>
         <!-- PAGE END: LIST SELECT -->
-	      
+
       </div>
-      
+
       <!-- FOOTER -->
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="navbar-inner">
-          <div class="white location"><center>Location</center></div>
+          <ul id="contextNav" class="nav pull-right" style="display: none">
+					  <li><a class="handy" onClick="Interface.loadPage('CaptureBuilding');">Building</a></li>
+					  <li><a class="handy" onClick="Interface.loadPage('CaptureFloor');">Floor</a></li>
+					  <li><a class="handy" onClick="Interface.loadPage('CaptureRoom');">Room</a></li>
+					</ul>
+          <div class="navtext white pull-left location">Location</div>
         </div>
       </div>
-      
+
       <!-- LOADER -->
       <div id="modalStaticNotify" class="modal modal-static hide fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-body">
@@ -154,11 +180,11 @@
         </div>
       </div>
     </body>
-    
-    
+
+
     <!-- Load up the app -->
 		<script type="text/javascript">
-		
+
       $(function(){
 				$.fn.modalmanager.defaults.resize = true;
 				$('[data-source]').each(function(){
@@ -177,13 +203,13 @@
 				});
       });
 
-		
+
 			$(document).ready(function(){
 			  $('body').modalmanager({backdropLimit: 1});
 			  $(document).bind('deviceready', function() {
 			    App.initialize();
 		    });
 			});
-			
+
 		</script>
 </html>

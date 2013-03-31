@@ -95,25 +95,25 @@ var EM = {
 
 // Data storage, retrieval and anipulation
 var Data = {
-    
+
     // Database object
     db: null,
-    
+
     // Map tables to object names
     tableMap: {},
-    
+
     // Synchronization status
     synching: false,
     synchItems: 0,
     synchedItems: 0,
-    
+
     // Some constants
     SYNCH_FROM_SERVER: 1,
     SYNCH_TO_SERVER: 2,
     SYNCH_BOTH: 3,
-    
-    
-    
+
+
+
 
     // ****************************** INITIALIZATION ********************************* //
     // Initialize db handling
@@ -121,8 +121,8 @@ var Data = {
       App.setState('Init Database', 'Local database initializing.');
       Data.openDatabase();
     },
-    
-    
+
+
     // Open db connection
     openDatabase: function() {
       Data.db = window.openDatabase(Config.dbName, Config.dbVersion, Config.dbDisplayName, Config.dbSize);
@@ -134,7 +134,7 @@ var Data = {
       }
     },
 
-    
+
     // Create tables
     initDb: function(tx) {
       // Create tables
@@ -155,8 +155,8 @@ var Data = {
         tx.executeSql(stmnt);
       }
     },
-    
-    
+
+
     // Initial data setup
     initData: function() {
       App.setState();
@@ -167,7 +167,7 @@ var Data = {
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
-          /*Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'floor', 'mode': Data.SYNCH_BOTH});
@@ -175,13 +175,13 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});*/
+          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
-          /*Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});*/
+          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -201,8 +201,8 @@ var Data = {
       });
     },
 
-    
-    
+
+
 
     // ****************************** ERROR HANDLING ********************************* //
     // Success and error handling
@@ -217,9 +217,9 @@ var Data = {
       return true;
     },
     devNull: function() { },
-    
-    
-    
+
+
+
 
     // ****************************** DATA MANIPULATION ********************************* //
     // Generic query execution
@@ -229,8 +229,8 @@ var Data = {
         tx.executeSql(statement, [], callback);
       }, errorCallback, Data.devNull);
     },
-    
-    
+
+
     // Create a new data entity.
     save: function(table, id, data, callback, errorCallback) {
       // Prepare data for query
@@ -299,7 +299,7 @@ var Data = {
         }
         stmnt = 'INSERT INTO `' + table.name + '` (' + fieldSet.fields.join(', ') + ') VALUES (' + fieldSet.values.join(', ') + ') ';
       }
-      
+
       // Execute query
       Data.query(stmnt, function(tx, result) {
         if (result.rowsAffected) {
@@ -324,8 +324,8 @@ var Data = {
         return true;
       });
     },
-    
-    
+
+
     // Create a new data entity.
     remove: function(table, id, permanent, callback, errorCallback) {
       // Execute query
@@ -351,8 +351,8 @@ var Data = {
         return true;
       });
     },
-    
-    
+
+
     // View a single record with relevant dependants
     view: function(table, id, where, callback, errorCallback) {
       // Prepare statement
@@ -370,7 +370,7 @@ var Data = {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
       stmnt += ' LIMIT 1';
-      
+
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
@@ -397,8 +397,8 @@ var Data = {
         return true;
       });
     },
-    
-    
+
+
     // Retrieve list of entries
     list: function(table, where, callback, errorCallback) {
       // Prepare statement
@@ -412,7 +412,7 @@ var Data = {
       if (filter.length) {
         stmnt += ' WHERE ' + filter.join(' AND ');
       }
-      
+
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
@@ -439,14 +439,14 @@ var Data = {
         return true;
       });
     },
-    
-    
+
+
     // Get latest change datetime from a table
     getLastChangeTime: function(table, callback, datefield) {
       // Prepare statement
       var datefield = datefield ? datefield : 'changed';
       var stmnt = 'SELECT MAX(`' + datefield + '`) as changed FROM ' + table.name;
-      
+
       // Execute query
       Data.query(stmnt, function(tx, result) {
         // Do we have data?
@@ -462,10 +462,10 @@ var Data = {
         return true;
       });
     },
-    
-    
-    
-    
+
+
+
+
     // ****************************** MODELS ********************************* //
     // Table model
     model: function (objName, tableName, meta) {
@@ -486,19 +486,19 @@ var Data = {
         }
       };
     },
-    
-    
+
+
     // Entity model
     entity: function(meta) {
       this.struct = meta;
       this.hooks = {};
       this.listen = function(event, callback) {
-        
+
       };
     },
-    
 
-    
+
+
     // ****************************** UTILS ********************************* //
     // Escape a string
     addSlashes: function(input) {
@@ -508,8 +508,8 @@ var Data = {
       input = input.replace(/'/g,"''");
       return input;
     },
-    
-    
+
+
     // Unescape a string
     stripSlashes: function(input) {
       if (typeof(input) != 'string') {
@@ -518,8 +518,8 @@ var Data = {
       input = input.replace(/''/g,"'");
       return input;
     },
-    
-    
+
+
     // Unescape all strings for a record
     stripRecordSlashes: function(record) {
       for (var field in record) {
@@ -527,8 +527,8 @@ var Data = {
       }
       return record;
     },
-    
-    
+
+
     // Unescape all strings for a recordset and pack into array
     stripRecordsetSlashes: function(recordset) {
       var len = recordset.length;
@@ -538,9 +538,9 @@ var Data = {
       }
       return recSet;
     },
-    
-    
-    
+
+
+
 
     // ****************************** SYNCHRONIZATION ********************************* //
     // Synchronize all relevant data to and from server
@@ -559,8 +559,8 @@ var Data = {
         Data.loadSynchData(data);
       });
     },
-    
-    
+
+
     // Load synch data from server
     loadSynchData: function(synchEntries) {
       Data.synchItems = synchEntries.length;
@@ -595,28 +595,28 @@ var Data = {
                   Data.remove(table, data.id, true);
                 }
               }
-  
+
               // Create new entries as provided by server
               for (var ind in synchItem.Create) {
                 data = synchItem.Create[ind];
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
-  
+
               // Update existing entries
               for (var ind in synchItem.Update) {
                 data = synchItem.Update[ind];
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
-  
+
               // Remove existing entries
               for (var ind in synchItem.Remove) {
                 data = synchItem.Remove[ind];
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
-  
+
               // Update synch entry with relevant timestamps
               Data.view(Table.Synch, null, {'table': table.name}, function(data) {
                 if (data.id) {
@@ -626,7 +626,7 @@ var Data = {
                   });
                 }
               });
-              
+
               // Cleanup
               Data.synchedItems++;
               if (Data.synchedItems >= Data.synchItems) {
@@ -649,8 +649,8 @@ var Data = {
         });
       }
     },
-    
-    
+
+
     // Retrieve list of entries
     listSynchData: function(table, synchFilter, serverTime, synchMode, callback, errorCallback) {
       // Prepare
@@ -668,7 +668,7 @@ var Data = {
       }
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       var stmnt = '';
-      
+
       // Collect data
       Data.db.transaction(function(tx) {
         // Collect newly created entries
@@ -713,8 +713,8 @@ var Data = {
         callback(table, synchData);
       });
     },
-    
-    
+
+
     // Synch retrieved server data to local store
     synchUpdate: function(table, serverData) {
       if (serverData.archived && serverData.archived == 1) {
@@ -737,5 +737,5 @@ var Data = {
         });
       }
     }
-    
+
 };

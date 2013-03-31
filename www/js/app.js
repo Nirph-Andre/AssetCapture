@@ -1,6 +1,6 @@
 
 var App = {
-    
+
     // Status data
     location: 'Device',
     state: 'Initializing',
@@ -9,8 +9,8 @@ var App = {
     online: true,
     firstRun: false,
     authenticated: false,
-    
-    
+
+
     // Application Constructor
     initialize: function() {
       //Notify.notifyStatic();
@@ -18,8 +18,8 @@ var App = {
       this.setState('Processing', 'Initializing Application');
       Data.initialize();
     },
-    
-    
+
+
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
@@ -30,8 +30,8 @@ var App = {
       $(document).bind('online', App.nowOnline);
       $(document).bind('backbutton', Interface.back);
     },
-    
-    
+
+
     // Connectivity handling
     nowOffline: function() {
       App.online = false;
@@ -43,8 +43,8 @@ var App = {
       }
       App.connectionStact = {};
     },
-    
-    
+
+
     // Application status
     setState: function(state, description, evtClass) {
       App.state = state ? state : 'Ready';
@@ -56,8 +56,8 @@ var App = {
       }
       Util.setEventInfo('initEvent', App.state, evtClass);
     },
-    
-    
+
+
     // Status handling
     newDevice: function() {
       App.firstRun = true;
@@ -91,7 +91,7 @@ var App = {
         Util.populateSelect('locationSelect', 'Select Location', data, Config.data.location);
       });
       if (App.firstRun) {
-        Interface.loadPage('Location');
+        Interface.loadPage('Home');
         App.firstRun = false;
       }
     },
@@ -111,8 +111,8 @@ var App = {
       App.setState('Connection Required', 'Please connect to internet to proceed', 'processing');
       return true;
     },
-    
-    
+
+
     // Authentication
     login: function (username, password) {
       Server.post('authentication/login', {"username": username, "password": password}, function (jsonResult) {
@@ -123,11 +123,7 @@ var App = {
           if (App.firstRun) {
             Data.refreshAppMeta();
           } else {
-            if ('Unknown' == Config.data.location) {
-              Interface.loadPage('Location');
-            } else {
-              Interface.loadPage('Home');
-            }
+            Interface.loadPage('Home');
           }
         }
       }, function(jqXHR, textStatus, errorThrown) {
@@ -135,13 +131,58 @@ var App = {
         //Notify.alert('Oops', 'Could not reach the server. Please ensure you are connected to the internet and try again.');
       });
     },
-    
-    
-    // Location
-    setLocation: function(id, name) {
-      Config.setDataItem('location', name);
-      $('.location').html(Config.data.location);
+
+
+    // Primary app logic
+    pageLoaded: function(page) {
+      switch(page) {
+      case 'Location':
+        Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);
+        break;
+      case 'CaptureMain':
+        $('#contextNav').show();
+        break;
+      }
+    },
+    pageClosed: function(page) {
+
+    },
+    startCapture: function() {
+      Interface.loadPage('Location');
+    },
+    endCapture: function() {
+      $('#contextNav').hide();
       Interface.loadPage('Home');
+    },
+    setLocation: function(id, name) {
+      Config.setDataItem('location_id', id);
+      Config.setDataItem('location', name);
+      Config.setDataItem('town_id', 0);
+      Config.setDataItem('town', '');
+      Config.setDataItem('street_id', 0);
+      Config.setDataItem('street', '');
+      $('.location').html(Config.data.location);
+      $('#actLocation').html(Config.data.location);
+      $('#actTown').prop('disabled', false);
+      $('#actStreet').prop('disabled', true);
+      $('#actMoveMain').prop('disabled', true);
+      Interface.listFromTable(Table.Town, {'location_id': id}, 'name', App.setTown, true);
+    },
+    setTown: function(id, name) {
+      Config.setDataItem('town_id', id);
+      Config.setDataItem('town', name);
+      Config.setDataItem('street_id', 0);
+      Config.setDataItem('street', '');
+      $('#actTown').html(Config.data.location);
+      $('#actStreet').prop('disabled', false);
+      $('#actMoveMain').prop('disabled', true);
+      Interface.listFromTable(Table.Town, {'town_id': id}, 'name', App.setStreet, true);
+    },
+    setStreet: function(id, name) {
+      Config.setDataItem('street_id', id);
+      Config.setDataItem('street', name);
+      $('#actMoveMain').prop('disabled', false);
+      $('#actStreet').html(Config.data.location);
     }
-    
+
 };
