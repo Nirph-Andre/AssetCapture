@@ -121,6 +121,21 @@
                 &nbsp;
               </div>
               <div>
+                <button id="actBuilding" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Building, {'location_id': Config.data.location_id}, 'name', App.setBuilding);">Select Building</button>
+              </div>
+              <div>
+                <button id="actFloor" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Floor, {'building_id': Config.data.building_id}, 'name', App.setFloor);">Select Floor</button>
+              </div>
+              <div>
+                <button id="actRoom" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Room, {'floor_id': Config.data.floor_id}, 'name', App.setRoom);">Select Room</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
                 <button id="actMoveMain" class="btn btn-mobile btn-success span12" disabled
                   onClick="Interface.loadPage('CaptureMain');">Next</button>
               </div>
@@ -165,9 +180,7 @@
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="navbar-inner">
           <ul id="contextNav" class="nav pull-right" style="display: none">
-					  <li><a class="handy" onClick="Interface.loadPage('CaptureBuilding');">Building</a></li>
-					  <li><a class="handy" onClick="Interface.loadPage('CaptureFloor');">Floor</a></li>
-					  <li><a class="handy" onClick="Interface.loadPage('CaptureRoom');">Room</a></li>
+					  <li><a class="handy" onClick="Interface.loadPage('Location');">Change Location</a></li>
 					</ul>
           <div class="navtext white pull-left location">Location</div>
         </div>

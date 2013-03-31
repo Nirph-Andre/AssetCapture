@@ -44,15 +44,6 @@ body {
   padding: 0px 20px;
 }
 
-.navbar-fixed-bottom .navbar-inner .navbutton {
-  padding: 0px 20px;
-}
-
-.navbar-fixed-bottom .navbar-inner .navbutton .btn {
-  padding: 5px 20px;
-	margin: 0px;
-}
-
 .handy {
 	cursor: pointer;
 }
@@ -96,6 +87,7 @@ label {
 }
 
 .spacer {
+	  float: left;
     height: 50px;
 }
 

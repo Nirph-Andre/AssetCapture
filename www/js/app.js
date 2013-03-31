@@ -137,7 +137,9 @@ var App = {
     pageLoaded: function(page) {
       switch(page) {
       case 'Location':
-        Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);
+        if ('Unknown' == Config.data.location) {
+          Interface.listFromTable(Table.Location, {}, 'name', App.setLocation);
+        }
         break;
       case 'CaptureMain':
         $('#contextNav').show();
@@ -176,7 +178,7 @@ var App = {
       $('#actTown').html(Config.data.town);
       $('#actStreet').prop('disabled', false);
       $('#actMoveMain').prop('disabled', true);
-      Interface.listFromTable(Table.Town, {'town_id': id}, 'name', App.setStreet, true);
+      Interface.listFromTable(Table.Street, {'town_id': id}, 'name', App.setStreet, true);
     },
     setStreet: function(id, name) {
       Config.setDataItem('street_id', id);
