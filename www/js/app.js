@@ -398,6 +398,8 @@ var App = {
       //Notify.notifyStatic('Searching for existing item.', true);
       Data.list(Table.Asset, {'identifier': identifier, 'archived': 0}, function(data) {
         //Notify.hideStatic();
+        alert('list for identifier: ' + identifier + ' have data length: ' + data.length);
+        alert(JSON.stringify(data));
         if (!data.length) {
           // Item not found, capturing new item
           Notify.alert('Notice', 'Asset not found on database, capturing new asset.');
@@ -443,7 +445,9 @@ var App = {
         App.newAsset(Config.data.identifier);
         return;
       }
+      alert('pre setAsset.dataview');
       Data.view(Table.Asset, id, {}, function(data) {
+        alert(JSON.stringify(data));
         if (data.id) {
           // Found entry, populate fields with relevant data.
           $('#actScanAsset').html(Config.data.identifier);
