@@ -113,6 +113,7 @@ var App = {
     },
 
 
+    // ****************************** AUTHENTICATION ********************************* //
     // Authentication
     login: function (username, password) {
       Server.post('authentication/login', {"username": username, "password": password}, function (jsonResult) {
@@ -133,6 +134,7 @@ var App = {
     },
 
 
+    // ****************************** GLOBAL ********************************* //
     // Primary app logic
     pageLoaded: function(page) {
       switch(page) {
@@ -156,6 +158,9 @@ var App = {
       $('#contextNav').hide();
       Interface.loadPage('Home');
     },
+
+
+    // ****************************** CONTEXT INFORMATION ********************************* //
     setLocation: function(id, name) {
       Config.setDataItem('location_id', id);
       Config.setDataItem('location', name);
@@ -163,10 +168,19 @@ var App = {
       Config.setDataItem('town', '');
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
+      Config.setDataItem('building_id', 0);
+      Config.setDataItem('building', '');
+      Config.setDataItem('floor_id', 0);
+      Config.setDataItem('floor', '');
+      Config.setDataItem('room_id', 0);
+      Config.setDataItem('room', '');
       $('.location').html(Config.data.location);
       $('#actLocation').html(Config.data.location);
       $('#actTown').prop('disabled', false);
       $('#actStreet').prop('disabled', true);
+      $('#actBuilding').prop('disabled', true);
+      $('#actFloor').prop('disabled', true);
+      $('#actRoom').prop('disabled', true);
       $('#actMoveMain').prop('disabled', true);
       Interface.listFromTable(Table.Town, {'location_id': id}, 'name', App.setTown, true);
     },
@@ -175,16 +189,58 @@ var App = {
       Config.setDataItem('town', name);
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
+      Config.setDataItem('building_id', 0);
+      Config.setDataItem('building', '');
+      Config.setDataItem('floor_id', 0);
+      Config.setDataItem('floor', '');
+      Config.setDataItem('room_id', 0);
+      Config.setDataItem('room', '');
       $('#actTown').html(Config.data.town);
       $('#actStreet').prop('disabled', false);
+      $('#actBuilding').prop('disabled', true);
+      $('#actFloor').prop('disabled', true);
+      $('#actRoom').prop('disabled', true);
       $('#actMoveMain').prop('disabled', true);
       Interface.listFromTable(Table.Street, {'town_id': id}, 'name', App.setStreet, true);
     },
     setStreet: function(id, name) {
       Config.setDataItem('street_id', id);
       Config.setDataItem('street', name);
+      Config.setDataItem('building_id', 0);
+      Config.setDataItem('building', '');
+      Config.setDataItem('floor_id', 0);
+      Config.setDataItem('floor', '');
+      Config.setDataItem('room_id', 0);
+      Config.setDataItem('room', '');
+      $('#actBuilding').prop('disabled', false);
+      $('#actFloor').prop('disabled', true);
+      $('#actRoom').prop('disabled', true);
       $('#actMoveMain').prop('disabled', false);
       $('#actStreet').html(Config.data.street);
+    },
+    setBuilding: function(id, name) {
+      Config.setDataItem('building_id', id);
+      Config.setDataItem('building', name);
+      Config.setDataItem('floor_id', 0);
+      Config.setDataItem('floor', '');
+      Config.setDataItem('room_id', 0);
+      Config.setDataItem('room', '');
+      $('#actFloor').prop('disabled', false);
+      $('#actRoom').prop('disabled', true);
+      $('#actBuilding').html(Config.data.building);
+    },
+    setFloor: function(id, name) {
+      Config.setDataItem('floor_id', id);
+      Config.setDataItem('floor', name);
+      Config.setDataItem('room_id', 0);
+      Config.setDataItem('room', '');
+      $('#actRoom').prop('disabled', false);
+      $('#actFloor').html(Config.data.floor);
+    },
+    setRoom: function(id, name) {
+      Config.setDataItem('room_id', id);
+      Config.setDataItem('room', name);
+      $('#actRoom').html(Config.data.room);
     }
 
 };

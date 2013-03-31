@@ -664,7 +664,7 @@ var Data = {
       };
       if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
-        callback(synchData);
+        callback(table, synchData);
       }
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       var stmnt = '';
