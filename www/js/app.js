@@ -348,6 +348,7 @@ var App = {
       }
     },
     resetAsset: function() {
+      $('#actScanAsset').html('Scan Item Barcode');
       Session = {};
       Session.id = null;
       $('#actOwner').html('Select Owner');
@@ -445,6 +446,7 @@ var App = {
       Data.view(Table.Asset, id, {}, function(data) {
         if (data.id) {
           // Found entry, populate fields with relevant data.
+          $('#actScanAsset').html(Config.data.identifier);
           App.resetAsset();
           Session = {};
           Session.id = id;
@@ -527,6 +529,7 @@ var App = {
     newAsset: function(identifier) {
       // Clear out all fields
       App.resetAsset();
+      $('#actScanAsset').html(identifier);
       $('#actOwner').prop('disabled', false);
       $('#actAssetType').prop('disabled', false);
     },

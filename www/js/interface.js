@@ -88,7 +88,6 @@ var Interface = {
       Interface.loadPage('ListSelect');
       $('#listDataContent').html('');
       $('#listDataContent').append('<div><label>' + instruction + '</label></div>');
-      data.sort(Util.sortByLabel());
       for (var i in data) {
         $('#listDataContent').append('<div><button class="btn btn-mobile-list span12" onClick="Interface.listSelect('
                                      + data[i].value + ', \'' + Util.addSlashes(data[i].label) + '\');">'
