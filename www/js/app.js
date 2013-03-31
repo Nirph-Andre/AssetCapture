@@ -173,6 +173,7 @@ var App = {
         Config.setDataItem('default_haveGps', 1);
         Config.setDataItem('default_lat', lat);
         Config.setDataItem('default_long', long);
+        Config.setDataItem('default_accuracy', accuracy);
         $('#actMoveMain').prop('disabled', false);
         App.setState();
       }
@@ -185,8 +186,9 @@ var App = {
         Config.setDataItem('haveGps', 1);
         Config.setDataItem('lat', lat);
         Config.setDataItem('long', long);
+        Config.setDataItem('accuracy', accuracy);
         for (var i in App.awaitGps) {
-          App.awaitGps[i](lat, long);
+          App.awaitGps[i](lat, long, accuracy);
         }
         App.awaitGps = [];
       }
@@ -459,32 +461,36 @@ var App = {
       Data.query(stmnt, function(tx, result) {
         if (result.rows.length) {
           // Found entry, populate fields with relevant data.
-          var item = recordset.item(0);
-          Session = {};
-          Session.id = id;
-          $('#actOwner').html(item.owner);
-          Session.owner_id = item.owner_id;
-          $('#actOwner').prop('disabled', false);
-          $('#actAssetType').html(item.asset_type);
-          Session.asset_type_id = item.asset_type_id;
-          $('#actAssetType').prop('disabled', false);
-          $('#actAssetSubType').html(item.asset_sub_type);
-          Session.asset_sub_type_id = item.asset_sub_type_id;
-          $('#actAssetDescription').html(item.asset_description);
-          Session.asset_description_id = item.asset_description_id;
-          $('#actAssetSubDescription').html(item.asset_sub_description);
-          Session.asset_sub_description_id = item.asset_sub_description_id;
-          $('#actMaterial').html(item.material);
-          Session.material_id = item.material_id;
-          $('#actPoleLength').html(item.pole_length);
-          Session.pole_length_id = item.pole_length_id;
-          $('#actLightType').html(item.street_light_type);
-          Session.street_light_type_id = item.street_light_type_id;
-          $('#actCondition').html(item.condition);
-          Session.condition_id = item.condition_id;
-          Session.gps_lat = item.gps_lat;
-          Session.gps_long = item.gps_long;
-          Session.gps_relative = item.gps_relative;
+          try {
+            var item = result.rows.item(0);
+            Session = {};
+            Session.id = id;
+            $('#actOwner').html(item.owner);
+            Session.owner_id = item.owner_id;
+            $('#actOwner').prop('disabled', false);
+            $('#actAssetType').html(item.asset_type);
+            Session.asset_type_id = item.asset_type_id;
+            $('#actAssetType').prop('disabled', false);
+            $('#actAssetSubType').html(item.asset_sub_type);
+            Session.asset_sub_type_id = item.asset_sub_type_id;
+            $('#actAssetDescription').html(item.asset_description);
+            Session.asset_description_id = item.asset_description_id;
+            $('#actAssetSubDescription').html(item.asset_sub_description);
+            Session.asset_sub_description_id = item.asset_sub_description_id;
+            $('#actMaterial').html(item.material);
+            Session.material_id = item.material_id;
+            $('#actPoleLength').html(item.pole_length);
+            Session.pole_length_id = item.pole_length_id;
+            $('#actLightType').html(item.street_light_type);
+            Session.street_light_type_id = item.street_light_type_id;
+            $('#actCondition').html(item.condition);
+            Session.condition_id = item.condition_id;
+            Session.gps_lat = item.gps_lat;
+            Session.gps_long = item.gps_long;
+            Session.gps_relative = item.gps_relative;
+          } catch(err) {
+            Notify.alert('Oops', 'App.setAsset.haveAsset: ' + err.message);
+          }
         } else {
           // Item not found, create new item
           App.newAsset(Config.data.identifier);
@@ -608,18 +614,24 @@ var App = {
       $('#actCondition').html(name);
       App.evalAsset();
     },
-    saveAsset: function(lat, long) {
+    saveAsset: function(lat, long, accuracy) {
       // GPS coords
       if (lat && long) {
+        Session.gps_relative = 0;
         Notify.hideStatic();
         Session.gps_lat = lat;
         Session.gps_long = long;
+        Session.gps_accuracy = accuracy;
       } else if (1 == Config.data.default_haveGps) {
+        Session.gps_relative = 1;
         Session.gps_lat = Config.data.default_lat;
         Session.gps_long = Config.data.default_long;
+        Session.gps_accuracy = Config.data.default_accuracy;
       } else if (1 == Config.data.haveGps) {
+        Session.gps_relative = 0;
         Session.gps_lat = Config.data.lat;
         Session.gps_long = Config.data.long;
+        Session.gps_accuracy = Config.data.accuracy;
       } else {
         Notify.notifyStatic('Waiting for GPS location...');
         App.awaitGps.push(App.saveAsset);
@@ -627,6 +639,7 @@ var App = {
         return;
       }
       // Location data
+      Session.identifier  = Config.data.identifier;
       Session.location_id = Config.data.location_id;
       Session.town_id     = Config.data.town_id;
       Session.street_id   = Config.data.street_id;
