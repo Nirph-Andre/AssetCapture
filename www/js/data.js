@@ -160,7 +160,7 @@ var Data = {
     // Initial data setup
     initData: function() {
       App.setState();
-      Data.view(Table.Config, null, {'name': 'location'}, function(data) {
+      Data.view(Table.Synch, null, {'table': 'location'}, function(data) {
         if (!data.id) {
           // First application run on new device
           // Add content table to synch list and init server synch
@@ -665,6 +665,7 @@ var Data = {
       if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
         callback(table, synchData);
+        return;
       }
       var errorCallback = errorCallback ? errorCallback : Data.queryError;
       var stmnt = '';
