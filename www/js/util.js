@@ -47,6 +47,14 @@ var Util = {
     },
 
 
+    // Sort array according to name value
+    sortByLabel: function(a, b) {
+      var aName = a.label.toLowerCase();
+      var bName = b.label.toLowerCase();
+      return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+    },
+
+
     // Convert string to upper case
     strtoupper: function(input) {
       if (typeof(input) != 'string') {

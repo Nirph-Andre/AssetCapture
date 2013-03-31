@@ -394,9 +394,9 @@ var App = {
     setItemIdentifier: function(identifier) {
       Config.setDataItem('identifier', identifier);
       $('#actScanAsset').html(identifier);
-      Notify.notifyStatic('Searching for existing item.', true);
+      //Notify.notifyStatic('Searching for existing item.', true);
       Data.list(Table.Asset, {'identifier': identifier, 'archived': 0}, function(data) {
-        Notify.hideStatic();
+        //Notify.hideStatic();
         if (!data.length) {
           // Item not found, capturing new item
           Notify.alert('Notice', 'Asset not found on database, capturing new asset.');
@@ -442,63 +442,86 @@ var App = {
         App.newAsset(Config.data.identifier);
         return;
       }
-      var stmnt = 'SELECT a.*, o.name AS owner, at.name AS asset_type,'
-        + ' ast.name AS asset_sub_type, ad.name AS asset_description,'
-        + ' asd.name AS asset_sub_description, m.name AS material,'
-        + ' pl.name AS pole_length, slt.name AS street_light_type,'
-        + ' c.name AS condition'
-        + ' FROM asset a'
-        + ' JOIN owner o ON o.id=a.owner_id'
-        + ' JOIN asset_type at ON at.id=a.asset_type_id'
-        + ' JOIN asset_sub_type ast ON ast.id=a.asset_sub_type_id'
-        + ' JOIN asset_description ad ON ad.id=a.asset_description_id'
-        + ' LEFJOIN asset_sub_description_id asd ON asd.id=a.asset_sub_description_id'
-        + ' LEFT JOIN material m ON m.id=a.material_id'
-        + ' LEFJOIN pole_length pl ON pl.id=a.pole_length_id'
-        + ' LEFJOIN street_light_type slt ON slt.id=a.street_light_type_id'
-        + ' LEFJOIN condition c ON c.id=a.condition_id'
-        + ' WHERE a.id=' + id;
-      Data.query(stmnt, function(tx, result) {
-        if (result.rows.length) {
+      Data.view(Table.Asset, id, {}, function(data) {
+        if (data.id) {
           // Found entry, populate fields with relevant data.
-          try {
-            var item = result.rows.item(0);
-            Session = {};
-            Session.id = id;
-            $('#actOwner').html(item.owner);
-            Session.owner_id = item.owner_id;
-            $('#actOwner').prop('disabled', false);
-            $('#actAssetType').html(item.asset_type);
-            Session.asset_type_id = item.asset_type_id;
-            $('#actAssetType').prop('disabled', false);
-            $('#actAssetSubType').html(item.asset_sub_type);
-            Session.asset_sub_type_id = item.asset_sub_type_id;
-            $('#actAssetDescription').html(item.asset_description);
-            Session.asset_description_id = item.asset_description_id;
-            $('#actAssetSubDescription').html(item.asset_sub_description);
-            Session.asset_sub_description_id = item.asset_sub_description_id;
-            $('#actMaterial').html(item.material);
-            Session.material_id = item.material_id;
-            $('#actPoleLength').html(item.pole_length);
-            Session.pole_length_id = item.pole_length_id;
-            $('#actLightType').html(item.street_light_type);
-            Session.street_light_type_id = item.street_light_type_id;
-            $('#actCondition').html(item.condition);
-            Session.condition_id = item.condition_id;
-            Session.gps_lat = item.gps_lat;
-            Session.gps_long = item.gps_long;
-            Session.gps_relative = item.gps_relative;
-          } catch(err) {
-            Notify.alert('Oops', 'App.setAsset.haveAsset: ' + err.message);
+          App.resetAsset();
+          Session = {};
+          Session.id = id;
+          Session.gps_lat      = data.gps_lat;
+          Session.gps_long     = data.gps_long;
+          Session.gps_relative = data.gps_relative;
+          Session.gps_accuracy = data.gps_accuracy;
+          Data.view(Table.Owner, data.owner_id, {}, function(data) {
+            if (data.id) {
+              $('#actOwner').html(data.name);
+              Session.owner_id = data.owner_id;
+              $('#actOwner').prop('disabled', false);
+            }
+          });
+          Data.view(Table.AssetType, data.asset_type_id, {}, function(data) {
+            if (data.id) {
+              $('#actAssetType').html(data.name);
+              Session.asset_type_id = data.asset_type_id;
+              $('#actAssetType').prop('disabled', false);
+            }
+          });
+          Data.view(Table.AssetSubType, data.asset_sub_type_id, {}, function(data) {
+            if (data.id) {
+              $('#actAssetSubType').html(data.name);
+              Session.asset_sub_type_id = data.asset_sub_type_id;
+            }
+          });
+          Data.view(Table.AssetDescription, data.asset_description_id, {}, function(data) {
+            if (data.id) {
+              $('#actAssetDescription').html(data.name);
+              Session.asset_description_id = data.asset_description_id;
+            }
+          });
+          if (data.asset_sub_description_id) {
+            Data.view(Table.AssetSubDescription, data.asset_sub_description_id, {}, function(data) {
+              if (data.id) {
+                $('#actAssetSubDescription').html(data.name);
+                Session.asset_sub_description_id = data.asset_sub_description_id;
+              }
+            });
+          }
+          if (data.material_id) {
+            Data.view(Table.Material, data.material_id, {}, function(data) {
+              if (data.id) {
+                $('#actMaterial').html(data.name);
+                Session.material_id = data.material_id;
+              }
+            });
+          }
+          if (data.pole_length_id) {
+            Data.view(Table.PoleLength, data.pole_length_id, {}, function(data) {
+              if (data.id) {
+                $('#actPoleLength').html(data.name);
+                Session.pole_length_id = data.pole_length_id;
+              }
+            });
+          }
+          if (data.street_light_type_id) {
+            Data.view(Table.StreetLightType, data.street_light_type_id, {}, function(data) {
+              if (data.id) {
+                $('#actLightType').html(data.name);
+                Session.street_light_type_id = data.street_light_type_id;
+              }
+            });
+          }
+          if (data.condition_id) {
+            Data.view(Table.Condition, data.condition_id, {}, function(data) {
+              if (data.id) {
+                $('#actCondition').html(data.name);
+                Session.condition_id = data.condition_id;
+              }
+            });
           }
         } else {
-          // Item not found, create new item
+          // Did not find entry, create new asset
           App.newAsset(Config.data.identifier);
         }
-      }, function(err) {
-        // Oops, something went wrong
-        Notify.alert('Oops', 'App.setAsset: ' + err.message);
-        return true;
       });
     },
     newAsset: function(identifier) {
@@ -536,7 +559,7 @@ var App = {
       $('#actPoleLength').prop('disabled', true);
       $('#actLightType').prop('disabled', true);
       $('#actCondition').prop('disabled', true);
-      Interface.listFromTable(Table.AssetSubType, {'asset_type_id': Session.asset_type_id}, 'name', App.setAssetSubType, true, 'Select Asset Sub Type');
+      Interface.listFromTable(Table.AssetSubType, {'asset_type_id': Session.asset_type_id}, 'name', App.setAssetSubType, false, 'Select Asset Sub Type');
       App.evalAsset();
     },
     setAssetSubType: function(id, name) {
@@ -561,7 +584,7 @@ var App = {
       $('#actPoleLength').prop('disabled', true);
       $('#actLightType').prop('disabled', true);
       $('#actCondition').prop('disabled', true);
-      Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, true, 'Select Asset Description');
+      Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, false, 'Select Asset Description');
       App.evalAsset();
     },
     setAssetDescription: function(id, name) {
@@ -584,7 +607,7 @@ var App = {
         $('#actMaterial').prop('disabled', false);
         $('#actPoleLength').prop('disabled', false);
         $('#actLightType').prop('disabled', false);
-      } else if ('ROAD SIGNS' == name) {
+      } else if ('ROAD SIGNS' == Config.data.asset_sub_type) {
         $('#actCondition').prop('disabled', false);
       }
       App.evalAsset();
