@@ -139,14 +139,14 @@ Table.Asset = new Data.model('Asset', 'asset', {
   'gps_lat': EM.attr('string', {required: false, maxLength: 50}),
   'gps_long': EM.attr('string', {required: false, maxLength: 50}),
   'identifier': EM.attr('string', {required: true, maxLength: 100}),
-  'asset_type_id': EM.belongsTo(Table.AssetType, {required: true}),
-  'asset_sub_type_id': EM.belongsTo(Table.AssetSubType, {required: true}),
-  'asset_description_id': EM.belongsTo(Table.AssetDescription, {required: true}),
-  'asset_sub_description_id': EM.belongsTo(Table.AssetSubDescription, {required: false}),
-  'material_id': EM.belongsTo(Table.Material, {required: false}),
-  'pole_length_id': EM.belongsTo(Table.PoleLength, {required: false}),
-  'street_light_type_id': EM.belongsTo(Table.StreetLightType, {required: false}),
-  'condition_id': EM.belongsTo(Table.Condition, {required: false})
+  'asset_type_id': EM.hasOne(Table.AssetType, {required: true}),
+  'asset_sub_type_id': EM.hasOne(Table.AssetSubType, {required: true}),
+  'asset_description_id': EM.hasOne(Table.AssetDescription, {required: true}),
+  'asset_sub_description_id': EM.hasOne(Table.AssetSubDescription, {required: false}),
+  'material_id': EM.hasOne(Table.Material, {required: false}),
+  'pole_length_id': EM.hasOne(Table.PoleLength, {required: false}),
+  'street_light_type_id': EM.hasOne(Table.StreetLightType, {required: false}),
+  'condition_id': EM.hasOne(Table.Condition, {required: false})
 });
 
 

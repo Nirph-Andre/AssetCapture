@@ -81,7 +81,7 @@ var Interface = {
       });
     },
     listFromData: function(data, callback, instruction) {
-      instruction = instruction
+      instruction = typeof instruction != 'undefined'
         ? instruction.toUpperCase()
         : 'SELECT ITEM';
       Interface.listCallback = callback;
@@ -111,7 +111,6 @@ var Interface = {
       }
       label = label.toUpperCase();
       Interface.contextData[Interface.labelField] = label;
-      alert(JSON.stringify(Interface.contextData));
       Data.view(Interface.listTable, null, Interface.contextData, function(xdata) {
         if (!xdata.id) {
           Data.save(Interface.listTable, null, Interface.contextData, function(data) {

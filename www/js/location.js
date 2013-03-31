@@ -1,24 +1,21 @@
 
 var Location = {
-    
+
     // Scan a barcode
     getPosition: function(callback, errorCallback) {
+      callback(0, 0, false);
       try {
         navigator.geolocation.getCurrentPosition(function(result) {
-          alert("We got a position\n" +
-                "Lat: " + result.coords.latitude + "\n" +
-                "Long: " + result.coords.longitude + "\n" +
-                "Acc: " + result.coords.accuracy);
-          alert(JSON.stringify(result));
-          Server.addressFromCoordinates(result.coords.latitude, result.coords.longitude, function(data) {
+          callback(result.coords.latitude, result.coords.longitude, result.coords.accuracy);
+          /*Server.addressFromCoordinates(result.coords.latitude, result.coords.longitude, function(data) {
             alert(JSON.stringify(data));
-          });
+          });*/
         }, function(error) {
-          alert("GPS call failed: " + error);
+          Notify.alert('Oops', 'GPS call failed: ' + error);
         });
       } catch(err) {
         Notify.alert('Oops', 'Could not do scan: ' + err.message);
       }
     }
-    
+
 };

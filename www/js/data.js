@@ -363,7 +363,7 @@ var Data = {
       }
       if (where) {
         for (field in where) {
-          filter.push('`' + field + '` = "' + where[field] + '"');
+          filter.push('`' + field + '` = "' + Data.addSlashes(where[field]) + '"');
         }
       }
       if (filter.length) {
@@ -406,7 +406,7 @@ var Data = {
       var filter = [];
       if (where) {
         for (field in where) {
-          filter.push('`' + field + '` = "' + where[field] + '"');
+          filter.push('`' + field + '` = "' + Data.addSlashes(where[field]) + '"');
         }
       }
       if (filter.length) {
