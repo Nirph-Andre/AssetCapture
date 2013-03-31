@@ -173,7 +173,7 @@ var App = {
       Config.setDataItem('town', name);
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
-      $('#actTown').html(Config.data.location);
+      $('#actTown').html(Config.data.town);
       $('#actStreet').prop('disabled', false);
       $('#actMoveMain').prop('disabled', true);
       Interface.listFromTable(Table.Town, {'town_id': id}, 'name', App.setStreet, true);
@@ -182,7 +182,7 @@ var App = {
       Config.setDataItem('street_id', id);
       Config.setDataItem('street', name);
       $('#actMoveMain').prop('disabled', false);
-      $('#actStreet').html(Config.data.location);
+      $('#actStreet').html(Config.data.street);
     }
 
 };
