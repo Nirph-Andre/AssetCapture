@@ -428,20 +428,14 @@ var App = {
               if (result.rows.length) {
                 var listData = [];
                 var len = result.rows.length;
-                alert(1);
                 for (var i = 0; i < len; i++) {
                   var item = result.rows.item(i);
-                  alert(2);
-                  alert(JSON.stringify(item));
                   var label = item.asset + ', ' + item.location;
                   listData.push({"value": item.id, "label": label});
-                  alert(3);
                 }
                 listData.push({"value": 0, "label": 'New Asset'});
                 Interface.allowNew = false;
-                alert(4);
                 Interface.listFromData(listData, App.setAsset, 'Select Correct Asset');
-                alert(5);
               } else {
                 // No entry found
                 Notify.alert('Oops', 'Expected multiple asset entries, found none.');
@@ -705,7 +699,6 @@ var App = {
       Session.floor_id    = Config.data.floor_id;
       Session.room_id     = Config.data.room_id;
       // Save entry
-      alert(JSON.stringify(Session));
       Data.save(Table.Asset, Session.id, Session, function(data) {
         Notify.alert('Done', 'Asset successfully saved.');
         App.resetAsset();
