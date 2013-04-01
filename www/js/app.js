@@ -427,6 +427,7 @@ var App = {
               // Do we have data?
               if (result.rows.length) {
                 var listData = [];
+                var len = result.rows.length;
                 alert(1);
                 for (var i = 0; i < len; i++) {
                   var item = result.rows.item(i);
