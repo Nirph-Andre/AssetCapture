@@ -426,7 +426,7 @@ var App = {
             if (result.rows.length) {
               var listData = [];
               for (var i = 0; i < len; i++) {
-                var item = recordset.item(i);
+                var item = result.rows.item(i);
                 var label = item.asset + ', ' + item.location;
                 listData.push({"value": item.id, "label": label});
               }
@@ -457,7 +457,7 @@ var App = {
         if (data.id) {
           // Found entry, populate fields with relevant data.
           App.resetAsset();
-          Notify.alert('Notice', 'Found existing item, if this is not the correct asset select <b>Flag As Duplicate</b> button.');
+          Notify.alert('Notice', 'Found existing item, if this is not the correct asset select Flag As Duplicate button.');
           $('#actScanAsset').html(Config.data.identifier);
           Session = {};
           Session.id = id;
