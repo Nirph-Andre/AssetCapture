@@ -292,6 +292,11 @@
 			  $(document).bind('deviceready', function() {
 			    App.initialize();
 		    });
+			  $('.btn').click(function() {
+			    var btn = $(this);
+			    btn.addClass('active');
+			    setTimeout(function() { btn.removeClass('active'); }, 500);
+			  });
 			});
 
 		</script>
