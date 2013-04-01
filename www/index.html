@@ -121,6 +121,14 @@
                 &nbsp;
               </div>
               <div>
+                <button id="actOwner" class="btn btn-mobile span12" disabled
+                  onClick="Interface.listFromTable(Table.Owner, {}, 'name', App.setOwner, true, 'Select Owner');">
+                  Select Owner</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
                 <button id="actBuilding" class="btn btn-mobile span12" disabled
                   onClick="Interface.listFromTable(Table.Building, {'location_id': Config.data.location_id}, 'name', App.setBuilding, true, 'Select Building'); Location.getPosition(App.setDefaultGps);">Select Building</button>
               </div>
@@ -155,20 +163,12 @@
         <div id="pageCaptureMain" class="page">
           <div class="row-fluid">
             <div class="span12">
-              <div class="spacer">
-                &nbsp;
-              </div>
               <div>
                 <button id="actScanAsset" class="btn btn-mobile span12"
                   onClick="App.scanAsset();">Scan Item Barcode</button>
               </div>
               <div class="spacer">
                 &nbsp;
-              </div>
-              <div>
-                <button id="actOwner" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.Owner, {}, 'name', App.setOwner, true, 'Select Owner');">
-                  Select Owner</button>
               </div>
               <div>
                 <button id="actAssetType" class="btn btn-mobile span12" disabled
@@ -194,22 +194,22 @@
                 &nbsp;
               </div>
               <div>
-                <button id="actMaterial" class="btn btn-mobile span12" disabled
+                <button id="actMaterial" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.Material, {}, 'name', App.setMaterial, false, 'Select Material');">
                   Select Material</button>
               </div>
               <div>
-                <button id="actPoleLength" class="btn btn-mobile span12" disabled
+                <button id="actPoleLength" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.PoleLength, {}, 'name', App.setPoleLength, false, 'Select Pole Length');">
                   Select Pole Length</button>
               </div>
               <div>
-                <button id="actLightType" class="btn btn-mobile span12" disabled
+                <button id="actLightType" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.StreetLightType, {}, 'name', App.setLightType, false, 'Select Light Type');">
                   Select Light Type</button>
               </div>
               <div>
-                <button id="actCondition" class="btn btn-mobile span12" disabled
+                <button id="actCondition" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.Condition, {}, 'name', App.setCondition, false, 'Select Condition');">
                   Select Condition</button>
               </div>
@@ -219,6 +219,13 @@
               <div>
                 <button id="actSaveAsset" class="btn btn-mobile btn-success span12" disabled
                   onClick="App.saveAsset();">Save Asset</button>
+              </div>
+              <div class="spacer">
+                &nbsp;
+              </div>
+              <div>
+                <button id="actFlagDuplicate" class="btn btn-mobile btn-danger span12 hide"
+                  onClick="App.newAsset(Config.data.identifier);">Flag As Duplicate</button>
               </div>
               <div class="spacer">
                 &nbsp;

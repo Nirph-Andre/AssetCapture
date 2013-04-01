@@ -203,6 +203,7 @@ var App = {
       Config.setDataItem('town', '');
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
+      Config.setDataItem('owner_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -214,11 +215,13 @@ var App = {
       $('#actLocation').html(Config.data.location);
       $('#actTown').html('Select Town');
       $('#actStreet').html('Select Street');
+      $('#actOwner').html('Select Owner');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actTown').prop('disabled', false);
       $('#actStreet').prop('disabled', true);
+      $('#actOwner').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
@@ -232,6 +235,7 @@ var App = {
       Config.setDataItem('town', name);
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
+      Config.setDataItem('owner_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -241,10 +245,12 @@ var App = {
       Config.setDataItem('default_haveGps', 0);
       $('#actTown').html(Config.data.town);
       $('#actStreet').html('Select Street');
+      $('#actOwner').html('Select Owner');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actStreet').prop('disabled', false);
+      $('#actOwner').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
@@ -256,6 +262,7 @@ var App = {
     setStreet: function(id, name) {
       Config.setDataItem('street_id', id);
       Config.setDataItem('street', name);
+      Config.setDataItem('owner_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -264,14 +271,21 @@ var App = {
       Config.setDataItem('room', '');
       Config.setDataItem('default_haveGps', 0);
       $('#actStreet').html(Config.data.street);
+      $('#actOwner').html('Select Owner');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
+      $('#actOwner').prop('disabled', false);
       $('#actBuilding').prop('disabled', false);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
       $('#actRoom').prop('disabled', true);
       $('#actRoomNA').prop('disabled', true);
+      $('#actMoveMain').prop('disabled', true);
+    },
+    setOwner: function(id, name) {
+      Config.setDataItem('owner_id', id);
+      $('#actOwner').html(name);
       $('#actMoveMain').prop('disabled', false);
     },
     setBuilding: function(id, name) {
@@ -337,8 +351,7 @@ var App = {
     // ****************************** ASSET UTILS ********************************* //
     evalAsset: function() {
       // Check if we have all the required fields
-      if (0 == Session.owner_id
-          || 0 == Session.asset_type_id
+      if (0 == Session.asset_type_id
           || 0 == Session.asset_sub_type_id
           || 0 == Session.asset_description_id
           ) {
@@ -351,9 +364,6 @@ var App = {
       $('#actScanAsset').html('Scan Item Barcode');
       Session = {};
       Session.id = null;
-      $('#actOwner').html('Select Owner');
-      Session.owner_id = 0;
-      $('#actOwner').prop('disabled', true);
       $('#actAssetType').html('Select Asset Type');
       Session.asset_type_id = 0;
       $('#actAssetType').prop('disabled', true);
@@ -368,19 +378,20 @@ var App = {
       $('#actAssetSubDescription').prop('disabled', true);
       $('#actMaterial').html('Select Material');
       Session.material_id = null;
-      $('#actMaterial').prop('disabled', true);
+      $('#actMaterial').hide();
       $('#actPoleLength').html('Select Pole Length');
       Session.pole_length_id = null;
-      $('#actPoleLength').prop('disabled', true);
+      $('#actPoleLength').hide();
       $('#actLightType').html('Select Light Type');
       Session.street_light_type_id = null;
-      $('#actLightType').prop('disabled', true);
+      $('#actLightType').hide();
       $('#actCondition').html('Select Condition');
       Session.condition_id = null;
-      $('#actCondition').prop('disabled', true);
+      $('#actCondition').hide();
       Session.gps_lat = '';
       Session.gps_long = '';
       Session.gps_relative = null;
+      $('#actFlagDuplicate').hide();
     },
 
 
@@ -403,7 +414,7 @@ var App = {
           Notify.alert('Notice', 'Asset not found on database, capturing new asset.');
           App.newAsset(identifier);
         } else if (data.length > 1) {
-          Notify.notifyStatic('Multiple assets found, acquiring list.', true);
+          Notify.alert('Notice', 'Multiple assets found, acquiring list.');
           var stmnt = 'SELECT `a`.`id`, `ad`.`name` AS asset, `l`.`name` AS location '
             + ' FROM asset a '
             + ' JOIN asset_description ad ON `ad`.`id`=`a`.`asset_description_id` '
@@ -411,7 +422,6 @@ var App = {
             + ' WHERE `a`.`identifier`=' + "'" + Data.addSlashes(identifier) + "' "
             + ' AND `a`.`archived`=0';
           Data.query(stmnt, function(tx, result) {
-            Notify.hideStatic();
             // Do we have data?
             if (result.rows.length) {
               var listData = [];
@@ -446,21 +456,15 @@ var App = {
       Data.view(Table.Asset, id, {}, function(data) {
         if (data.id) {
           // Found entry, populate fields with relevant data.
-          $('#actScanAsset').html(Config.data.identifier);
           App.resetAsset();
+          Notify.alert('Notice', 'Found existing item, if this is not the correct asset select <b>Flag As Duplicate</b> button.');
+          $('#actScanAsset').html(Config.data.identifier);
           Session = {};
           Session.id = id;
           Session.gps_lat      = data.gps_lat;
           Session.gps_long     = data.gps_long;
           Session.gps_relative = data.gps_relative;
           Session.gps_accuracy = data.gps_accuracy;
-          Data.view(Table.Owner, data.owner_id, {}, function(data) {
-            if (data.id) {
-              $('#actOwner').html(data.name);
-              Session.owner_id = data.owner_id;
-              $('#actOwner').prop('disabled', false);
-            }
-          });
           Data.view(Table.AssetType, data.asset_type_id, {}, function(data) {
             if (data.id) {
               $('#actAssetType').html(data.name);
@@ -470,14 +474,18 @@ var App = {
           });
           Data.view(Table.AssetSubType, data.asset_sub_type_id, {}, function(data) {
             if (data.id) {
+              Config.setDataItem('asset_sub_type', data.name);
               $('#actAssetSubType').html(data.name);
               Session.asset_sub_type_id = data.asset_sub_type_id;
+              $('#actAssetSubType').prop('disabled', false);
             }
           });
           Data.view(Table.AssetDescription, data.asset_description_id, {}, function(data) {
             if (data.id) {
+              Config.setDataItem('asset_description', data.name);
               $('#actAssetDescription').html(data.name);
               Session.asset_description_id = data.asset_description_id;
+              $('#actAssetDescription').prop('disabled', false);
             }
           });
           if (data.asset_sub_description_id) {
@@ -485,6 +493,7 @@ var App = {
               if (data.id) {
                 $('#actAssetSubDescription').html(data.name);
                 Session.asset_sub_description_id = data.asset_sub_description_id;
+                $('#actAssetSubDescription').prop('disabled', false);
               }
             });
           }
@@ -520,6 +529,17 @@ var App = {
               }
             });
           }
+          if ('ELECTRICITY' == Config.data.asset_sub_type
+              && ('POLE NO LIGHT' == Config.data.asset_description
+                  || 'STREET LIGHT' == Config.data.asset_description)) {
+            $('#actMaterial').show();
+            $('#actPoleLength').show();
+            $('#actLightType').show();
+          } else if ('ROAD SIGNS' == Config.data.asset_sub_type) {
+            $('#actCondition').show();
+          }
+          $('#actFlagDuplicate').show();
+          App.evalAsset();
         } else {
           // Did not find entry, create new asset
           App.newAsset(Config.data.identifier);
@@ -529,14 +549,9 @@ var App = {
     newAsset: function(identifier) {
       // Clear out all fields
       App.resetAsset();
+      $('#actFlagDuplicate').hide();
       $('#actScanAsset').html(identifier);
-      $('#actOwner').prop('disabled', false);
       $('#actAssetType').prop('disabled', false);
-    },
-    setOwner: function(id, name) {
-      Session.owner_id = id;
-      $('#actOwner').html(name);
-      App.evalAsset();
     },
     setAssetType: function(id, name) {
       Session.asset_type_id = id;
@@ -558,10 +573,10 @@ var App = {
       $('#actAssetSubType').prop('disabled', false);
       $('#actAssetDescription').prop('disabled', true);
       $('#actAssetSubDescription').prop('disabled', true);
-      $('#actMaterial').prop('disabled', true);
-      $('#actPoleLength').prop('disabled', true);
-      $('#actLightType').prop('disabled', true);
-      $('#actCondition').prop('disabled', true);
+      $('#actMaterial').hide();
+      $('#actPoleLength').hide();
+      $('#actLightType').hide();
+      $('#actCondition').hide();
       Interface.listFromTable(Table.AssetSubType, {'asset_type_id': Session.asset_type_id}, 'name', App.setAssetSubType, false, 'Select Asset Sub Type');
       App.evalAsset();
     },
@@ -583,10 +598,10 @@ var App = {
       $('#actCondition').html('Select Condition');
       $('#actAssetDescription').prop('disabled', false);
       $('#actAssetSubDescription').prop('disabled', true);
-      $('#actMaterial').prop('disabled', true);
-      $('#actPoleLength').prop('disabled', true);
-      $('#actLightType').prop('disabled', true);
-      $('#actCondition').prop('disabled', true);
+      $('#actMaterial').hide();
+      $('#actPoleLength').hide();
+      $('#actLightType').hide();
+      $('#actCondition').hide();
       Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, false, 'Select Asset Description');
       App.evalAsset();
     },
@@ -607,11 +622,11 @@ var App = {
       if ('ELECTRICITY' == Config.data.asset_sub_type
           && ('POLE NO LIGHT' == name
               || 'STREET LIGHT' == name)) {
-        $('#actMaterial').prop('disabled', false);
-        $('#actPoleLength').prop('disabled', false);
-        $('#actLightType').prop('disabled', false);
+        $('#actMaterial').show();
+        $('#actPoleLength').show();
+        $('#actLightType').show();
       } else if ('ROAD SIGNS' == Config.data.asset_sub_type) {
-        $('#actCondition').prop('disabled', false);
+        $('#actCondition').show();
       }
       App.evalAsset();
     },
@@ -621,21 +636,25 @@ var App = {
       App.evalAsset();
     },
     setMaterial: function(id, name) {
+      $("html, body").animate({ scrollTop: $("#actMaterial").scrollTop() }, 1000);
       Session.material_id = id;
       $('#actMaterial').html(name);
       App.evalAsset();
     },
     setPoleLength: function(id, name) {
+      $("html, body").animate({ scrollTop: $("#actPoleLength").scrollTop() }, 1000);
       Session.pole_length_id = id;
       $('#actPoleLength').html(name);
       App.evalAsset();
     },
     setLightType: function(id, name) {
+      $("html, body").animate({ scrollTop: $("#actLightType").scrollTop() }, 1000);
       Session.street_light_type_id = id;
       $('#actLightType').html(name);
       App.evalAsset();
     },
     setCondition: function(id, name) {
+      $("html, body").animate({ scrollTop: $("#actCondition").scrollTop() }, 1000);
       Session.condition_id = id;
       $('#actCondition').html(name);
       App.evalAsset();
@@ -669,6 +688,7 @@ var App = {
       Session.location_id = Config.data.location_id;
       Session.town_id     = Config.data.town_id;
       Session.street_id   = Config.data.street_id;
+      Session.owner_id    = Config.data.owner_id;
       Session.building_id = Config.data.building_id;
       Session.floor_id    = Config.data.floor_id;
       Session.room_id     = Config.data.room_id;
