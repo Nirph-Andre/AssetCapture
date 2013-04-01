@@ -169,7 +169,6 @@ var App = {
         $('#actMoveMain').prop('disabled', true);
         App.setState('Awaiting GPS', 'Waiting for GPS coordinates before proceeding.', 'problem');
       } else {
-        Notify.alert('GPS accuracy', accuracy);
         Config.setDataItem('default_haveGps', 1);
         Config.setDataItem('default_lat', lat);
         Config.setDataItem('default_long', long);
@@ -182,7 +181,6 @@ var App = {
       if (accuracy === false) {
         Config.setDataItem('haveGps', 0);
       } else {
-        Notify.alert('GPS accuracy', accuracy);
         Config.setDataItem('haveGps', 1);
         Config.setDataItem('lat', lat);
         Config.setDataItem('long', long);
