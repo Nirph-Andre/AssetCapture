@@ -425,16 +425,17 @@ var App = {
           try {
             Data.query(stmnt, function(tx, result) {
               // Do we have data?
-              alert(1);
               if (result.rows.length) {
                 var listData = [];
-                alert(2);
+                alert(1);
                 for (var i = 0; i < len; i++) {
                   var item = result.rows.item(i);
+                  alert(2);
+                  alert(JSON.stringify(item));
                   var label = item.asset + ', ' + item.location;
                   listData.push({"value": item.id, "label": label});
+                  alert(3);
                 }
-                alert(3);
                 listData.push({"value": 0, "label": 'New Asset'});
                 Interface.allowNew = false;
                 alert(4);
