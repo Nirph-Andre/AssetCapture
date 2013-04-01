@@ -548,11 +548,12 @@ var Data = {
       if (Data.synching) {
         return;
       }
+      Data.synching = true;
       if (!App.online) {
+        Data.synching = false;
         App.synchFail();
         return;
       }
-      Data.synching = true;
       App.setState('Loading', 'Synchronizing application data.');
       Notify.notifyStatic('Synchronizing application data...');
       Data.list(Table.Synch, {}, function(data) {

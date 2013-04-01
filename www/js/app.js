@@ -421,28 +421,38 @@ var App = {
             + ' JOIN location l ON `l`.`id`=`a`.`location_id` '
             + ' WHERE `a`.`identifier`=' + "'" + Data.addSlashes(identifier) + "' "
             + ' AND `a`.`archived`=0';
-          Data.query(stmnt, function(tx, result) {
-            // Do we have data?
-            if (result.rows.length) {
-              var listData = [];
-              for (var i = 0; i < len; i++) {
-                var item = result.rows.item(i);
-                var label = item.asset + ', ' + item.location;
-                listData.push({"value": item.id, "label": label});
+
+          try {
+            Data.query(stmnt, function(tx, result) {
+              // Do we have data?
+              alert(1);
+              if (result.rows.length) {
+                var listData = [];
+                alert(2);
+                for (var i = 0; i < len; i++) {
+                  var item = result.rows.item(i);
+                  var label = item.asset + ', ' + item.location;
+                  listData.push({"value": item.id, "label": label});
+                }
+                alert(3);
+                listData.push({"value": 0, "label": 'New Asset'});
+                Interface.allowNew = false;
+                alert(4);
+                Interface.listFromData(listData, App.setAsset, 'Select Correct Asset');
+                alert(5);
+              } else {
+                // No entry found
+                Notify.alert('Oops', 'Expected multiple asset entries, found none.');
               }
-              listData.push({"value": 0, "label": 'New Asset'});
-              Interface.allowNew = false;
-              Interface.listFromData(listData, App.setAsset, 'Select Correct Asset');
-            } else {
-              // No entry found
-              Notify.alert('Oops', 'Expected multiple asset entries, found none.');
-            }
-          }, function(err) {
-            // Oops, something went wrong
-            Notify.hideStatic();
-            Notify.alert('Oops', 'App.setItemIdentifier: ' + err.message);
-            return true;
-          });
+            }, function(err) {
+              // Oops, something went wrong
+              Notify.hideStatic();
+              Notify.alert('Oops', 'App.setItemIdentifier: ' + err.message);
+              return true;
+            });
+          } catch(err) {
+            Notify.alert('Oops', 'App.setItemIdentifier.catch: ' + err.message);
+          }
         } else {
           App.setAsset(data[0].id);
         }

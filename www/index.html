@@ -294,8 +294,12 @@
 		    });
 			  $('.btn').click(function() {
 			    var btn = $(this);
+          btn.prop('disabled', true);
 			    btn.addClass('active');
-			    setTimeout(function() { btn.removeClass('active'); }, 500);
+			    setTimeout(function() {
+			      btn.removeClass('active');
+			      btn.prop('disabled', false);
+			    }, 500);
 			  });
 			});
 
