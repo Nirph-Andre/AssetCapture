@@ -1,7 +1,7 @@
 
 var Location = {
 
-    // Scan a barcode
+    // Get current GPS coordinates
     getPosition: function(callback, errorCallback) {
       callback(0, 0, false);
       try {
@@ -11,10 +11,18 @@ var Location = {
             alert(JSON.stringify(data));
           });*/
         }, function(error) {
-          Notify.alert('Oops', 'GPS call failed: ' + error);
+          if (typeof errorCallback != 'undefined') {
+            errorCallback(error);
+          } else {
+            Notify.alert('Oops', 'GPS call failed: ' + error);
+          }
+        }, {
+          maximumAge: 3000,
+          timeout: 5000,
+          enableHighAccuracy: true
         });
       } catch(err) {
-        Notify.alert('Oops', 'Could not do scan: ' + err.message);
+        Notify.alert('Oops', 'Could not do GPS call: ' + err.message);
       }
     }
 

@@ -150,6 +150,12 @@ Table.Asset = new Data.model('Asset', 'asset', {
   'condition_id': EM.hasOne(Table.Condition, {required: false})
 });
 
+Table.Photo = new Data.model('Photo', 'photo', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'asset_id': EM.belongsTo(Table.Asset, {required: true}),
+  'data': EM.attr('blob', {required: true})
+});
 
 
 

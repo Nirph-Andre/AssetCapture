@@ -164,6 +164,10 @@
           <div class="row-fluid">
             <div class="span12">
               <div>
+                <button id="actTakePhoto" class="btn btn-mobile span12"
+                  onClick="Camera.takePhoto(App.showPhoto);">Take a pic!</button>
+              </div>
+              <div>
                 <button id="actScanAsset" class="btn btn-mobile span12"
                   onClick="App.scanAsset();">Scan Item Barcode</button>
               </div>
@@ -187,11 +191,16 @@
               </div>
               <div>
                 <button id="actAssetSubDescription" class="btn btn-mobile span12" disabled
-                  onClick="Interface.listFromTable(Table.AssetSubDescription, {'asset_description_id': Session.asset_description_id}, 'name', App.setAssetSubDescription, false, 'Select Asset Sub Description');">
+                  onClick="Interface.listFromTable(Table.AssetSubDescription, {'asset_description_id': Session.asset_description_id}, 'name', App.setAssetSubDescription, true, 'Select Asset Sub Description');">
                   Select Asset Sub Description</button>
               </div>
               <div class="spacer">
                 &nbsp;
+              </div>
+              <div>
+                <button id="actCondition" class="btn btn-mobile span12"
+                  onClick="Interface.listFromTable(Table.Condition, {}, 'name', App.setCondition, false, 'Select Condition');">
+                  Select Condition</button>
               </div>
               <div>
                 <button id="actMaterial" class="btn btn-mobile span12 hide"
@@ -207,11 +216,6 @@
                 <button id="actLightType" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.StreetLightType, {}, 'name', App.setLightType, false, 'Select Light Type');">
                   Select Light Type</button>
-              </div>
-              <div>
-                <button id="actCondition" class="btn btn-mobile span12 hide"
-                  onClick="Interface.listFromTable(Table.Condition, {}, 'name', App.setCondition, false, 'Select Condition');">
-                  Select Condition</button>
               </div>
               <div class="spacer">
                 &nbsp;

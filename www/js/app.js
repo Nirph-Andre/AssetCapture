@@ -352,6 +352,7 @@ var App = {
       if (0 == Session.asset_type_id
           || 0 == Session.asset_sub_type_id
           || 0 == Session.asset_description_id
+          || 0 == Session.condition_id
           ) {
         $('#actSaveAsset').prop('disabled', true);
       } else {
@@ -384,8 +385,7 @@ var App = {
       Session.street_light_type_id = null;
       $('#actLightType').hide();
       $('#actCondition').html('Select Condition');
-      Session.condition_id = null;
-      $('#actCondition').hide();
+      Session.condition_id = 0;
       Session.gps_lat = '';
       Session.gps_long = '';
       Session.gps_relative = null;
@@ -394,6 +394,14 @@ var App = {
 
 
     // ****************************** ASSET INFORMATION ********************************* //
+    showPhoto: function(imageData) {
+      $('#myPic').attr('src', "data:image/jpeg;base64," + imageData);
+      Data.save(Table.Photo, null, {'asset_id': 1, 'data': imageData}, function(data) {
+        Notify.alert('Done', 'Photo successfully saved.');
+      }, function(err) {
+        Notify.alert('Oops', 'Could not save photo due to error: ' + err.message);
+      });
+    },
     scanAsset: function() {
       App.resetAsset();
       if (0 == Config.data.default_haveGps) {
@@ -539,8 +547,6 @@ var App = {
             $('#actMaterial').show();
             $('#actPoleLength').show();
             $('#actLightType').show();
-          } else if ('ROAD SIGNS' == Config.data.asset_sub_type) {
-            $('#actCondition').show();
           }
           $('#actFlagDuplicate').show();
           App.evalAsset();
@@ -565,7 +571,7 @@ var App = {
       Session.material_id = null;
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
-      Session.condition_id = null;
+      Session.condition_id = 0;
       $('#actAssetType').html(name);
       $('#actAssetSubType').html('Select Asset Sub Type');
       $('#actAssetDescription').html('Select Asset Description');
@@ -580,7 +586,6 @@ var App = {
       $('#actMaterial').hide();
       $('#actPoleLength').hide();
       $('#actLightType').hide();
-      $('#actCondition').hide();
       Interface.listFromTable(Table.AssetSubType, {'asset_type_id': Session.asset_type_id}, 'name', App.setAssetSubType, false, 'Select Asset Sub Type');
       App.evalAsset();
     },
@@ -592,7 +597,7 @@ var App = {
       Session.material_id = null;
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
-      Session.condition_id = null;
+      Session.condition_id = 0;
       $('#actAssetSubType').html(name);
       $('#actAssetDescription').html('Select Asset Description');
       $('#actAssetSubDescription').html('Select Asset Sub Description');
@@ -605,7 +610,6 @@ var App = {
       $('#actMaterial').hide();
       $('#actPoleLength').hide();
       $('#actLightType').hide();
-      $('#actCondition').hide();
       Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, false, 'Select Asset Description');
       App.evalAsset();
     },
@@ -615,7 +619,7 @@ var App = {
       Session.material_id = null;
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
-      Session.condition_id = null;
+      Session.condition_id = 0;
       $('#actAssetDescription').html(name);
       $('#actAssetSubDescription').html('Select Asset Sub Description');
       $('#actMaterial').html('Select Material');
@@ -629,8 +633,6 @@ var App = {
         $('#actMaterial').show();
         $('#actPoleLength').show();
         $('#actLightType').show();
-      } else if ('ROAD SIGNS' == Config.data.asset_sub_type) {
-        $('#actCondition').show();
       }
       App.evalAsset();
     },

@@ -11,7 +11,11 @@ var Barcode = {
             Notify.alert("Notice", "Scanning cancelled.");
           }
         }, function(error) {
-          Notify.alert('Oops', 'Could not do scan: ' + error);
+          if (typeof errorCallback != 'undefined') {
+            errorCallback(message);
+          } else {
+            Notify.alert('Oops', 'Could not scan barcode: ' + error);
+          }
         });
       } catch(err) {
         Notify.alert('Oops', 'Could not do scan: ' + err.message);
