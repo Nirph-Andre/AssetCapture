@@ -394,12 +394,15 @@ var App = {
 
 
     // ****************************** ASSET INFORMATION ********************************* //
-    showPhoto: function(imageData) {
-      $('#myPic').attr('src', "data:image/jpeg;base64," + imageData);
-      Data.save(Table.Photo, null, {'asset_id': 1, 'data': imageData}, function(data) {
-        Notify.alert('Done', 'Photo successfully saved.');
-      }, function(err) {
-        Notify.alert('Oops', 'Could not save photo due to error: ' + err.message);
+    showPhoto: function() {
+      Camera.takePhoto(90, function(imageData) {
+        Notify.alert('YAY', 'Got a photo.');
+        $('#myPic').attr('src', "data:image/jpeg;base64," + imageData);
+        Data.save(Table.Photo, null, {'asset_id': 1, 'data': imageData}, function(data) {
+          Notify.alert('Done', 'Photo successfully saved.');
+        }, function(err) {
+          Notify.alert('Oops', 'Could not save photo due to error: ' + err.message);
+        });
       });
     },
     scanAsset: function() {
