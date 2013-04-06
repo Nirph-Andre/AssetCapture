@@ -154,6 +154,7 @@ Table.Photo = new Data.model('Photo', 'photo', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
   'asset_id': EM.belongsTo(Table.Asset, {required: true}),
+  'type': EM.attr('string', {required: true, maxLength: 100})
   'data': EM.attr('blob', {required: true})
 });
 
