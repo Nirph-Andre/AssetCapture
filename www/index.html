@@ -24,6 +24,7 @@
         <!-- Application -->
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/notify.js"></script>
+        <script type="text/javascript" src="js/camera.js"></script>
         <script type="text/javascript" src="js/barcode.js"></script>
         <script type="text/javascript" src="js/location.js"></script>
         <script type="text/javascript" src="js/server.js"></script>
@@ -166,6 +167,9 @@
               <div>
                 <button id="actTakePhoto" class="btn btn-mobile span12"
                   onClick="Camera.takePhoto(App.showPhoto);">Take a pic!</button>
+              </div>
+              <div>
+                <img id="myPic">
               </div>
               <div>
                 <button id="actScanAsset" class="btn btn-mobile span12"
