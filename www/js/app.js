@@ -396,7 +396,7 @@ var App = {
     // ****************************** ASSET INFORMATION ********************************* //
     showPhoto: function() {
       Camera.takePhoto(90, function(imageData) {
-        Notify.alert('YAY', 'Got a photo.');
+        Notify.alert('Photo Size', imageData.length);
         $('#myPic').attr('src', "data:image/jpeg;base64," + imageData);
         Data.save(Table.Photo, null, {'asset_id': 1, 'data': imageData}, function(data) {
           Notify.alert('Done', 'Photo successfully saved.');
