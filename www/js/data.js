@@ -666,7 +666,6 @@ var Data = {
       };
       if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
-        alert('listSynchData: ' + table.objName);
         alert(JSON.stringify(synchData));
         callback(table, synchData);
         return;
@@ -715,10 +714,7 @@ var Data = {
         return true;
       }, function() {
         qCount++;
-        alert('qCount: ' + qCount);
         if (qCount == 3) {
-          alert('Got everything');
-          alert(JSON.stringify(synchData));
           callback(table, synchData);
         }
       });
