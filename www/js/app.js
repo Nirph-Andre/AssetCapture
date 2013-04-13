@@ -1,9 +1,21 @@
 
 var Session = {};
+var PhotoSession = {};
+
+var PhotoRequirement = {
+    'Reservoir': true,
+    'Water Tank': true,
+    'Pump': true,
+    'Motor': true,
+    'Purification Works': true,
+    'Oxidation Dam': true,
+    'Dam': true
+};
 
 var App = {
 
     // Status data
+    authData: {},
     location: 'Device',
     state: 'Initializing',
     stateDescription: 'Initializing',
@@ -11,6 +23,8 @@ var App = {
     online: true,
     firstRun: false,
     authenticated: false,
+    itemPhotoRequired: false,
+    damagePhotoRequired: false,
     awaitGps: [],
 
 
@@ -121,7 +135,8 @@ var App = {
     // ****************************** AUTHENTICATION ********************************* //
     // Authentication
     login: function (username, password) {
-      Server.post('authentication/login', {"username": username, "password": password}, function (jsonResult) {
+      App.authData = {"username": username, "password": password};
+      Server.post('authentication/login', App.authData, function (jsonResult) {
         if ('Error' == jsonResult.Status) {
           Notify.alert('Oops', jsonResult.Message);
         } else if ('Success' == jsonResult.Status) {
@@ -353,6 +368,8 @@ var App = {
           || 0 == Session.asset_sub_type_id
           || 0 == Session.asset_description_id
           || 0 == Session.condition_id
+          || (App.itemPhotoRequired && !PhotoSession.haveItemPhoto)
+          || (App.damagePhotoRequired && !PhotoSession.haveDamagePhoto)
           ) {
         $('#actSaveAsset').prop('disabled', true);
       } else {
@@ -362,6 +379,13 @@ var App = {
     resetAsset: function() {
       $('#actScanAsset').html('Scan Item Barcode');
       Session = {};
+      PhotoSession = {};
+      PhotoSession.haveItemPhoto = false;
+      PhotoSession.haveDamagePhoto = false;
+      $('#itemPhoto').attr('src', '');
+      $('#itemPhoto').hide();
+      $('#damagePhoto').attr('src', '');
+      $('#damagePhoto').hide();
       Session.id = null;
       $('#actAssetType').html('Select Asset Type');
       Session.asset_type_id = 0;
@@ -374,6 +398,8 @@ var App = {
       $('#actAssetDescription').prop('disabled', true);
       $('#actAssetSubDescription').html('Select Asset Sub Description');
       Session.asset_sub_description_id = null;
+      $('#inpDetails').val('');
+      Session.details = '';
       $('#actAssetSubDescription').prop('disabled', true);
       $('#actMaterial').html('Select Material');
       Session.material_id = null;
@@ -394,15 +420,18 @@ var App = {
 
 
     // ****************************** ASSET INFORMATION ********************************* //
-    showPhoto: function() {
+    getItemPhoto: function() {
       Camera.takePhoto(90, function(imageData) {
-        Notify.alert('Photo Size', imageData.length);
-        $('#myPic').attr('src', "data:image/jpeg;base64," + imageData);
-        Data.save(Table.Photo, null, {'asset_id': 1, 'data': imageData, 'type': 'photo'}, function(data) {
-          Notify.alert('Done', 'Photo successfully saved.');
-        }, function(err) {
-          Notify.alert('Oops', 'Could not save photo due to error: ' + err.message);
-        });
+        $('#itemPhoto').attr('src', "data:image/jpeg;base64," + imageData);
+        PhotoSession.item = imageData;
+        PhotoSession.haveItemPhoto = true;
+      });
+    },
+    getDamagePhoto: function() {
+      Camera.takePhoto(90, function(imageData) {
+        $('#damagePhoto').attr('src', "data:image/jpeg;base64," + imageData);
+        PhotoSession.damage = imageData;
+        PhotoSession.haveDamagePhoto = true;
       });
     },
     scanAsset: function() {
@@ -512,6 +541,8 @@ var App = {
               }
             });
           }
+          $('#inpDetails').val(data.details);
+          Session.details = data.details;
           if (data.material_id) {
             Data.view(Table.Material, data.material_id, {}, function(data) {
               if (data.id) {
@@ -541,6 +572,7 @@ var App = {
               if (data.id) {
                 $('#actCondition').html(data.name);
                 Session.condition_id = data.condition_id;
+                Session.previous_condition_id = data.condition_id;
               }
             });
           }
@@ -575,6 +607,8 @@ var App = {
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
       Session.condition_id = 0;
+      $('#inpDetails').val('');
+      Session.details = '';
       $('#actAssetType').html(name);
       $('#actAssetSubType').html('Select Asset Sub Type');
       $('#actAssetDescription').html('Select Asset Description');
@@ -601,6 +635,8 @@ var App = {
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
       Session.condition_id = 0;
+      $('#inpDetails').val('');
+      Session.details = '';
       $('#actAssetSubType').html(name);
       $('#actAssetDescription').html('Select Asset Description');
       $('#actAssetSubDescription').html('Select Asset Sub Description');
@@ -623,6 +659,8 @@ var App = {
       Session.pole_length_id = null;
       Session.street_light_type_id = null;
       Session.condition_id = 0;
+      $('#inpDetails').val('');
+      Session.details = '';
       $('#actAssetDescription').html(name);
       $('#actAssetSubDescription').html('Select Asset Sub Description');
       $('#actMaterial').html('Select Material');
@@ -637,7 +675,16 @@ var App = {
         $('#actPoleLength').show();
         $('#actLightType').show();
       }
+      if (PhotoRequirement[name]) {
+        App.itemPhotoRequired = true;
+        $('#actItemPic').show();
+      } else {
+        $('#actItemPic').hide();
+      }
       App.evalAsset();
+    },
+    setDetails: function(htmlId, $value) {
+      Session.details = '';
     },
     setAssetSubDescription: function(id, name) {
       Session.asset_sub_description_id = id;
@@ -666,6 +713,12 @@ var App = {
       $("html, body").animate({ scrollTop: $("#actCondition").scrollTop() }, 1000);
       Session.condition_id = id;
       $('#actCondition').html(name);
+      if (4 == id || 5 == id) {
+        App.damagePhotoRequired = true;
+        $('#actDamagePic').show();
+      } else {
+        $('#actDamagePic').hide();
+      }
       App.evalAsset();
     },
     saveAsset: function(lat, long, accuracy) {
@@ -703,6 +756,12 @@ var App = {
       Session.room_id     = Config.data.room_id;
       // Save entry
       Data.save(Table.Asset, Session.id, Session, function(data) {
+        if (PhotoSession.haveItemPhoto) {
+          Data.save(Table.Photo, null, {'asset_id': data.id, 'data': PhotoSession.item, 'type': 'item'});
+        }
+        if (PhotoSession.haveDamagePhoto) {
+          Data.save(Table.Photo, null, {'asset_id': data.id, 'data': PhotoSession.damage, 'type': 'damage'});
+        }
         Notify.alert('Done', 'Asset successfully saved.');
         App.resetAsset();
         Interface.back();

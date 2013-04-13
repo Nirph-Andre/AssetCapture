@@ -165,13 +165,6 @@
           <div class="row-fluid">
             <div class="span12">
               <div>
-                <button id="actTakePhoto" class="btn btn-mobile span12"
-                  onClick="App.showPhoto();">Take a pic!</button>
-              </div>
-              <div>
-                <img id="myPic">
-              </div>
-              <div>
                 <button id="actScanAsset" class="btn btn-mobile span12"
                   onClick="App.scanAsset();">Scan Item Barcode</button>
               </div>
@@ -198,6 +191,9 @@
                   onClick="Interface.listFromTable(Table.AssetSubDescription, {'asset_description_id': Session.asset_description_id}, 'name', App.setAssetSubDescription, true, 'Select Asset Sub Description');">
                   Select Asset Sub Description</button>
               </div>
+              <div>
+                <input type="text" id="inpDetails" class="span12 text-input" data-target="setDetails" placeholder="Details">
+              </div>
               <div class="spacer">
                 &nbsp;
               </div>
@@ -220,6 +216,16 @@
                 <button id="actLightType" class="btn btn-mobile span12 hide"
                   onClick="Interface.listFromTable(Table.StreetLightType, {}, 'name', App.setLightType, false, 'Select Light Type');">
                   Select Light Type</button>
+              </div>
+              <div id="actItemPic" class="hide">
+                <button class="btn btn-mobile span12"
+                  onClick="App.getItemPhoto();">Take item picture</button>
+                  <img class="span8 offset2" id="itemPhoto">
+              </div>
+              <div id="actDamagePic" class="hide">
+                <button class="btn btn-mobile span12"
+                  onClick="App.getDamagePhoto();">Take picture of damage</button>
+                  <img class="span8 offset2" id="damagePhoto">
               </div>
               <div class="spacer">
                 &nbsp;
@@ -300,15 +306,18 @@
 			  $(document).bind('deviceready', function() {
 			    App.initialize();
 		    });
-			  $('.btn').click(function() {
-			    var btn = $(this);
+        $('.btn').click(function() {
+          var btn = $(this);
           btn.prop('disabled', true);
-			    btn.addClass('active');
-			    setTimeout(function() {
-			      btn.removeClass('active');
-			      btn.prop('disabled', false);
-			    }, 500);
-			  });
+          btn.addClass('active');
+          setTimeout(function() {
+            btn.removeClass('active');
+            btn.prop('disabled', false);
+          }, 500);
+        });
+        $('.text-input').keyup(function() {
+          App[$(this).attr('data-target')]($(this).attr('id'), $(this).val());
+        });
 			});
 
 		</script>

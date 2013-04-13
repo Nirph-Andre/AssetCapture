@@ -144,10 +144,12 @@ Table.Asset = new Data.model('Asset', 'asset', {
   'asset_sub_type_id': EM.hasOne(Table.AssetSubType, {required: true}),
   'asset_description_id': EM.hasOne(Table.AssetDescription, {required: true}),
   'asset_sub_description_id': EM.hasOne(Table.AssetSubDescription, {required: false}),
+  'details': EM.attr('string', {required: true, maxLength: 250}),
   'material_id': EM.hasOne(Table.Material, {required: false}),
   'pole_length_id': EM.hasOne(Table.PoleLength, {required: false}),
   'street_light_type_id': EM.hasOne(Table.StreetLightType, {required: false}),
-  'condition_id': EM.hasOne(Table.Condition, {required: false})
+  'condition_id': EM.hasOne(Table.Condition, {required: false}),
+  'previous_condition_id': EM.hasOne(Table.Condition, {required: false})
 });
 
 Table.Photo = new Data.model('Photo', 'photo', {

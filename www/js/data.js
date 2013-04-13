@@ -175,13 +175,14 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -586,14 +587,14 @@ var Data = {
               var localTime = Util.getCurrentDateTime();
               for (var ind in synchItem.Feedback) {
                 data = synchItem.Feedback[ind];
-                if (!data.archive) {
+                if (data.archive && 1 == data.archive) {
+                  Data.remove(table, data.id, true);
+                } else {
                   Data.save(table, data.id, {
                     'sid': data.sid,
                     'synchdate': jsonResult.synch_datetime,
                     'synchSave': true
                   });
-                } else {
-                  Data.remove(table, data.id, true);
                 }
               }
 
