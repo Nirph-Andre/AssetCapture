@@ -3,7 +3,7 @@ var Config = {
     dbName: 'AssetCapture',
     dbDisplayName: 'Asset Capture',
     dbVersion: '1.0',
-    dbSize: 209715200,
+    dbSize: 104857600,
     serviceNode: 'http://qac.nirphrdp.com/api/',
     data: {},
     setData: function(data) {
