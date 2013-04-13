@@ -168,7 +168,7 @@ var Data = {
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
+          /*Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'floor', 'mode': Data.SYNCH_BOTH});
@@ -183,7 +183,7 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});
+          Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});*/
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -557,6 +557,7 @@ var Data = {
       App.setState('Loading', 'Synchronizing application data.');
       Notify.notifyStatic('Synchronizing application data...');
       Data.list(Table.Synch, {}, function(data) {
+        alert(JSON.stringify(data));
         Data.loadSynchData(data);
       });
     },
@@ -665,6 +666,8 @@ var Data = {
       };
       if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
+        alert('listSynchData: ' + table.objName);
+        alert(JSON.stringify(synchData));
         callback(table, synchData);
         return;
       }
@@ -672,6 +675,8 @@ var Data = {
       var stmnt = '';
 
       // Collect data
+      var numQueries = (table.fields.archived) ? 3 : 2;
+      var qCount = 0;
       Data.db.transaction(function(tx) {
         // Collect newly created entries
         stmnt = 'SELECT * FROM `' + table.name + '`'
@@ -712,7 +717,12 @@ var Data = {
         App.dbFail(err.message);
         return true;
       }, function() {
-        callback(table, synchData);
+        qCount++;
+        alert('qCount: ' + qCount);
+        if (qCount == numQueries) {
+          alert('Got everything');
+          callback(table, synchData);
+        }
       });
     },
 
