@@ -154,7 +154,7 @@ var Data = {
         stmnt += ')';
         tx.executeSql(stmnt);
       }
-      App.initData();
+      Data.initData();
     },
 
 
