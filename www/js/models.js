@@ -1,6 +1,14 @@
 
 
 
+Table.Synch = new Data.model('Synch', 'x_synch', {
+  'table': EM.attr('string', {required: true, maxLength: 100}),
+  'mode': EM.attr('tinyint', {required: true}),
+  'filter': EM.attr('string', {maxLength: 100}),
+  'local_time': EM.attr('datetime', {}),
+  'server_time': EM.attr('datetime', {})
+});
+
 Table.Config = new Data.model('Config', 'x_config', {
   'name': EM.attr('string', {required: true, maxLength: 250}),
   'value': EM.attr('string', {required: true, maxLength: 250})
@@ -14,14 +22,6 @@ Table.Content = new Data.model('Content', 'x_content', {
   'html': EM.attr('text', {}),
   'js': EM.attr('text', {}),
   'updated': EM.attr('datetime', {})
-});
-
-Table.Synch = new Data.model('Synch', 'x_synch', {
-  'table': EM.attr('string', {required: true, maxLength: 100}),
-  'mode': EM.attr('tinyint', {required: true}),
-  'filter': EM.attr('string', {maxLength: 100}),
-  'local_time': EM.attr('datetime', {}),
-  'server_time': EM.attr('datetime', {})
 });
 
 

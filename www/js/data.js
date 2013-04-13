@@ -152,14 +152,15 @@ var Data = {
         stmnt += ', `changed` DATETIME';
         stmnt += ', `archived` TINYINT DEFAULT 0';
         stmnt += ')';
-        alert(stmnt);
         tx.executeSql(stmnt);
       }
+      alert('Finished creating tables');
     },
 
 
     // Initial data setup
     initData: function() {
+      alert('initData');
       App.setState();
       Data.view(Table.Synch, null, {'table': 'location'}, function(data) {
         if (!data.id) {
@@ -199,9 +200,6 @@ var Data = {
         App.dbReady();
       }, function(err) {
         alert('initData.viewSynchEntry.error ' + err);
-        Data.list(Table.Synch, {}, function(data) {
-          alert(JSON.stringify(data));
-        });
         return true;
       });
     },
