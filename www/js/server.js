@@ -61,6 +61,8 @@ var Server = {
 
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
+      alert('post data');
+      alert(JSON.stringify(data));
       $.ajax({
         type: 'POST',
         dataType: 'json',
