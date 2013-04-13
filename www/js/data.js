@@ -675,7 +675,6 @@ var Data = {
       var stmnt = '';
 
       // Collect data
-      var numQueries = (table.fields.archived) ? 3 : 2;
       var qCount = 0;
       Data.db.transaction(function(tx) {
         // Collect newly created entries
@@ -702,25 +701,24 @@ var Data = {
           }
         });
         // Collect archived entries
-        if (table.fields.archived) {
-          stmnt = 'SELECT * FROM `' + table.name + '`'
-                + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
-          tx.executeSql(stmnt, [], function(tx, result) {
-            if (result.rows.length) {
-              for (var i = 0; i < result.rows.length; i++) {
-                synchData[table.objName].remove.push(Data.stripRecordSlashes(result.rows.item(i)));
-              }
+        stmnt = 'SELECT * FROM `' + table.name + '`'
+              + ' WHERE `sid` IS NOT NULL AND `synchdate` < `changed` AND `archived` = 1';
+        tx.executeSql(stmnt, [], function(tx, result) {
+          if (result.rows.length) {
+            for (var i = 0; i < result.rows.length; i++) {
+              synchData[table.objName].remove.push(Data.stripRecordSlashes(result.rows.item(i)));
             }
-          });
-        }
+          }
+        });
       }, function(err) {
         App.dbFail(err.message);
         return true;
       }, function() {
         qCount++;
         alert('qCount: ' + qCount);
-        if (qCount == numQueries) {
+        if (qCount == 3) {
           alert('Got everything');
+          alert(JSON.stringify(synchData));
           callback(table, synchData);
         }
       });
