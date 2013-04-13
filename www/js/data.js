@@ -197,7 +197,10 @@ var Data = {
         }
         App.dbReady();
       }, function(err) {
-        alert('initData.viewSynchEntry.error ' + err.message);
+        alert('initData.viewSynchEntry.error ' + err);
+        Data.list(Table.Synch, {}, function(data) {
+          alert(JSON.stringify(data));
+        });
         return true;
       });
     },

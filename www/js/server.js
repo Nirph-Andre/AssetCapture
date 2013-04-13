@@ -1,6 +1,6 @@
 
 var Server = {
-    
+
     // Load html, css and js from server directly into view
     loadContent: function(target, page) {
       Server.post(page, {}, function(jsonResult) {
@@ -14,8 +14,8 @@ var Server = {
         Notify.alert('Oops', 'Could not load requested content from server.');
       });
     },
-    
-    
+
+
     // Reverse geocode lookup on yahoo geocode api
     addressFromCoordinates: function(lat, long, callback, errorCallback) {
       var url = 'http://where.yahooapis.com/geocode?location='
@@ -57,14 +57,14 @@ var Server = {
           }
       );
     },
-    
-    
+
+
     // Ajax post helper
     post: function(action, data, callback, errorCallback) {
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: Config.serviveNode + action,
+        url: Config.serviceNode + action,
         data: data
       })
       .done(callback)
@@ -80,14 +80,14 @@ var Server = {
         }
       });
     },
-    
-    
+
+
     // Ajax get helper
     get: function(action, data, callback, errorCallback) {
       $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: Config.serviveNode + action,
+        url: Config.serviceNode + action,
         data: data
       })
       .done(callback)
@@ -99,8 +99,8 @@ var Server = {
         }
       });
     },
-    
-    
+
+
     // Ajax post helper
     postUri: function(uri, data, callback, errorCallback) {
       $.ajax({
@@ -118,8 +118,8 @@ var Server = {
         }
       });
     },
-    
-    
+
+
     // Ajax get helper
     getUri: function(uri, data, callback, errorCallback) {
       $.ajax({
@@ -137,5 +137,5 @@ var Server = {
         }
       });
     }
-    
+
 };
