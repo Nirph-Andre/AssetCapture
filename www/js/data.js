@@ -152,6 +152,7 @@ var Data = {
         stmnt += ', `changed` DATETIME';
         stmnt += ', `archived` TINYINT DEFAULT 0';
         stmnt += ')';
+        alert(stmnt);
         tx.executeSql(stmnt);
       }
     },
