@@ -3,13 +3,13 @@ var Session = {};
 var PhotoSession = {};
 
 var PhotoRequirement = {
-    'Reservoir': true,
-    'Water Tank': true,
-    'Pump': true,
-    'Motor': true,
-    'Purification Works': true,
-    'Oxidation Dam': true,
-    'Dam': true
+    'RESERVOIR': true,
+    'WATER TANK': true,
+    'PUMP': true,
+    'MOTOR': true,
+    'PURIFICATION WORKS': true,
+    'OXIDATION DAM': true,
+    'DAM': true
 };
 
 var App = {
@@ -383,9 +383,11 @@ var App = {
       PhotoSession.haveItemPhoto = false;
       PhotoSession.haveDamagePhoto = false;
       $('#itemPhoto').attr('src', '');
-      $('#itemPhoto').hide();
+      $('#actItemPic').hide();
       $('#damagePhoto').attr('src', '');
-      $('#damagePhoto').hide();
+      $('#actDamagePic').hide();
+      App.itemPhotoRequired = false;
+      App.damagePhotoRequired = false;
       Session.id = null;
       $('#actAssetType').html('Select Asset Type');
       Session.asset_type_id = 0;
@@ -675,10 +677,12 @@ var App = {
         $('#actPoleLength').show();
         $('#actLightType').show();
       }
+      $('#itemPhoto').attr('src', '');
       if (PhotoRequirement[name]) {
         App.itemPhotoRequired = true;
         $('#actItemPic').show();
       } else {
+        App.itemPhotoRequired = false;
         $('#actItemPic').hide();
       }
       App.evalAsset();
@@ -713,10 +717,12 @@ var App = {
       $("html, body").animate({ scrollTop: $("#actCondition").scrollTop() }, 1000);
       Session.condition_id = id;
       $('#actCondition').html(name);
-      if (4 == id || 5 == id) {
+      $('#damagePhoto').attr('src', '');
+      if ('POOR' == name || 'BROKEN' == name) {
         App.damagePhotoRequired = true;
         $('#actDamagePic').show();
       } else {
+        App.damagePhotoRequired = false;
         $('#actDamagePic').hide();
       }
       App.evalAsset();
