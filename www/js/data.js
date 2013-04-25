@@ -557,7 +557,6 @@ var Data = {
       App.setState('Loading', 'Synchronizing application data.');
       Notify.notifyStatic('Synchronizing application data...');
       Data.list(Table.Synch, {}, function(data) {
-        alert(JSON.stringify(data));
         Data.loadSynchData(data);
       });
     },
@@ -579,8 +578,6 @@ var Data = {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
         Data.listSynchData(Table[objName], filter, item.server_time, item.mode, function(table, synchData) {
-          alert('listSynchData');
-          alert(JSON.stringify(synchData));
           Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
@@ -668,7 +665,6 @@ var Data = {
       };
       if (synchMode == Data.SYNCH_FROM_SERVER) {
         // Downstream only, no local changes
-        alert(JSON.stringify(synchData));
         callback(table, synchData);
         return;
       }
