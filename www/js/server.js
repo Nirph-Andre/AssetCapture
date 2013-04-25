@@ -64,14 +64,40 @@ var Server = {
       alert('post data');
       alert(JSON.stringify(data));
       $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: Config.serviceNode + action,
-        data: data
+        'type': 'POST',
+        'dataType': 'json',
+        'url': Config.serviceNode + action,
+        'data': data
       })
-      .done(callback)
+      .done(function(returnData) {
+        alert('1 post done');
+        alert(JSON.stringify(returnData));
+        callback(returnData);
+      })
       .fail(function(jqXHR, textStatus, errorThrown) {
-        alert('post failure');
+        alert('1 post failure');
+        alert(JSON.stringify(data));
+        alert(errorThrown);
+        alert(jqXHR.responseText);
+        if (errorCallback !== 'undefined')  {
+          errorCallback(jqXHR, textStatus, errorThrown);
+        } else {
+          Notify.alert('Oops', 'Could not talk to server: ' + errorThrown);
+        }
+      });
+      $.ajax({
+        'type': 'POST',
+        'dataType': 'json',
+        'url': Config.serviceNode + action,
+        'data': JSON.stringify(data)
+      })
+      .done(function(returnData) {
+        alert('2 post done');
+        alert(JSON.stringify(returnData));
+        callback(returnData);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        alert('2 post failure');
         alert(JSON.stringify(data));
         alert(errorThrown);
         alert(jqXHR.responseText);
