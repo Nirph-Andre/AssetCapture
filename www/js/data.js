@@ -571,6 +571,7 @@ var Data = {
       var objName = '';
       var filter = {};
       for (var i in  synchEntries) {
+    	Notify.alert('Synch Entries: ', synchEntries.length);
         item = synchEntries[i];
         objName = Data.tableMap[item.table];
         filter = {};
@@ -630,6 +631,7 @@ var Data = {
 
               // Cleanup
               Data.synchedItems++;
+              Notify.alert('Synched: ', Data.synchedItems);
               if (Data.synchedItems >= Data.synchItems) {
                 Data.synchItems = 0;
                 Data.synchedItems = 0;
