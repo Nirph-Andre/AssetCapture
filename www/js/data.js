@@ -167,7 +167,7 @@ var Data = {
           // Add content table to synch list and init server synch
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
+          /*Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
@@ -181,9 +181,9 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});*/
           Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});
+          //Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
@@ -570,8 +570,8 @@ var Data = {
       var data = {};
       var objName = '';
       var filter = {};
+  	  Notify.alert('Synch Entries: ', synchEntries.length);
       for (var i in  synchEntries) {
-    	Notify.alert('Synch Entries: ', synchEntries.length);
         item = synchEntries[i];
         objName = Data.tableMap[item.table];
         filter = {};
@@ -632,6 +632,7 @@ var Data = {
               // Cleanup
               Data.synchedItems++;
               Notify.alert('Synched: ', Data.synchedItems);
+            	Notify.alert('Create Entries: ', synchItem.Create.length);
               if (Data.synchedItems >= Data.synchItems) {
                 Data.synchItems = 0;
                 Data.synchedItems = 0;
@@ -642,6 +643,7 @@ var Data = {
           }, function(jqXHR, textStatus, errorThrown) {
             Data.synchedItems++;
             Notify.alert('Oops', textStatus);
+            Notify.alert('Oops', JSON.stringify(errorThrown));
             if (Data.synchedItems >= Data.synchItems) {
               Data.synchItems = 0;
               Data.synchItsynchedItemsems = 0;
