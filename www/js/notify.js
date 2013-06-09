@@ -24,6 +24,7 @@ var Notify = {
         $('#modalStaticNotifyContent').addClass('blink');
       }
       if (id) {
+    	  $('#staticNote' + id).remove();
     	  $('#modalStaticNotifyContent').append('<span id="staticNote' + id + '"><br/>' + note + '</span>');
       } else {
     	  $('#modalStaticNotifyContent').html(note);
