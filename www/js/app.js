@@ -114,18 +114,17 @@ var App = {
     	Notify.notifyStatic('Synchronizing photo ' + (App.photosSynched + 1) + ' of ' + App.photosToSynch.length);
     	Data.view(Table.Photo, photoId, {}, function(data) {
             if (data.id) {
-            	alert('Photo ' + data.id + ' with asset id ' + data.asset_id);
             	Data.view(Table.Asset, data.asset_id, {}, function(asset) {
-                	alert('Photo ' + data.id + ' with server asset id ' + asset.sid);
             		data.asset_id = asset.sid;
             		var synchData = {};
                 	synchData['Photo'] =  {
                         'lastSynchDate': 0,
                         'filter': {},
-                        'create': [data],
+                        'create': [],
                         'update': [],
                         'remove': []
                     };
+                	synchData['Photo']['create'].push(data);
                 	alert('Chat to server for photo ' + photoId);
                 	Server.post('data/synch', synchData, function(jsonResult) {
                 		Notify.alert('Photo Synched', 'Photo ' + (App.photosSynched + 1));
@@ -484,7 +483,7 @@ var App = {
 
     // ****************************** ASSET INFORMATION ********************************* //
     getItemPhoto: function() {
-      Camera.takePhoto(90, function(imageData) {
+      Camera.takePhoto(60, function(imageData) {
         $('#itemPhoto').attr('src', "data:image/jpeg;base64," + imageData);
         PhotoSession.item = imageData;
         PhotoSession.haveItemPhoto = true;
@@ -492,7 +491,7 @@ var App = {
       });
     },
     getDamagePhoto: function() {
-      Camera.takePhoto(90, function(imageData) {
+      Camera.takePhoto(60, function(imageData) {
         $('#damagePhoto').attr('src', "data:image/jpeg;base64," + imageData);
         PhotoSession.damage = imageData;
         PhotoSession.haveDamagePhoto = true;
