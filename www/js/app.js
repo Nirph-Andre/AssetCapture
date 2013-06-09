@@ -116,7 +116,8 @@ var App = {
             if (data.id) {
             	Data.view(Table.Asset, data.asset_id, {}, function(asset) {
             		data.asset_id = asset.sid;
-                	var synchData['Photo'] =  {
+            		var synchData = {};
+                	synchData['Photo'] =  {
                         'lastSynchDate': serverTime,
                         'filter': synchFilter,
                         'create': [data],
