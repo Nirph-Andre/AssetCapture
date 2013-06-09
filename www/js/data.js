@@ -570,7 +570,6 @@ var Data = {
       var data = {};
       var objName = '';
       var filter = {};
-  	  Notify.alert('Synch Entries: ', synchEntries.length);
       for (var i in  synchEntries) {
         item = synchEntries[i];
         objName = Data.tableMap[item.table];
@@ -606,6 +605,7 @@ var Data = {
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
+              synchItem.Create = [];
 
               // Update existing entries
               for (var ind in synchItem.Update) {
@@ -613,6 +613,7 @@ var Data = {
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
+              synchItem.Update = [];
 
               // Remove existing entries
               for (var ind in synchItem.Remove) {
@@ -620,6 +621,7 @@ var Data = {
                 data.synchdate = jsonResult.synch_datetime;
                 Data.synchUpdate(table, data);
               }
+              synchItem.Remove = [];
 
               // Update synch entry with relevant timestamps
               Data.view(Table.Synch, null, {'table': table.name}, function(data) {

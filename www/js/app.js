@@ -669,6 +669,7 @@ var App = {
 		    	  Data.view(Table.Town, data.town_id, {}, function(data) {
 	                	App.prevLocation.town = data.name;
 		                App.locationItems++;
+		    	    	alert(App.locationItems);
 		                if (5 == App.locationItems) {
 		                	App.locationDiff();
 		                }
@@ -676,6 +677,7 @@ var App = {
 	    	  } else {
 	    		  App.prevLocation.town = '';
 	    		  App.locationItems++;
+	    	    	alert(App.locationItems);
 	              if (5 == App.locationItems) {
 	            	  App.locationDiff();
 	              }
@@ -684,6 +686,7 @@ var App = {
 		    	  Data.view(Table.Street, data.street_id, {}, function(data) {
 	                	App.prevLocation.street = data.name;
 		                App.locationItems++;
+		    	    	alert(App.locationItems);
 		                if (5 == App.locationItems) {
 		                	App.locationDiff();
 		                }
@@ -691,6 +694,7 @@ var App = {
 	    	  } else {
 	    		  App.prevLocation.street = '';
 	    		  App.locationItems++;
+	    	    	alert(App.locationItems);
 	              if (5 == App.locationItems) {
 	            	  App.locationDiff();
 	              }
@@ -699,6 +703,7 @@ var App = {
 		    	  Data.view(Table.Building, data.building_id, {}, function(data) {
 	                	App.prevLocation.building = data.name;
 		                App.locationItems++;
+		    	    	alert(App.locationItems);
 		                if (5 == App.locationItems) {
 		                	App.locationDiff();
 		                }
@@ -706,6 +711,7 @@ var App = {
 	    	  } else {
 	    		  App.prevLocation.building = '';
 	    		  App.locationItems++;
+	    	    	alert(App.locationItems);
 	              if (5 == App.locationItems) {
 	            	  App.locationDiff();
 	              }
@@ -714,6 +720,7 @@ var App = {
 		    	  Data.view(Table.Floor, data.floor_id, {}, function(data) {
 	                	App.prevLocation.floor = data.name;
 		                App.locationItems++;
+		    	    	alert(App.locationItems);
 		                if (5 == App.locationItems) {
 		                	App.locationDiff();
 		                }
@@ -721,6 +728,7 @@ var App = {
 	    	  } else {
 	    		  App.prevLocation.floor = '';
 	    		  App.locationItems++;
+	    	    	alert(App.locationItems);
 	              if (5 == App.locationItems) {
 	            	  App.locationDiff();
 	              }
@@ -729,6 +737,7 @@ var App = {
 		    	  Data.view(Table.Room, data.room_id, {}, function(data) {
 	                	App.prevLocation.room = data.name;
 		                App.locationItems++;
+		    	    	alert(App.locationItems);
 		                if (5 == App.locationItems) {
 		                	App.locationDiff();
 		                }
@@ -736,6 +745,7 @@ var App = {
 	    	  } else {
 	    		  App.prevLocation.room = '';App.locationItems++;
 	    		  App.locationItems++;
+	    	    	alert(App.locationItems);
 	              if (5 == App.locationItems) {
 	            	  App.locationDiff();
 	              }
@@ -748,6 +758,7 @@ var App = {
       });
     },
     locationDiff: function () {
+    	alert('Liocation Diff');
     	var listData = [];
     	var currLocation = Config.data.town
 						+ ('' != Config.data.street ? ', ' + Config.data.street + '<br/>' + ', ' : '')
