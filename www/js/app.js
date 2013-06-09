@@ -114,7 +114,9 @@ var App = {
     	Notify.notifyStatic('Synchronizing photo ' + (App.photosSynched + 1) + ' of ' + App.photosToSynch.length);
     	Data.view(Table.Photo, photoId, {}, function(data) {
             if (data.id) {
+            	alert('Photo ' + data.id + ' with asset id ' + data.asset_id);
             	Data.view(Table.Asset, data.asset_id, {}, function(asset) {
+                	alert('Photo ' + data.id + ' with server asset id ' + asset.sid);
             		data.asset_id = asset.sid;
             		var synchData = {};
                 	synchData['Photo'] =  {
@@ -124,6 +126,7 @@ var App = {
                         'update': [],
                         'remove': []
                     };
+                	alert('Chat to server for photo ' + photoId);
                 	Server.post('data/synch', synchData, function(jsonResult) {
                 		Notify.alert('Photo Synched', 'Photo ' + (App.photosSynched + 1));
                 		Data.remove(Table.Photo, photoId, true);
@@ -932,7 +935,7 @@ var App = {
       // Location data
       Session.identifier  = Config.data.identifier;
       Session.location_id = Config.data.location_id;
-      if (Session.town_id)
+      if (!Session.town_id)
 	  {
 	      Session.town_id     = Config.data.town_id;
 	      Session.street_id   = Config.data.street_id;

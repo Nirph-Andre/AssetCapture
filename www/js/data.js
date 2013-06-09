@@ -585,7 +585,7 @@ var Data = {
               var table = Table[retObjName];
               var synchItem = jsonResult.Data[retObjName];
               var localTime = Util.getCurrentDateTime();
-              Notify.notifyStatic('Processing synch data for: ' + table);
+              Notify.notifyStatic('Processing synch data for: ' + retObjName);
               for (var ind in synchItem.Feedback) {
                 data = synchItem.Feedback[ind];
                 if (data.archive && 1 == data.archive) {
@@ -632,8 +632,6 @@ var Data = {
 
               // Cleanup
               Data.synchedItems++;
-              Notify.alert('Synched: ', Data.synchedItems);
-            	Notify.alert('Create Entries: ', synchItem.Create.length);
               if (Data.synchedItems >= Data.synchItems) {
                 Data.synchItems = 0;
                 Data.synchedItems = 0;
