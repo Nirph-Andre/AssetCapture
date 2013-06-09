@@ -167,7 +167,7 @@ var Data = {
           // Add content table to synch list and init server synch
           App.newDevice();
           //Data.save(Table.Synch, null, {'table': 'x_content', 'mode': Data.SYNCH_FROM_SERVER});
-          /*Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'location', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'town', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'street', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'building', 'mode': Data.SYNCH_BOTH});
@@ -181,8 +181,8 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'street_light_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});*/
-          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
+          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH, 'filter': 'asset_type_id'});
           //Data.save(Table.Synch, null, {'table': 'photo', 'mode': Data.SYNCH_TO_SERVER});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
@@ -585,6 +585,7 @@ var Data = {
               var table = Table[retObjName];
               var synchItem = jsonResult.Data[retObjName];
               var localTime = Util.getCurrentDateTime();
+              Notify.notifyStatic('Processing synch data for: ' + table);
               for (var ind in synchItem.Feedback) {
                 data = synchItem.Feedback[ind];
                 if (data.archive && 1 == data.archive) {
@@ -637,7 +638,7 @@ var Data = {
                 Data.synchItems = 0;
                 Data.synchedItems = 0;
                 Data.synching = false;
-                App.synchComplete();
+                App.synchPhotos();
               }
             }
           }, function(jqXHR, textStatus, errorThrown) {

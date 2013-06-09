@@ -26,6 +26,8 @@ var App = {
     itemPhotoRequired: false,
     damagePhotoRequired: false,
     awaitGps: [],
+    photosSynched: 0,
+    photosToSynch: [],
 
 
     // Application Constructor
@@ -102,6 +104,61 @@ var App = {
       Notify.notifyStatic('Could not load configuration data, application cannot proceed.');
       App.setState('Configuration Error', 'Could not load configuration data.', 'problem');
       return true;
+    },
+    synchNextPhoto: function() {
+    	if (!App.photosToSynch[App.photosSynched]) {
+    		App.synchComplete();
+    		return;
+    	}
+    	var photoId = App.photosToSynch[App.photosSynched];
+    	Notify.notifyStatic('Synchronizing photo ' + (App.photosSynched + 1) + ' of ' + App.photosToSynch.length);
+    	Data.view(Table.Photo, photoId, {}, function(data) {
+            if (data.id) {
+            	Data.view(Table.Asset, data.asset_id, {}, function(asset) {
+            		data.asset_id = asset.sid;
+                	var synchData['Photo'] =  {
+                        'lastSynchDate': serverTime,
+                        'filter': synchFilter,
+                        'create': [data],
+                        'update': [],
+                        'remove': []
+                    };
+                	Server.post('data/synch', synchData, function(jsonResult) {
+                		Notify.alert('Photo Synched', 'Photo ' + (App.photosSynched + 1));
+                		Data.remove(Table.Photo, photoId, true);
+                    	App.photosSynched++;
+                    	App.synchNextPhoto();
+                	}, function(jqXHR, textStatus, errorThrown) {
+                        Notify.alert('Oops', textStatus);
+                        Notify.alert('Oops', JSON.stringify(errorThrown));
+                        App.synchComplete();
+                    });
+            	});
+            } else {
+            	App.synchComplete();
+            }
+          });
+    },
+    synchPhotos: function() {
+    	Notify.notifyStatic('Synchronizing photos.');
+    	Data.query('SELECT id FROM photo', function(tx, result) {
+    		if (result && result.rows && result.rows.length) {
+    			App.photosSynched = 0;
+    			App.photosToSynch = [];
+    			for (var i = 0; i < result.rows.length; i++) {
+    				var item = Data.stripRecordSlashes(result.rows.item(i));
+    				App.photosToSynch.push(item.id);
+    			}
+    			App.synchNextPhoto();
+    		} else {
+				App.synchComplete();
+				return;
+    		}
+          }, function(err) {
+            // Oops, something went wrong
+            Notify.alert('Photo synch query oops', 'Data.queryError: ' + err.message);
+            return true;
+          });
     },
     synchComplete: function() {
       Notify.hideStatic();
@@ -427,6 +484,7 @@ var App = {
         $('#itemPhoto').attr('src', "data:image/jpeg;base64," + imageData);
         PhotoSession.item = imageData;
         PhotoSession.haveItemPhoto = true;
+        App.evalAsset();
       });
     },
     getDamagePhoto: function() {
@@ -434,6 +492,7 @@ var App = {
         $('#damagePhoto').attr('src', "data:image/jpeg;base64," + imageData);
         PhotoSession.damage = imageData;
         PhotoSession.haveDamagePhoto = true;
+        App.evalAsset();
       });
     },
     scanAsset: function() {
@@ -587,11 +646,129 @@ var App = {
           }
           $('#actFlagDuplicate').show();
           App.evalAsset();
+
+          // Check for location conflict.
+	      Session.previous_town_id     = data.town_id;
+	      Session.previous_street_id   = data.street_id;
+	      Session.previous_building_id = data.building_id;
+	      Session.previous_floor_id    = data.floor_id;
+	      Session.previous_room_id     = data.room_id;
+	      if (data.town_id != Config.data.town_id
+	    		  || data.street_id != Config.data.street_id
+	    		  || data.building_id != Config.data.building_id
+	    		  || data.previous_floor_id != Config.data.previous_floor_id
+	    		  || data.room_id != Config.data.room_id) {
+	    	  // We have a location difference.
+	    	  App.locationItems = 0;
+	    	  App.prevLocation = {};
+	    	  if (data.town_id) {
+		    	  Data.view(Table.Town, data.town_id, {}, function(data) {
+	                	App.prevLocation.town = data.name;
+		                App.locationItems++;
+		                if (5 == App.locationItems) {
+		                	App.locationDiff();
+		                }
+		              });
+	    	  } else {
+	    		  App.prevLocation.town = '';
+	    		  App.locationItems++;
+	              if (5 == App.locationItems) {
+	            	  App.locationDiff();
+	              }
+	    	  }
+	    	  if (data.street_id) {
+		    	  Data.view(Table.Street, data.street_id, {}, function(data) {
+	                	App.prevLocation.street = data.name;
+		                App.locationItems++;
+		                if (5 == App.locationItems) {
+		                	App.locationDiff();
+		                }
+		              });
+	    	  } else {
+	    		  App.prevLocation.street = '';
+	    		  App.locationItems++;
+	              if (5 == App.locationItems) {
+	            	  App.locationDiff();
+	              }
+	    	  }
+	    	  if (data.building_id) {
+		    	  Data.view(Table.Building, data.building_id, {}, function(data) {
+	                	App.prevLocation.building = data.name;
+		                App.locationItems++;
+		                if (5 == App.locationItems) {
+		                	App.locationDiff();
+		                }
+		              });
+	    	  } else {
+	    		  App.prevLocation.building = '';
+	    		  App.locationItems++;
+	              if (5 == App.locationItems) {
+	            	  App.locationDiff();
+	              }
+	    	  }
+	    	  if (data.floor_id) {
+		    	  Data.view(Table.Floor, data.floor_id, {}, function(data) {
+	                	App.prevLocation.floor = data.name;
+		                App.locationItems++;
+		                if (5 == App.locationItems) {
+		                	App.locationDiff();
+		                }
+		              });
+	    	  } else {
+	    		  App.prevLocation.floor = '';
+	    		  App.locationItems++;
+	              if (5 == App.locationItems) {
+	            	  App.locationDiff();
+	              }
+	    	  }
+	    	  if (data.room_id) {
+		    	  Data.view(Table.Room, data.room_id, {}, function(data) {
+	                	App.prevLocation.room = data.name;
+		                App.locationItems++;
+		                if (5 == App.locationItems) {
+		                	App.locationDiff();
+		                }
+		              });
+	    	  } else {
+	    		  App.prevLocation.room = '';App.locationItems++;
+	    		  App.locationItems++;
+	              if (5 == App.locationItems) {
+	            	  App.locationDiff();
+	              }
+	    	  }
+	      }
         } else {
           // Did not find entry, create new asset
           App.newAsset(Config.data.identifier);
         }
       });
+    },
+    locationDiff: function () {
+    	var listData = [];
+    	var currLocation = Config.data.town
+						+ ('' != Config.data.street ? ', ' + Config.data.street + '<br/>' + ', ' : '')
+						+ ('' != Config.data.building ? Config.data.building : '')
+						+ ('' != Config.data.floor ? ', ' + Config.data.floor : '')
+						+ ('' != Config.data.room ? ', ' + Config.data.room : '');
+    	var prevLocation = App.prevLocation.town
+				    	+ ('' != App.prevLocation.street ? ', ' + App.prevLocation.street + '<br/>' + ', ' : '')
+				    	+ ('' != App.prevLocation.building ? App.prevLocation.building : '')
+				    	+ ('' != App.prevLocation.floor ? ', ' + App.prevLocation.floor : '')
+				    	+ ('' != App.prevLocation.room ? ', ' + App.prevLocation.room : '');
+    	listData.push({"value": 0, "label": currLocation});
+    	listData.push({"value": 1, "label": prevLocation});
+    	App.prevLocation = {};
+        Interface.allowNew = false;
+        Interface.listFromData(listData, App.resolveLocation, 'Select Correct Location');
+    },
+    resolveLocation: function(id) {
+      if (1 == id) {
+	      Session.town_id     = Session.previous_town_id
+	      Session.street_id   = Session.previous_street_id;
+	      Session.building_id = Session.previous_building_id;
+	      Session.floor_id    = Session.previous_floor_id;
+	      Session.room_id     = Session.previous_room_id;
+	  }
     },
     newAsset: function(identifier) {
       // Clear out all fields
@@ -754,12 +931,15 @@ var App = {
       // Location data
       Session.identifier  = Config.data.identifier;
       Session.location_id = Config.data.location_id;
-      Session.town_id     = Config.data.town_id;
-      Session.street_id   = Config.data.street_id;
-      Session.owner_id    = Config.data.owner_id;
-      Session.building_id = Config.data.building_id;
-      Session.floor_id    = Config.data.floor_id;
-      Session.room_id     = Config.data.room_id;
+      if (Session.town_id)
+	  {
+	      Session.town_id     = Config.data.town_id;
+	      Session.street_id   = Config.data.street_id;
+	      Session.owner_id    = Config.data.owner_id;
+	      Session.building_id = Config.data.building_id;
+	      Session.floor_id    = Config.data.floor_id;
+	      Session.room_id     = Config.data.room_id;
+	  }
       // Save entry
       Data.save(Table.Asset, Session.id, Session, function(data) {
         if (PhotoSession.haveItemPhoto) {

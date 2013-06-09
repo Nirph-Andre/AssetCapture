@@ -60,12 +60,16 @@ var Server = {
 
 
     // Ajax post helper
-    post: function(action, data, callback, errorCallback) {
+    post: function(action, data, callback, errorCallback, asynch) {
+    	asynch = (asynch !== 'undefined')
+    		? asynch
+    		: true;
       $.ajax({
-        'type': 'POST',
-        'dataType': 'json',
-        'url': Config.serviceNode + action,
-        'data': JSON.stringify(data)
+        type: 'POST',
+        dataType: 'json',
+        url: Config.serviceNode + action,
+        data: JSON.stringify(data),
+        async: asynch
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
@@ -79,12 +83,16 @@ var Server = {
 
 
     // Ajax get helper
-    get: function(action, data, callback, errorCallback) {
+    get: function(action, data, callback, errorCallback, asynch) {
+    	asynch = (asynch !== 'undefined')
+		? asynch
+		: true;
       $.ajax({
         type: 'GET',
         dataType: 'json',
         url: Config.serviceNode + action,
-        data: JSON.stringify(data)
+        data: JSON.stringify(data),
+        async: asynch
       })
       .done(callback)
       .fail(function(jqXHR, textStatus, errorThrown) {
