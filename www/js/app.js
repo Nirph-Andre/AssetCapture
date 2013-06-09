@@ -120,8 +120,8 @@ var App = {
             		data.asset_id = asset.sid;
             		var synchData = {};
                 	synchData['Photo'] =  {
-                        'lastSynchDate': serverTime,
-                        'filter': synchFilter,
+                        'lastSynchDate': 0,
+                        'filter': {},
                         'create': [data],
                         'update': [],
                         'remove': []
