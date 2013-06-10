@@ -39,7 +39,7 @@ var Camera = {
           mediaType: Camera.MediaType.PICTURE,
           encodingType: Camera.EncodingType.JPEG,
           quality: pictureQuality,
-          destinationType: Camera.DestinationType.DATA_URL,
+          destinationType: Camera.DestinationType.FILE_URI,
           saveToPhotoAlbum: false
         });
       } catch(err) {

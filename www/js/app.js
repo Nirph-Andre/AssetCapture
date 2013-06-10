@@ -105,6 +105,8 @@ var App = {
       App.setState('Configuration Error', 'Could not load configuration data.', 'problem');
       return true;
     },
+    uploadPhoto: function (imageURI) {
+    },
     synchNextPhoto: function() {
     	if (!App.photosToSynch[App.photosSynched]) {
     		App.synchComplete();
@@ -116,7 +118,26 @@ var App = {
             if (data.id) {
             	Data.view(Table.Asset, data.asset_id, {}, function(asset) {
             		data.asset_id = asset.sid;
-            		var synchData = {};
+            		var imageURI = data.data;
+
+                    var params = {};
+                    params.asset_id = asset.sid;
+                    params.type = data.type;
+
+                	var options = new FileUploadOptions();
+                    options.fileKey = "file";
+                    options.fileName = imageURI.substr(imageURI.lastIndexOf('/')+1);
+                    options.mimeType = "image/jpeg";
+                    options.params = params;
+
+                    var ft = new FileTransfer();
+                    ft.upload(imageURI, encodeURI(Config.serviceNode + 'data/upload'), function (r) {
+                    	alert(JSON.stringify(r));
+                    }, function (error) {
+                    	alert(JSON.stringify(error));
+                    }, options);
+
+            		/*var synchData = {};
                 	synchData['Photo'] =  {
                         'lastSynchDate': 0,
                         'filter': {},
@@ -135,7 +156,7 @@ var App = {
                         Notify.alert('Oops', textStatus);
                         Notify.alert('Oops', JSON.stringify(errorThrown));
                         App.synchComplete();
-                    });
+                    });*/
             	});
             } else {
             	App.synchComplete();
@@ -483,17 +504,17 @@ var App = {
 
     // ****************************** ASSET INFORMATION ********************************* //
     getItemPhoto: function() {
-      Camera.takePhoto(60, function(imageData) {
-        $('#itemPhoto').attr('src', "data:image/jpeg;base64," + imageData);
-        PhotoSession.item = imageData;
+      Camera.takePhoto(60, function(imageURI) {
+        $('#itemPhoto').attr('src', imageURI);
+        PhotoSession.item = imageURI;
         PhotoSession.haveItemPhoto = true;
         App.evalAsset();
       });
     },
     getDamagePhoto: function() {
-      Camera.takePhoto(60, function(imageData) {
-        $('#damagePhoto').attr('src', "data:image/jpeg;base64," + imageData);
-        PhotoSession.damage = imageData;
+      Camera.takePhoto(60, function(imageURI) {
+        $('#damagePhoto').attr('src', imageURI);
+        PhotoSession.damage = imageURI;
         PhotoSession.haveDamagePhoto = true;
         App.evalAsset();
       });
