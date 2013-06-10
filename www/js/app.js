@@ -132,31 +132,13 @@ var App = {
 
                     var ft = new FileTransfer();
                     ft.upload(imageURI, encodeURI(Config.serviceNode + 'data/upload'), function (r) {
-                    	alert(JSON.stringify(r));
-                    }, function (error) {
-                    	alert(JSON.stringify(error));
-                    }, options);
-
-            		/*var synchData = {};
-                	synchData['Photo'] =  {
-                        'lastSynchDate': 0,
-                        'filter': {},
-                        'create': [],
-                        'update': [],
-                        'remove': []
-                    };
-                	synchData['Photo']['create'].push(data);
-                	alert('Chat to server for photo ' + photoId);
-                	Server.post('data/synch', synchData, function(jsonResult) {
-                		Notify.alert('Photo Synched', 'Photo ' + (App.photosSynched + 1));
-                		Data.remove(Table.Photo, photoId, true);
+                    	Data.remove(Table.Photo, photoId, true);
                     	App.photosSynched++;
                     	App.synchNextPhoto();
-                	}, function(jqXHR, textStatus, errorThrown) {
-                        Notify.alert('Oops', textStatus);
-                        Notify.alert('Oops', JSON.stringify(errorThrown));
-                        App.synchComplete();
-                    });*/
+                    }, function (error) {
+                    	Notify.alert('Photo upload error', JSON.stringify(error));
+                    	App.synchComplete();
+                    }, options);
             	});
             } else {
             	App.synchComplete();
@@ -771,13 +753,13 @@ var App = {
     	alert('Liocation Diff');
     	var listData = [];
     	var currLocation = Config.data.town
-						+ ('' != Config.data.street ? ', ' + Config.data.street + '<br/>' + ', ' : '')
-						+ ('' != Config.data.building ? Config.data.building : '')
+						+ ('' != Config.data.street ? ', ' + Config.data.street + '<br/>' : '')
+						+ ('' != Config.data.building ? ', ' + Config.data.building : '')
 						+ ('' != Config.data.floor ? ', ' + Config.data.floor : '')
 						+ ('' != Config.data.room ? ', ' + Config.data.room : '');
     	var prevLocation = App.prevLocation.town
-				    	+ ('' != App.prevLocation.street ? ', ' + App.prevLocation.street + '<br/>' + ', ' : '')
-				    	+ ('' != App.prevLocation.building ? App.prevLocation.building : '')
+				    	+ ('' != App.prevLocation.street ? ', ' + App.prevLocation.street + '<br/>' : '')
+				    	+ ('' != App.prevLocation.building ? ', ' + App.prevLocation.building : '')
 				    	+ ('' != App.prevLocation.floor ? ', ' + App.prevLocation.floor : '')
 				    	+ ('' != App.prevLocation.room ? ', ' + App.prevLocation.room : '');
     	listData.push({"value": 0, "label": currLocation});
