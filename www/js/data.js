@@ -578,14 +578,13 @@ var Data = {
           filter[item.filter] = Config.data[item.filter] ? Config.data[item.filter] : null;
         }
         Data.listSynchData(Table[objName], filter, item.server_time, item.mode, function(table, synchData) {
-        	Notify.notifyStatic('Initiating synch for: ' + objName, false, objName);
+        	Notify.notifyStatic('Processing: ' + objName, false, objName);
         	Server.post('data/synch', synchData, function(jsonResult) {
             // Update local entries with relevant server id's
             for (var retObjName in jsonResult.Data) {
               var table = Table[retObjName];
               var synchItem = jsonResult.Data[retObjName];
               var localTime = Util.getCurrentDateTime();
-              Notify.notifyStatic('Processing synch data for: ' + retObjName, false, retObjName);
               for (var ind in synchItem.Feedback) {
                 data = synchItem.Feedback[ind];
                 if (data.archive && 1 == data.archive) {
@@ -645,7 +644,7 @@ var Data = {
             }
           }, function(jqXHR, textStatus, errorThrown) {
             Data.synchedItems++;
-            Notify.alert('Oops', textStatus);
+            Notify.alert('Oops for ' + objName, textStatus);
             Notify.alert('Oops', JSON.stringify(errorThrown));
             if (Data.synchedItems >= Data.synchItems) {
               Data.synchItems = 0;
