@@ -5,7 +5,9 @@ var Config = {
     dbVersion: '1.0',
     dbSize: 104857600,
     serviceNode: 'http://qac.nirphrdp.com/api/',
-    data: {'asset_type_id': 1},
+    data: {
+    	'asset_type_id': 4
+    	},
     setData: function(data) {
       for (var i in data) {
         Config.data[data[i].name] = Data.stripSlashes(data[i].value);
