@@ -280,6 +280,7 @@ var App = {
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
       Config.setDataItem('owner_id', 0);
+      Config.setDataItem('department_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -292,12 +293,14 @@ var App = {
       $('#actTown').html('Select Town');
       $('#actStreet').html('Select Street');
       $('#actOwner').html('Select Owner');
+      $('#actDepartment').html('Select Department');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actTown').prop('disabled', false);
       $('#actStreet').prop('disabled', true);
       $('#actOwner').prop('disabled', true);
+      $('#actDepartment').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
@@ -312,6 +315,7 @@ var App = {
       Config.setDataItem('street_id', 0);
       Config.setDataItem('street', '');
       Config.setDataItem('owner_id', 0);
+      Config.setDataItem('department_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -322,11 +326,13 @@ var App = {
       $('#actTown').html(Config.data.town);
       $('#actStreet').html('Select Street');
       $('#actOwner').html('Select Owner');
+      $('#actDepartment').html('Select Department');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actStreet').prop('disabled', false);
-      $('#actOwner').prop('disabled', true);
+      $('#actOwner').prop('disabled', false);
+      $('#actDepartment').prop('disabled', true);
       $('#actBuilding').prop('disabled', true);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
@@ -339,6 +345,7 @@ var App = {
       Config.setDataItem('street_id', id);
       Config.setDataItem('street', name);
       Config.setDataItem('owner_id', 0);
+      Config.setDataItem('department_id', 0);
       Config.setDataItem('building_id', 0);
       Config.setDataItem('building', '');
       Config.setDataItem('floor_id', 0);
@@ -348,10 +355,12 @@ var App = {
       Config.setDataItem('default_haveGps', 0);
       $('#actStreet').html(Config.data.street);
       $('#actOwner').html('Select Owner');
+      $('#actDepartment').html('Select Department');
       $('#actBuilding').html('Select Building');
       $('#actFloor').html('Scan Floor Barcode');
       $('#actRoom').html('Scan Room Barcode');
       $('#actOwner').prop('disabled', false);
+      $('#actDepartment').prop('disabled', true);
       $('#actBuilding').prop('disabled', false);
       $('#actFloor').prop('disabled', true);
       $('#actFloorNA').prop('disabled', true);
@@ -360,8 +369,16 @@ var App = {
       $('#actMoveMain').prop('disabled', true);
     },
     setOwner: function(id, name) {
-      Config.setDataItem('owner_id', id);
-      $('#actOwner').html(name);
+        Config.setDataItem('owner_id', id);
+        Config.setDataItem('department_id', 0);
+        $('#actOwner').html(name);
+        $('#actDepartment').html('Select Department');
+        $('#actDepartment').prop('disabled', false);
+        $('#actMoveMain').prop('disabled', true);
+      },
+    setDepartment: function(id, name) {
+      Config.setDataItem('department_id', id);
+      $('#actDepartment').html(name);
       $('#actMoveMain').prop('disabled', false);
     },
     setBuilding: function(id, name) {

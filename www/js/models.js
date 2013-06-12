@@ -119,6 +119,12 @@ Table.Condition = new Data.model('Condition', 'condition', {
   'name': EM.attr('string', {required: true, maxLength: 100})
 });
 
+Table.Department = new Data.model('Department', 'department', {
+  'sid': EM.attr('int', {}),
+  'synchdate': EM.attr('datetime', {}),
+  'name': EM.attr('string', {required: true, maxLength: 100})
+});
+
 Table.Owner = new Data.model('Owner', 'owner', {
   'sid': EM.attr('int', {}),
   'synchdate': EM.attr('datetime', {}),
@@ -140,6 +146,7 @@ Table.Asset = new Data.model('Asset', 'asset', {
   'previous_floor_id': EM.belongsTo(Table.Floor, {required: false}),
   'previous_room_id': EM.belongsTo(Table.Room, {required: false}),
   'owner_id': EM.belongsTo(Table.Owner, {required: true}),
+  'department_id': EM.belongsTo(Table.Department, {required: true}),
   'gps_relative': EM.attr('tinyint', {required: false}),
   'gps_accuracy': EM.attr('string', {required: false, maxLength: 50}),
   'gps_lat': EM.attr('string', {required: false, maxLength: 50}),
