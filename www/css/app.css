@@ -26,9 +26,9 @@ body {
 .container-fluid {
 	position: absolute;
 	top: 47px;
-  bottom: 41px;
-  left: 0px;
-  right: 0px;
+    bottom: 41px;
+    left: 0px;
+    right: 0px;
 	overflow: auto;
 }
 
@@ -55,8 +55,8 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
 		height: 120px;
 		padding: 8px 12px;
 		margin: 0px;
-		font-size: 38px;
-		line-height: 46px;
+		font-size: 46px;
+		line-height: 52px;
 		color: #555555;
 		-webkit-border-radius: 4px;
 		-moz-border-radius: 4px;
@@ -67,7 +67,7 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
 .modal-static {
 	opacity: 0.6 !important;
 	background: #000;
-  color: #fff;
+    color: #fff;
 }
 
 @media (max-width: 979px) {
@@ -80,35 +80,35 @@ input[type="url"], input[type="search"], input[type="tel"], input[type="color"],
 }
 
 label {
-    padding: 0px;
+      padding: 0px;
 	  margin: 10px 0px -10px 0px;
-    font-size: 42px;
-    line-height: 90px;
+      font-size: 46px;
+      line-height: 90px;
 }
 
 .spacer {
 	  float: left;
-    height: 70px;
+      height: 70px;
 }
 
 .has-switch span.switch-large,
 .has-switch label.switch-large {
 	  padding-bottom: 20px;
 	  padding-top: 20px;
-    font-size: 36px;
-    line-height: 40px;
+      font-size: 42px;
+      line-height: 50px;
 	  color: #000;
 }
 
 @media (min-width:1200px){
-	body {padding:50px 0px 0px 0px;font-size:36px;line-height: 48px;}
+	body {padding:50px 0px 0px 0px;font-size:42px;line-height: 50px;}
 	.container-fluid {padding:20px 10px}
   .navbar-fixed-top, .navbar-fixed-bottom {margin:0px;}
 	.navbar-inner .navbar-fixed-top {padding:0px;margin:0px;}
   .navbar-fixed-bottom {bottom: 0;position: fixed;}
 }
 @media (min-width:980px) and (max-width:1199px){
-	body {padding:50px 0px 0px 0px;font-size:36px;line-height: 48px;}
+	body {padding:50px 0px 0px 0px;font-size:42px;line-height: 50px;}
 	.container-fluid {padding:20px 10px}
   .navbar-fixed-top, .navbar-fixed-bottom {margin:0px;}
 	.navbar-fixed-top .navbar-inner {padding:0px;margin:0px;}
@@ -151,11 +151,11 @@ label {
 
 .app-title {
 	  color:#FFFFFF;
-	  font-size:40px;
+	  font-size:42px;
 	  line-height: 48px;
 	  margin-top: 5px;
 	  margin-bottom: 5px;
-    margin-left: 50px;
+      margin-left: 50px;
 	  padding:5px 30px;
 	  text-align: left;
 	  width: 40%;
@@ -165,7 +165,7 @@ label {
     border-radius: 4px;
     -webkit-border-radius: 4px;
     color: #FFFFFF;
-    font-size: 36px;
+    font-size: 38px;
     margin-top: 8px;
     margin-bottom: 8px;
     margin-right: 40px;
@@ -211,34 +211,37 @@ label {
 
 .btn-mobile {
 	padding: 75px 35px;
-	font-size: 36px;
+    font-size: 46px;
+    line-height: 52px;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 	border-radius: 6px;
 }
 
 .btn-mobile-inline {
-  height: 100px;
-  padding: 12px 16px;
-  margin: 0px;
-  font-size: 36px;
-  line-height: 40px;
+    height: 100px;
+    padding: 12px 16px;
+    margin: 0px;
+    font-size: 46px;
+    line-height: 52px;
 }
 
 .btn-mobile-list {
-  padding: 65px 35px;
-  font-size: 36px;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+    padding: 65px 35px;
+    font-size: 46px;
+    line-height: 52px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 
 .btn-mobile-large {
-  padding: 65px 35px;
-  font-size: 36px;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+    padding: 45px 35px;
+    font-size: 46px;
+    line-height: 52px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 
 .white {
