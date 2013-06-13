@@ -303,11 +303,14 @@ var Data = {
 
       // Execute query
       Data.query(stmnt, function(tx, result) {
-        if (result.rowsAffected) {
+        /*if (result.rowsAffected) {
           // All good
           if (!id) {
             id = result.insertId;
           }
+        }*/
+	    if (!id) {
+          id = result.insertId;
         }
         dataSet['id'] = id;
         if (typeof callback != 'undefined') {
