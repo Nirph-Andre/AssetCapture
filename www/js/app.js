@@ -958,7 +958,6 @@ var App = {
       Session.location_id   = Config.data.location_id;
       Session.owner_id      = Config.data.owner_id;
       Session.department_id = Config.data.department_id;
-      Notify.alert('Department config', Config.data.department_id);
       if (!Session.town_id)
 	  {
 	      Session.town_id       = Config.data.town_id;

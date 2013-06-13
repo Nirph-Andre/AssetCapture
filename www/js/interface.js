@@ -72,7 +72,7 @@ var Interface = {
       Interface.labelField = labelField;
       Interface.contextData = filter;
       Interface.allowNew = allowNew ? true : false;
-      Data.list(table, filter, function(data) {
+      Data.orderedList(table, filter, labelField, function(data) {
         var listData = [];
         for (var i in data) {
           listData.push({"value": data[i].id, "label": data[i][labelField]});
@@ -114,6 +114,7 @@ var Interface = {
       Data.view(Interface.listTable, null, Interface.contextData, function(xdata) {
         if (!xdata.id) {
           Data.save(Interface.listTable, null, Interface.contextData, function(data) {
+        	  Notify.alert('Department add', JSON.stringify(data));
             Interface.back();
             Interface.listCallback(data.id, label);
           });

@@ -440,6 +440,49 @@ var Data = {
     },
 
 
+    // Retrieve list of entries
+    orderedList: function(table, where, orderField, callback, errorCallback) {
+      // Prepare statement
+      var stmnt = 'SELECT * FROM `' + table.name + '`';
+      var filter = [];
+      if (where) {
+        for (field in where) {
+          filter.push('`' + field + '` = "' + Data.addSlashes(where[field]) + '"');
+        }
+      }
+      if (filter.length) {
+        stmnt += ' WHERE ' + filter.join(' AND ');
+      }
+      stmnt += ' ORDER BY `' + orderField + '` ASC';
+
+      // Execute query
+      Data.query(stmnt, function(tx, result) {
+        // Do we have data?
+        if (result.rows.length) {
+          var recSet = Data.stripRecordsetSlashes(result.rows);
+          if (typeof callback != 'undefined') {
+            callback(recSet);
+          }
+          table.trigger('listed', recSet);
+        } else {
+          // No entry found
+          if (typeof callback != 'undefined') {
+            callback({});
+          }
+          table.trigger('listed', {});
+        }
+      }, function(err) {
+        // Oops, something went wrong
+        if (typeof errorCallback != 'undefined') {
+          errorCallback(err);
+        } else {
+          Notify.alert('Oops', 'Data.queryError: ' + err.message);
+        }
+        return true;
+      });
+    },
+
+
     // Get latest change datetime from a table
     getLastChangeTime: function(table, callback, datefield) {
       // Prepare statement
