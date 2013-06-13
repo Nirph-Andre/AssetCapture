@@ -378,7 +378,6 @@ var App = {
       },
     setDepartment: function(id, name) {
       Config.setDataItem('department_id', id);
-      Notify.alert('Department set', id);
       $('#actDepartment').html(name);
       $('#actMoveMain').prop('disabled', false);
     },

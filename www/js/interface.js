@@ -115,7 +115,6 @@ var Interface = {
         if (!xdata.id) {
           Data.save(Interface.listTable, null, Interface.contextData, function(data) {
         	  Data.view(Interface.listTable, null, Interface.contextData, function(ydata) {
-        	  	Notify.alert('Department get', JSON.stringify(ydata));
         	  	Interface.back();
         	  	Interface.listCallback(ydata.id, ydata.name);
         	  });
