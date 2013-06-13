@@ -953,16 +953,17 @@ var App = {
         return;
       }
       // Location data
-      Session.identifier  = Config.data.identifier;
-      Session.location_id = Config.data.location_id;
+      Session.identifier    = Config.data.identifier;
+      Session.location_id   = Config.data.location_id;
+      Session.owner_id      = Config.data.owner_id;
+      Session.department_id = Config.data.department_id;
       if (!Session.town_id)
 	  {
-	      Session.town_id     = Config.data.town_id;
-	      Session.street_id   = Config.data.street_id;
-	      Session.owner_id    = Config.data.owner_id;
-	      Session.building_id = Config.data.building_id;
-	      Session.floor_id    = Config.data.floor_id;
-	      Session.room_id     = Config.data.room_id;
+	      Session.town_id       = Config.data.town_id;
+	      Session.street_id     = Config.data.street_id;
+	      Session.building_id   = Config.data.building_id;
+	      Session.floor_id      = Config.data.floor_id;
+	      Session.room_id       = Config.data.room_id;
 	  }
       // Save entry
       Data.save(Table.Asset, Session.id, Session, function(data) {
