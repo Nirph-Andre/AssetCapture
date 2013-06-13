@@ -114,9 +114,11 @@ var Interface = {
       Data.view(Interface.listTable, null, Interface.contextData, function(xdata) {
         if (!xdata.id) {
           Data.save(Interface.listTable, null, Interface.contextData, function(data) {
-        	  Notify.alert('Department add', JSON.stringify(data));
-            Interface.back();
-            Interface.listCallback(data.id, label);
+        	  Data.view(Interface.listTable, null, Interface.contextData, function(ydata) {
+        	  	Notify.alert('Department get', JSON.stringify(ydata));
+        	  	Interface.back();
+        	  	Interface.listCallback(ydata.id, ydata.name);
+        	  });
           });
         } else {
           Interface.back();
