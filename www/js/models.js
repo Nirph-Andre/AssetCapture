@@ -157,6 +157,8 @@ Table.Asset = new Data.model('Asset', 'asset', {
   'asset_description_id': EM.hasOne(Table.AssetDescription, {required: true}),
   'asset_sub_description_id': EM.hasOne(Table.AssetSubDescription, {required: false}),
   'details': EM.attr('string', {required: true, maxLength: 250}),
+  'detail2': EM.attr('string', {required: true, maxLength: 250}),
+  'serial': EM.attr('string', {required: true, maxLength: 250}),
   'material_id': EM.hasOne(Table.Material, {required: false}),
   'pole_length_id': EM.hasOne(Table.PoleLength, {required: false}),
   'street_light_type_id': EM.hasOne(Table.StreetLightType, {required: false}),

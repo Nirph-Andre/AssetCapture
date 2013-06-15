@@ -481,7 +481,11 @@ var App = {
       $('#actAssetSubDescription').html('Select Asset Sub Description');
       Session.asset_sub_description_id = null;
       $('#inpDetails').val('');
+      $('#inpDetail2').val('');
+      $('#inpSerial').val('');
       Session.details = '';
+      Session.detail2 = '';
+      Session.serial = '';
       $('#actAssetSubDescription').prop('disabled', true);
       $('#actMaterial').html('Select Material');
       Session.material_id = null;
@@ -627,6 +631,10 @@ var App = {
           }
           $('#inpDetails').val(data.details);
           Session.details = data.details;
+          $('#inpDetail2').val(data.detail2);
+          Session.detail2 = data.detail2;
+          $('#inpSerial').val(data.serial);
+          Session.serial = data.serial;
           if (data.material_id) {
             Data.view(Table.Material, data.material_id, {}, function(data) {
               if (data.id) {
@@ -679,9 +687,29 @@ var App = {
 	      if (data.town_id != Config.data.town_id
 	    		  || data.street_id != Config.data.street_id
 	    		  || data.building_id != Config.data.building_id
-	    		  || data.previous_floor_id != Config.data.previous_floor_id
+	    		  || data.floor_id != Config.data.floor_id
 	    		  || data.room_id != Config.data.room_id) {
 	    	  // We have a location difference.
+	    	  if (data.town_id != Config.data.town_id)
+	    	  {
+	    		  alert('town diff ' + data.town_id + ':' + Config.data.town_id);
+	    	  }
+	    	  if (data.street_id != Config.data.street_id)
+	    	  {
+	    		  alert('street diff ' + data.street_id + ':' + Config.data.street_id);
+	    	  }
+	    	  if (data.building_id != Config.data.building_id)
+	    	  {
+	    		  alert('building diff ' + data.building_id + ':' + Config.data.building_id);
+	    	  }
+	    	  if (data.floor_id != Config.data.floor_id)
+	    	  {
+	    		  alert('floor diff ' + data.floor_id + ':' + Config.data.floor_id);
+	    	  }
+	    	  if (data.room_id != Config.data.room_id)
+	    	  {
+	    		  alert('room diff ' + data.room_id + ':' + Config.data.room_id);
+	    	  }
 	    	  App.locationItems = 0;
 	    	  App.prevLocation = {};
 	    	  if (data.town_id) {
@@ -767,7 +795,6 @@ var App = {
       });
     },
     locationDiff: function () {
-    	alert('Liocation Diff');
     	var listData = [];
     	var currLocation = Config.data.town
 						+ ('' != Config.data.street ? ', ' + Config.data.street + '<br/>' : '')
@@ -811,7 +838,11 @@ var App = {
       Session.street_light_type_id = null;
       Session.condition_id = 0;
       $('#inpDetails').val('');
+      $('#inpDetail2').val('');
+      $('#inpSerial').val('');
       Session.details = '';
+      Session.detail2 = '';
+      Session.serial = '';
       $('#actAssetType').html(name);
       $('#actAssetSubType').html('Select Asset Sub Type');
       $('#actAssetDescription').html('Select Asset Description');
@@ -839,7 +870,11 @@ var App = {
       Session.street_light_type_id = null;
       Session.condition_id = 0;
       $('#inpDetails').val('');
+      $('#inpDetail2').val('');
+      $('#inpSerial').val('');
       Session.details = '';
+      Session.detail2 = '';
+      Session.serial = '';
       $('#actAssetSubType').html(name);
       $('#actAssetDescription').html('Select Asset Description');
       $('#actAssetSubDescription').html('Select Asset Sub Description');
@@ -863,7 +898,11 @@ var App = {
       Session.street_light_type_id = null;
       Session.condition_id = 0;
       $('#inpDetails').val('');
+      $('#inpDetail2').val('');
+      $('#inpSerial').val('');
       Session.details = '';
+      Session.detail2 = '';
+      Session.serial = '';
       $('#actAssetDescription').html(name);
       $('#actAssetSubDescription').html('Select Asset Sub Description');
       $('#actMaterial').html('Select Material');
@@ -888,8 +927,14 @@ var App = {
       }
       App.evalAsset();
     },
-    setDetails: function(htmlId, $value) {
-      Session.details = '';
+    setDetails: function(htmlId, value) {
+      Session.details = value;
+    },
+    setDetail2: function(htmlId, value) {
+      Session.detail2 = value;
+    },
+    setSerial: function(htmlId, value) {
+      Session.serial = value;
     },
     setAssetSubDescription: function(id, name) {
       Session.asset_sub_description_id = id;
