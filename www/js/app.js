@@ -684,35 +684,35 @@ var App = {
 	      Session.previous_building_id = data.building_id;
 	      Session.previous_floor_id    = data.floor_id;
 	      Session.previous_room_id     = data.room_id;
+	      if (!data.town_id)
+	      {
+	    	  data.town_id = 0;
+	      }
+	      if (!data.street_id)
+	      {
+	    	  data.street_id = 0;
+	      }
+	      if (!data.building_id)
+	      {
+	    	  data.building_id = 0;
+	      }
+	      if (!data.floor_id)
+	      {
+	    	  data.floor_id = 0;
+	      }
+	      if (!data.room_id)
+	      {
+	    	  data.room_id = 0;
+	      }
 	      if (data.town_id != Config.data.town_id
 	    		  || data.street_id != Config.data.street_id
 	    		  || data.building_id != Config.data.building_id
 	    		  || data.floor_id != Config.data.floor_id
 	    		  || data.room_id != Config.data.room_id) {
 	    	  // We have a location difference.
-	    	  if (data.town_id != Config.data.town_id)
-	    	  {
-	    		  alert('town diff ' + data.town_id + ':' + Config.data.town_id);
-	    	  }
-	    	  if (data.street_id != Config.data.street_id)
-	    	  {
-	    		  alert('street diff ' + data.street_id + ':' + Config.data.street_id);
-	    	  }
-	    	  if (data.building_id != Config.data.building_id)
-	    	  {
-	    		  alert('building diff ' + data.building_id + ':' + Config.data.building_id);
-	    	  }
-	    	  if (data.floor_id != Config.data.floor_id)
-	    	  {
-	    		  alert('floor diff ' + data.floor_id + ':' + Config.data.floor_id);
-	    	  }
-	    	  if (data.room_id != Config.data.room_id)
-	    	  {
-	    		  alert('room diff ' + data.room_id + ':' + Config.data.room_id);
-	    	  }
 	    	  App.locationItems = 0;
 	    	  App.prevLocation = {};
-	    	  if (data.town_id) {
+	    	  if (data.town_id && 0 != data.town_id) {
 		    	  Data.view(Table.Town, data.town_id, {}, function(data) {
 	                	App.prevLocation.town = data.name;
 		                App.locationItems++;
@@ -727,7 +727,7 @@ var App = {
 	            	  App.locationDiff();
 	              }
 	    	  }
-	    	  if (data.street_id) {
+	    	  if (data.street_id && 0 != data.street_id) {
 		    	  Data.view(Table.Street, data.street_id, {}, function(data) {
 	                	App.prevLocation.street = data.name;
 		                App.locationItems++;
@@ -742,7 +742,7 @@ var App = {
 	            	  App.locationDiff();
 	              }
 	    	  }
-	    	  if (data.building_id) {
+	    	  if (data.building_id && 0 != data.building_id) {
 		    	  Data.view(Table.Building, data.building_id, {}, function(data) {
 	                	App.prevLocation.building = data.name;
 		                App.locationItems++;
@@ -757,7 +757,7 @@ var App = {
 	            	  App.locationDiff();
 	              }
 	    	  }
-	    	  if (data.floor_id) {
+	    	  if (data.floor_id && 0 != data.floor_id) {
 		    	  Data.view(Table.Floor, data.floor_id, {}, function(data) {
 	                	App.prevLocation.floor = data.name;
 		                App.locationItems++;
@@ -772,7 +772,7 @@ var App = {
 	            	  App.locationDiff();
 	              }
 	    	  }
-	    	  if (data.room_id) {
+	    	  if (data.room_id && 0 != data.room_id) {
 		    	  Data.view(Table.Room, data.room_id, {}, function(data) {
 	                	App.prevLocation.room = data.name;
 		                App.locationItems++;
