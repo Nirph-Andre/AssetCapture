@@ -182,7 +182,7 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'condition', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'owner', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'department', 'mode': Data.SYNCH_BOTH});
-          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH, 'filter': 'asset_type_id'});
+          Data.save(Table.Synch, null, {'table': 'asset', 'mode': Data.SYNCH_BOTH});
           Config.setDataItem('location', 'Unknown');
           App.configReady();
           App.dbReady();
