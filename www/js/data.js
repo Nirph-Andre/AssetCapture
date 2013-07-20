@@ -685,15 +685,6 @@ var Data = {
                 Data.synchedItems = 0;
                 Data.synching = false;
                 App.synchPhotos();
-                var stmnt = 'SELECT COUNT(id) AS total FROM `asset`';
-		        tx.executeSql(stmnt, [], function(tx, result) {
-		            if (result.rows.length) {
-		            	var countRes = result.rows.item(0);
-		            	Notify.alert('Notice', 'Total assets on local database: ' + countRes.total);
-		            } else {
-		            	Notify.alert('ERROR', 'Could not establish number of assets in local database.');
-		            }
-		        });
               }
             }
           }, function(jqXHR, textStatus, errorThrown) {
