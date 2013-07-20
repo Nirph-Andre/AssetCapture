@@ -887,7 +887,7 @@ var App = {
       $('#actMaterial').hide();
       $('#actPoleLength').hide();
       $('#actLightType').hide();
-      Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, false, 'Select Asset Description');
+      Interface.listFromTable(Table.AssetDescription, {'asset_sub_type_id': Session.asset_sub_type_id}, 'name', App.setAssetDescription, true, 'Select Asset Description');
       App.evalAsset();
     },
     setAssetDescription: function(id, name) {
