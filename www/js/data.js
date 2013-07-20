@@ -174,7 +174,7 @@ var Data = {
           Data.save(Table.Synch, null, {'table': 'room', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset_type', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'asset_sub_type', 'mode': Data.SYNCH_FROM_SERVER});
-          Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_FROM_SERVER});
+          Data.save(Table.Synch, null, {'table': 'asset_description', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'asset_sub_description', 'mode': Data.SYNCH_BOTH});
           Data.save(Table.Synch, null, {'table': 'material', 'mode': Data.SYNCH_FROM_SERVER});
           Data.save(Table.Synch, null, {'table': 'pole_length', 'mode': Data.SYNCH_FROM_SERVER});
@@ -685,12 +685,21 @@ var Data = {
                 Data.synchedItems = 0;
                 Data.synching = false;
                 App.synchPhotos();
+                var stmnt = 'SELECT COUNT(id) AS total FROM `asset`';
+		        tx.executeSql(stmnt, [], function(tx, result) {
+		            if (result.rows.length) {
+		            	var countRes = result.rows.item(0);
+		            	Notify.alert('Notice', 'Total assets on local database: ' + countRes.total);
+		            } else {
+		            	Notify.alert('ERROR', 'Could not establish number of assets in local database.');
+		            }
+		        });
               }
             }
           }, function(jqXHR, textStatus, errorThrown) {
             Data.synchedItems++;
-            Notify.alert('Oops for ' + objName, textStatus);
-            Notify.alert('Oops', JSON.stringify(errorThrown));
+            Notify.alert('Synch failure for ' + objName, textStatus);
+            Notify.alert('Synch failure', JSON.stringify(errorThrown));
             if (Data.synchedItems >= Data.synchItems) {
               Data.synchItems = 0;
               Data.synchItsynchedItemsems = 0;
